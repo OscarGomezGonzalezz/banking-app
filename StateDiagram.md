@@ -9,4 +9,3 @@ stateDiagram
     MainDashboard --> ViewExpenses : User selects to view monthly expenses
     ViewExpenses --> MainDashboard : User returns to dashboard
     MainDashboard --> [*] : User logs out
-'''
