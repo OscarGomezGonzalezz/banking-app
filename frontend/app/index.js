@@ -13,11 +13,16 @@ export default function Home() {
     router.push('/screens/register');
   };
 
+  const goToHome = () => {
+    router.push('/screens/home');
+  }
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Welcome to BankApp</Text>
       <Button title="Login" onPress={goToLogin} />
       <Button title="Register" onPress={goToRegister} />
+      <Button title="Home" onPress={goToHome} />
     </View>
   );
 }
