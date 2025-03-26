@@ -1,0 +1,58 @@
+@startuml functionality
+
+class Frontend {
+  +fetchAPI1()
+  +fetchAPI2()
+  +registerUser()
+}
+
+class BackendAPI1 {
+  +fetchDataFromBank1()
+  +storeDataInDB()
+}
+
+class BackendAPI2 {
+  +fetchDataFromBank2()
+  +storeDataInDB()
+}
+
+class UserRegistration {
+  +registerUserInDB()
+}
+
+class Database {
+  +storeUserData()
+  +storeBankData()
+}
+
+class Bank1 {
+  +provideBank1Data()
+}
+
+class Bank2 {
+  +provideBank2Data()
+}
+
+class UsersTable {
+  +storeUserInfo()
+}
+
+class BankDataTable {
+  +storeBankData()
+}
+
+Frontend --> BackendAPI1 : fetches data
+Frontend --> BackendAPI2 : fetches data
+Frontend --> UserRegistration : registers user
+
+BackendAPI1 --> Bank1 : fetches data
+BackendAPI2 --> Bank2 : fetches data
+
+BackendAPI1 --> Database : stores bank 1 data
+BackendAPI2 --> Database : stores bank 2 data
+UserRegistration --> Database : stores user data
+
+Database --> UsersTable : stores user data
+Database --> BankDataTable : stores bank data
+
+@enduml
