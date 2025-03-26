@@ -1,64 +1,74 @@
 // app/screens/register.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, TextInput, Text, Button, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
+import { registerUser } from "../services/authService";
+import * as SecureStore from 'expo-secure-store';
 import Toast from 'react-native-toast-message';
 
 
 export default function Register() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false); // Loading state to show a loading indicator while submitting
   const [error, setError] = useState('');
   const router = useRouter();
   const [showToast, setShowToast] = useState(false);
 
-  const handleRegister = async () => {
-    if(!email || !password){
-      setError('Please fill all fields')
-      return;// Prevent submitting the form if fields are empty
-    }
-    setError(''); // Clear any previous errors
+  // Clear token when the page loads
+  useEffect(() => {
+    const removeToken = async () => {
+      try {
+        await SecureStore.deleteItemAsync('token'); // Securely remove token
+        console.log('Token removed');
+      } catch (error) {
+        console.error('Error removing token', error);
+      }
+    };
 
+    removeToken(); // Call the function to remove the token
+
+  }, []); // Empty dependency array ensures it runs only once, on mount
+
+  // Storing a token
+  const storeToken = async (token) => {
+    try {
+      await SecureStore.setItemAsync('token', token); // Securely store the token
+      console.log('Token stored');
+    } catch (error) {
+      console.error('Error storing token', error);
+    }
+  };
+
+  const handleRegister = async (e) => {
+    e.preventDefault();
+
+     if (!email || !password || !confirmPassword) {
+      setError("Please fill in all fields.");
+      return
+    }
+     // Check if passwords match
+     if (password !== confirmPassword) {
+      setError("Passwords do not match");
+      return;
+    }
 
     setLoading(true); // Set loading to true while the request is being made
     console.log('Registering with:', email, password);
 
-    try{
-      const response = await fetch('http://localhost:3500/api/auth/register',{
-        method:"POST",
-        headers:{
-          "Content-type": "application/json"
-        },
-        body: JSON.stringify({ username: email, password })
-      })
-      if (!response.ok) {
-        const errorData = await response.json();
-        console.error(errorData);
-        setError("Registration failed");
-      } else {
-        console.log("Succesful registration");
-        setShowToast(true)
-        // Show a success toast
-        Toast.show({
-          type: 'success',
-          position: 'top',
-          text1: 'Registration Successful',
-          text2: 'You have successfully registered!',
-        });
-
-        // Optionally, navigate to the home screen after the toast
-        router.push('/screens/index');
-
-      }
-    }catch(error){
-      console.error('Error:', error);
-      setError('Something went wrong. Please try again later.');
+    try {
+      const data = await registerUser(email, password);
+      storeToken(data.token);
+      console.log("token", data.token);
+      router.push('/index');
+    } catch (error) {
+      console.log(error);
+      setError(error.message);
     } finally {
       setLoading(false);
     }
-    router.push('/screens/index'); // Navigate back to the home screen after registration
-  };
+      }
 
   return (
     <View style={styles.container}>
@@ -74,6 +84,13 @@ export default function Register() {
         secureTextEntry
         value={password}
         onChangeText={setPassword}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Confirm your Password"
+        secureTextEntry
+        value={confirmPassword}
+        onChangeText={setConfirmPassword}
       />
       <Text>
       {error ? <Text style={styles.errorText}>{error}</Text> :  null}
