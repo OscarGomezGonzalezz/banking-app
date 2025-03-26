@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
@@ -24,16 +23,10 @@ const CustomButton = ({ title, onPress, isRegister }) => {
     </TouchableOpacity>
   );
 };
-=======
-import React from 'react';
-import { View, Text, Button, StyleSheet } from 'react-native';
-import { useRouter } from 'expo-router';
->>>>>>> e8362d6182f83831384f0c218d635ea33931cb6a
 
 export default function Home() {
   const router = useRouter();
 
-<<<<<<< HEAD
   return (
     <View style={styles.container}>
       <Video
@@ -51,26 +44,6 @@ export default function Home() {
           <CustomButton title="Register" onPress={() => router.push('screens/register')} isRegister />
         </View>
       </View>
-=======
-  const goToLogin = () => {
-    router.push('/screens/login');
-  };
-
-  const goToRegister = () => {
-    router.push('/screens/register');
-  };
-
-  const goToHome = () => {
-    router.push('/screens/home');
-  }
-
-  return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Welcome to BankApp</Text>
-      <Button title="Login" onPress={goToLogin} />
-      <Button title="Register" onPress={goToRegister} />
-      <Button title="Home" onPress={goToHome} />
->>>>>>> e8362d6182f83831384f0c218d635ea33931cb6a
     </View>
   );
 }
@@ -78,7 +51,6 @@ export default function Home() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-<<<<<<< HEAD
     justifyContent: 'space-between',
     alignItems: 'center',
   },
@@ -124,13 +96,5 @@ const styles = StyleSheet.create({
     color: Colors.background,
     fontSize: 16,
     fontWeight: 'bold',
-=======
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  title: {
-    fontSize: 24,
-    marginBottom: 20,
->>>>>>> e8362d6182f83831384f0c218d635ea33931cb6a
   },
 });
