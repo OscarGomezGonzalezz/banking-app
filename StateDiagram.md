@@ -1,4 +1,4 @@
-'''mermaid
+```mermaid
 stateDiagram
     [*] --> Start
     Start --> Authentication : Open app
