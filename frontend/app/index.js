@@ -4,7 +4,7 @@ import { useRouter } from 'expo-router';
 import Colors from './constants/Colors';
 import { ResizeMode, Video } from 'expo-av';
 
-const CustomButton = ({ title, onPress, isRegister }) => {
+export const CustomButton = ({ title, onPress, isRegister, isDisabled }) => {
   const [isHovered, setIsHovered] = useState(false);
 
   return (
@@ -13,6 +13,7 @@ const CustomButton = ({ title, onPress, isRegister }) => {
         styles.button,
         isRegister && styles.registerButton, // Register button color
         isHovered && styles.hovered, // Hover effect
+        isDisabled && styles.disabled,//set disbled unless an action is performed
       ]}
       onPress={onPress}
       onMouseEnter={() => setIsHovered(true)}
@@ -75,7 +76,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     width: '100%',
-    marginTop: 350,
+    marginTop: 450,
     gap: 20,
   },
   button: {
@@ -84,7 +85,9 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     alignItems: 'center',
     justifyContent: 'center',
+    alignSelf:'center',
     backgroundColor: Colors.primary, // Default button color
+
   },
   registerButton: {
     backgroundColor: Colors.secondary, // Special color for Register
@@ -96,5 +99,9 @@ const styles = StyleSheet.create({
     color: Colors.background,
     fontSize: 16,
     fontWeight: 'bold',
+    textAlign: "center",
+  },
+  disabled: {
+    backgroundColor: Colors.primaryMuted,
   },
 });
