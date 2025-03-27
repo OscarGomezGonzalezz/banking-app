@@ -21,7 +21,6 @@
     "expo-router": "~4.0.19",
     "expo-secure-store": "~14.0.1",
     "expo-status-bar": "~2.0.1",
-    "expo-video": "~2.0.6",
     "express": "^4.21.2",
     "firebase": "^11.5.0",
     "firebase-admin": "^13.2.0",
