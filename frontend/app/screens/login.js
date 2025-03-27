@@ -7,7 +7,14 @@ import Toast from 'react-native-toast-message';
 import Colors from '../constants/Colors';
 import { CustomButton } from '../index';
 
-export default function Register() {
+import { Ionicons } from "@expo/vector-icons";
+
+const SignInType = {
+  Phone: 'Phone',
+  Email: 'Email',
+  Google: 'Google'
+};
+export default function Login() {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [password, setPassword] = useState('');
   const [countryCode, setCountryCode] = useState("+34");
@@ -41,8 +48,11 @@ export default function Register() {
     }
   };
 
-  const handleRegister = async (e) => {
-    e.preventDefault();
+  const handleLogin = async (type) => {
+    if(type === SignInType.Phone){
+
+    }
+    
 
      if (!email || !password || !confirmPassword) {
       setError("Please fill in all fields.");
@@ -75,8 +85,8 @@ export default function Register() {
     <KeyboardAvoidingView style={{flex: 1}} behavior='padding' keyboardVerticalOffset={80}>
     <View style={styles.container}>
 
-      <Text style={styles.title}>Let's get started!</Text>
-      <Text style={styles.subtitle}>Enter your phone number. We will send you a confirmation code there</Text>
+      <Text style={styles.title}>It's good to see you again!</Text>
+      <Text style={styles.subtitle}>Enter the phone number associated with your account</Text>
       <View style={styles.inputContainer}>
         <TextInput
           style={styles.input}
@@ -96,16 +106,24 @@ export default function Register() {
         />
       </View>
 
-      <TouchableOpacity style={styles.button}
-            onPress={() => router.push('screens/login')}
-          >
-            <Text style={styles.buttonText}>Already registered? Go log in</Text>
-      
-      </TouchableOpacity>
       <View style={styles.buttons}>
-      
-      <CustomButton title="Register" onPress={() => handleRegister()} isDisabled={phoneNumber === ''} />
+      <CustomButton title="Continue" onPress={() => handleLogin(SignInType.Phone)} isRegister isDisabled={phoneNumber === ''} />
       </View>
+      <View style={styles.socialButtons}>
+        <View style={styles.stripe}></View>
+        <Text style={{color: Colors.gray, fontSize: 20}}>or</Text>
+        <View style={styles.stripe}></View>
+      </View>
+
+      <TouchableOpacity style={styles.button} onPress={()=>handleLogin(SignInType.Email)}>
+        <Ionicons name="mail" size={24} color={"black"}></Ionicons>
+        <Text style={styles.buttonText}>Continue with email</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity style={styles.button} onPress={()=>handleLogin(SignInType.Google)}>
+        <Ionicons name="logo-google" size={24} color={"black"}></Ionicons>
+        <Text style={styles.buttonText}>Continue with Google</Text>
+      </TouchableOpacity>
 
       
     </View>
@@ -152,17 +170,21 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     width: '100%',
-    marginTop: 10,
-    marginBottom: 50
+    marginTop: 30,
+    marginBottom: 20
   },
   button:{
-    flex: 1,
+    flexDirection: 'row',
+    gap: 15,
     padding: 20,
     borderRadius: 30,
     alignItems: 'center',
+    backgroundColor: 'white',
+    justifyContent: 'center',
+    marginTop: 15
   },
   buttonText: {
-      color: Colors.secondary,
+      color: Colors.primary,
       fontSize: 16,
       fontWeight: 'bold',
     },
@@ -170,5 +192,17 @@ const styles = StyleSheet.create({
       backgroundColor: Colors.primary,
     },
     disabled: {
-      backgroundColor: Colors.primaryMuted,}
+      backgroundColor: Colors.primaryMuted,
+    },
+    socialButtons:{
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 16
+
+    },
+    stripe:{
+      flex: 1,
+      height:StyleSheet.hairlineWidth,//even finer than 1
+      backgroundColor: Colors.gray
+    }
 });
