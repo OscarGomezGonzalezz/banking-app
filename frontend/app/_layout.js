@@ -3,10 +3,11 @@ import { TouchableOpacity } from "react-native";
 import Colors from "./constants/Colors";
 import { router, Link} from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
-import { ClerkProvider } from '@clerk/clerk-expo'
+import { ClerkProvider, useAuth } from '@clerk/clerk-expo'
 import { tokenCache } from '@clerk/clerk-expo/token-cache'
 
 export default function Layout() {
+  
   return (
     <ClerkProvider tokenCache={tokenCache}>
     <Stack>
@@ -47,6 +48,20 @@ export default function Layout() {
         }}
       />
       <Stack.Screen name="screens/help" options={{title: "Help", presentation:"modal"}}/>
+      <Stack.Screen
+        name="screens/auth/[phone]"
+        options={{
+          title: "",
+          headerBackTitle: "",
+          headerShadowVisible: false,
+          headerStyle: { backgroundColor: Colors.background },
+          headerLeft: () => (
+            <TouchableOpacity onPress={router.back}>
+              <Ionicons name="arrow-back" size={34} color={Colors.dark} />
+            </TouchableOpacity>
+          ),
+        }}
+      />
     </Stack>
     </ClerkProvider>
   );

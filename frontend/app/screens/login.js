@@ -96,7 +96,7 @@ export default function Login() {
       </View>
 
       <View style={styles.buttons}>
-      <CustomButton title="Continue" onPress={() => handleLogin(SignInType.Phone)} isRegister isDisabled={phoneNumber === ''} />
+      <CustomButton title="Continue" onPress={() => onSignIn(SignInType.Phone)} isRegister isDisabled={phoneNumber === ''} />
       </View>
       <View style={styles.socialButtons}>
         <View style={styles.stripe}></View>
