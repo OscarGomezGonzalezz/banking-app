@@ -1,6 +1,7 @@
-import { Stack } from "expo-router";
+import { Stack, useSegments } from "expo-router";
 import { TouchableOpacity } from "react-native";
 import Colors from "./constants/Colors";
+import { useEffect } from 'react';
 import { router, Link} from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { ClerkProvider, useAuth } from '@clerk/clerk-expo'
@@ -18,9 +19,27 @@ export {
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
+//show the screen
 SplashScreen.hideAsync();
 
 const Layout = ()=>{
+
+  const { isLoaded, isSignedIn } = useAuth();
+  const segments = useSegments();
+
+  useEffect(() => {
+    //if (!isLoaded) return;
+    console.log('issifnedin', isSignedIn)
+
+    //const inAuthGroup = segments[0] === '(authenticated)';
+
+   /* if (isSignedIn && !inAuthGroup) {
+      router.replace('/(authenticated)/(tabs)/home');
+    } else if (!isSignedIn) {
+      router.replace('/');
+    }*/
+  }, [isSignedIn]);
+
   
   return (
     <Stack>

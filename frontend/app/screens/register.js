@@ -18,18 +18,18 @@ export default function Register() {
   const onSignUp = async () => {
 
      const fullPhoneNumber = `${countryCode}${phoneNumber}`
+     try {
+       await signUp.create({
+         phoneNumber: fullPhoneNumber
+       });
+       signUp.preparePhoneNumberVerification();
+       //router.push('screens/auth/[phone]')
        router.push(`screens/auth/${fullPhoneNumber}`);
-  //   try {
-  //     await signUp.create({
-  //       phoneNumber: fullPhoneNumber
-  //     });
-  //     //router.push('screens/auth/[phone]')
-  //     router.push(`screens/auth/${fullPhoneNumber}`);
 
-  // } catch(Error){
-  //   console.error(Error);
+   } catch(Error){
+     console.error(Error);
 
-  // }
+   }
 }
 
   return (
