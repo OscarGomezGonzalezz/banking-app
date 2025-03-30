@@ -1,74 +1,36 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { View, TextInput, Text, StyleSheet, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
-import { useRouter } from 'expo-router';
-import { registerUser } from "../services/authService";
-import * as SecureStore from 'expo-secure-store';
+import { useRouter, Link } from 'expo-router';
+import { useSignUp } from "@clerk/clerk-expo";
 import Toast from 'react-native-toast-message';
 import Colors from '../constants/Colors';
 import { CustomButton } from '../index';
 
 export default function Register() {
   const [phoneNumber, setPhoneNumber] = useState('');
-  const [password, setPassword] = useState('');
   const [countryCode, setCountryCode] = useState("+34");
   const [loading, setLoading] = useState(false); // Loading state to show a loading indicator while submitting
   const [error, setError] = useState('');
   const router = useRouter();
   const [showToast, setShowToast] = useState(false);
+  const { signUp } = useSignUp();
 
-  // Clear token when the page loads
-  useEffect(() => {
-    const removeToken = async () => {
-      try {
-        await SecureStore.deleteItemAsync('token'); // Securely remove token
-        console.log('Token removed');
-      } catch (error) {
-        console.error('Error removing token', error);
-      }
-    };
+  const onSignUp = async () => {
 
-    removeToken(); // Call the function to remove the token
+     const fullPhoneNumber = `${countryCode}${phoneNumber}`
+       router.push(`screens/auth/${fullPhoneNumber}`);
+  //   try {
+  //     await signUp.create({
+  //       phoneNumber: fullPhoneNumber
+  //     });
+  //     //router.push('screens/auth/[phone]')
+  //     router.push(`screens/auth/${fullPhoneNumber}`);
 
-  }, []); // Empty dependency array ensures it runs only once, on mount
+  // } catch(Error){
+  //   console.error(Error);
 
-  // Storing a token
-  const storeToken = async (token) => {
-    try {
-      await SecureStore.setItemAsync('token', token); // Securely store the token
-      console.log('Token stored');
-    } catch (error) {
-      console.error('Error storing token', error);
-    }
-  };
-
-  const handleRegister = async (e) => {
-    e.preventDefault();
-
-     if (!email || !password || !confirmPassword) {
-      setError("Please fill in all fields.");
-      return
-    }
-     // Check if passwords match
-     if (password !== confirmPassword) {
-      setError("Passwords do not match");
-      return;
-    }
-
-    setLoading(true); // Set loading to true while the request is being made
-    console.log('Registering with:', email, password);
-
-    try {
-      const data = await registerUser(email, password);
-      storeToken(data.token);
-      console.log("token", data.token);
-      router.push('/index');
-    } catch (error) {
-      console.log(error);
-      setError(error.message);
-    } finally {
-      setLoading(false);
-    }
-      }
+  // }
+}
 
   return (
     //Keyboard.. allows us to continue seeing the register button, in spite of opening the keyboard
@@ -104,7 +66,7 @@ export default function Register() {
       </TouchableOpacity>
       <View style={styles.buttons}>
       
-      <CustomButton title="Register" onPress={() => handleRegister()} isDisabled={phoneNumber === ''} />
+      <CustomButton title="Register" onPress={() => onSignUp()} isDisabled={phoneNumber === ''} />
       </View>
 
       

@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { View, TextInput, Text, StyleSheet, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
 import { useRouter } from 'expo-router';
-import { registerUser } from "../services/authService";
 import * as SecureStore from 'expo-secure-store';
 import Toast from 'react-native-toast-message';
 import Colors from '../constants/Colors';
 import { CustomButton } from '../index';
+import { useSignIn, isClerkAPIResponseError } from "@clerk/clerk-expo";
 
 import { Ionicons } from "@expo/vector-icons";
 
@@ -16,12 +16,43 @@ const SignInType = {
 };
 export default function Login() {
   const [phoneNumber, setPhoneNumber] = useState('');
-  const [password, setPassword] = useState('');
   const [countryCode, setCountryCode] = useState("+34");
   const [loading, setLoading] = useState(false); // Loading state to show a loading indicator while submitting
   const [error, setError] = useState('');
   const router = useRouter();
   const [showToast, setShowToast] = useState(false);
+  const { signIn } = useSignIn();
+
+  const onSignIn = async (type) => {
+    if(type === SignInType.Phone) {
+      try{  
+      const fullPhoneNumber = `${countryCode}${phoneNumber}`
+      const { supportedFirstFactors } = await signIn.create({
+        identifier: fullPhoneNumber,
+      });
+      
+      const firstPhoneFactor = supportedFirstFactors.find((factor) => {
+        return factor.strategy === "phone_code";
+      });
+      
+      const { phoneNumberId } = firstPhoneFactor;
+      
+      await signIn.prepareFirstFactor({
+        strategy: "phone_code",
+        phoneNumberId,
+      });
+      router.push(`screens/auth/${fullPhoneNumber}&signin=true`)
+      
+      } catch(error){
+        console.log('error', JSON.stringify(err, null, 2));
+        if (isClerkAPIResponseError(err)) {
+          if (err.errors[0].code === 'form_identifier_not_found') {
+            Alert.alert('Error', err.errors[0].message);
+          }
+        }
+      }
+    }
+  }
 
   // Clear token when the page loads
   useEffect(() => {
@@ -37,48 +68,6 @@ export default function Login() {
     removeToken(); // Call the function to remove the token
 
   }, []); // Empty dependency array ensures it runs only once, on mount
-
-  // Storing a token
-  const storeToken = async (token) => {
-    try {
-      await SecureStore.setItemAsync('token', token); // Securely store the token
-      console.log('Token stored');
-    } catch (error) {
-      console.error('Error storing token', error);
-    }
-  };
-
-  const handleLogin = async (type) => {
-    if(type === SignInType.Phone){
-
-    }
-    
-
-     if (!email || !password || !confirmPassword) {
-      setError("Please fill in all fields.");
-      return
-    }
-     // Check if passwords match
-     if (password !== confirmPassword) {
-      setError("Passwords do not match");
-      return;
-    }
-
-    setLoading(true); // Set loading to true while the request is being made
-    console.log('Registering with:', email, password);
-
-    try {
-      const data = await registerUser(email, password);
-      storeToken(data.token);
-      console.log("token", data.token);
-      router.push('/index');
-    } catch (error) {
-      console.log(error);
-      setError(error.message);
-    } finally {
-      setLoading(false);
-    }
-      }
 
   return (
     //Keyboard.. allows us to continue seeing the register button, in spite of opening the keyboard

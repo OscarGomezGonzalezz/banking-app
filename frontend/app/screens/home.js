@@ -1,4 +1,4 @@
-import RoundBtn from '../components/RoundBtn';
+//import RoundBtn from '../components/RoundBtn';
 import Colors from '../constants/Colors';
 
 
@@ -25,9 +25,10 @@ const Page = () => {
             </View>
 
             <View style={styles.actionRow}>
-            <RoundBtn icon={'add'} text={'Add money'} onPress={onAddMoney}/>
+            {/* <RoundBtn icon={'add'} text={'Add money'} onPress={onAddMoney}/>
             <RoundBtn icon={'refresh'} text={'Exchange'}/>
-            <RoundBtn icon={'list'} text={'Details'}/>
+            <RoundBtn icon={'list'} text={'Details'}/> */}
+            
            
             </View>
         </ScrollView>
