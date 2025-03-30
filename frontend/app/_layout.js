@@ -5,11 +5,24 @@ import { router, Link} from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { ClerkProvider, useAuth } from '@clerk/clerk-expo'
 import { tokenCache } from '@clerk/clerk-expo/token-cache'
+import * as SplashScreen from 'expo-splash-screen';
 
-export default function Layout() {
+
+
+const CLERK_PUBLISHABLE_KEY = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY;
+
+export {
+  // Catch any errors thrown by the Layout component.
+  ErrorBoundary,
+} from 'expo-router';
+
+// Prevent the splash screen from auto-hiding before asset loading is complete.
+SplashScreen.preventAutoHideAsync();
+SplashScreen.hideAsync();
+
+const Layout = ()=>{
   
   return (
-    <ClerkProvider tokenCache={tokenCache}>
     <Stack>
       <Stack.Screen name="index" options={{ headerShown: false }} />
       <Stack.Screen
@@ -63,6 +76,14 @@ export default function Layout() {
         }}
       />
     </Stack>
-    </ClerkProvider>
   );
 }
+const RootLayoutNav = () => {
+  return (
+    <ClerkProvider publishableKey={CLERK_PUBLISHABLE_KEY} tokenCache={tokenCache}>
+            <Layout/>
+    </ClerkProvider>
+  );
+};
+
+export default RootLayoutNav;
