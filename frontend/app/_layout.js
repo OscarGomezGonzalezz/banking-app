@@ -1,5 +1,5 @@
 import { Stack, useSegments } from "expo-router";
-import { TouchableOpacity } from "react-native";
+import { TouchableOpacity, Text } from "react-native";
 import Colors from "./constants/Colors";
 import { useEffect } from 'react';
 import { router, Link} from "expo-router";
@@ -20,27 +20,30 @@ export {
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 //show the screen
-SplashScreen.hideAsync();
 
 const Layout = ()=>{
 
   const { isLoaded, isSignedIn } = useAuth();
-  const segments = useSegments();
+  const segments = useSegments();//used for knowing in which step of our app we are
 
   useEffect(() => {
-    //if (!isLoaded) return;
-    console.log('issifnedin', isSignedIn)
+    if (!isLoaded) return;
+    console.log('isSignedIn', isSignedIn)
 
-    //const inAuthGroup = segments[0] === '(authenticated)';
+    const inAuthGroup = segments[0] === '(authenticated)';
 
-   /* if (isSignedIn && !inAuthGroup) {
-      router.replace('/(authenticated)/(tabs)/home');
+    if (isSignedIn && !inAuthGroup) {
+      router.push('screens/(authenticated)/(tabs)/home');
     } else if (!isSignedIn) {
-      router.replace('/');
-    }*/
+      router.push('screens/');//returning user to welcome page if not registered
+    }
   }, [isSignedIn]);
 
-  
+  if(!isLoaded){
+    return <Text>Loading...</Text>
+  } else{
+    SplashScreen.hideAsync();
+  }
   return (
     <Stack>
       <Stack.Screen name="index" options={{ headerShown: false }} />
@@ -94,6 +97,7 @@ const Layout = ()=>{
           ),
         }}
       />
+      <Stack.Screen name="screens/(authenticated)/(tabs)" options={{headerShown: false}}/>
     </Stack>
   );
 }
