@@ -3,6 +3,8 @@ import { BlurView } from 'expo-blur';
 import {useSafeAreaInsets} from 'react-native-safe-area-context'
 import Colors from '../constants/Colors';
 import { Ionicons } from "@expo/vector-icons";
+import {router, Link} from 'expo-router'
+
 
 const CustomHeader = ()=>{
 
@@ -12,9 +14,11 @@ const CustomHeader = ()=>{
             paddingTop: top
         }}>
             <View style={styles.container}>
-                <TouchableOpacity style={styles.profilebutton} onPress={() => {}}>
+                <Link href={'/screens/(authenticated)/(modals)/profile'} asChild>
+                <TouchableOpacity style={styles.profilebutton} >
                     <Text style={styles.buttonText}>OG</Text>
                 </TouchableOpacity>
+                </Link>
 
                 <View style={styles.search}>
                     <Ionicons name="search" style={{padding:10}} size={20} color={Colors.dark}></Ionicons>

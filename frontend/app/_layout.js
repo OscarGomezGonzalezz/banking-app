@@ -98,6 +98,20 @@ const Layout = ()=>{
         }}
       />
       <Stack.Screen name="screens/(authenticated)/(tabs)" options={{headerShown: false}}/>
+      <Stack.Screen
+        name="screens/(authenticated)/(modals)/profile"
+        options={{
+          presentation: 'transparentModal',
+          animation: 'fade',
+          title: '',
+          headerTransparent: true,
+          headerLeft: () => (
+            <TouchableOpacity onPress={router.back}>
+              <Ionicons name="close-outline" size={34} color={'white'} />
+            </TouchableOpacity>
+          ),
+        }}
+      />
     </Stack>
   );
 }

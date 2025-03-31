@@ -4,7 +4,7 @@ import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { useState, useEffect, Fragment } from 'react';
 import { isClerkAPIResponseError, useSignIn, useSignUp } from '@clerk/clerk-expo';
 import { CodeField, Cursor, useBlurOnFulfill, useClearByFocusCell,} from 'react-native-confirmation-code-field';
-
+import {useRouter} from 'expo-router';
 const CELL_COUNT = 6;
 
 const PhoneScreen = () => {
@@ -12,6 +12,7 @@ const PhoneScreen = () => {
   const [code, setCode] = useState("");
   const { signIn } = useSignIn();
   const { signUp, setActive } = useSignUp();
+  const router = useRouter();
   console.log(phone); // "123456789"
   console.log(signin); // "true"
 

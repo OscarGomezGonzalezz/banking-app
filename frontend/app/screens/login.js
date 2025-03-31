@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { View, TextInput, Text, StyleSheet, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
 import { useRouter } from 'expo-router';
 import * as SecureStore from 'expo-secure-store';
-import Toast from 'react-native-toast-message';
 import Colors from '../constants/Colors';
 import { CustomButton } from '../index';
 import { useSignIn, isClerkAPIResponseError } from "@clerk/clerk-expo";
@@ -17,10 +16,8 @@ const SignInType = {
 export default function Login() {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [countryCode, setCountryCode] = useState("+34");
-  const [loading, setLoading] = useState(false); // Loading state to show a loading indicator while submitting
   const [error, setError] = useState('');
   const router = useRouter();
-  const [showToast, setShowToast] = useState(false);
   const { signIn } = useSignIn();
 
   const onSignIn = async (type) => {
@@ -53,22 +50,7 @@ export default function Login() {
       }
     }
   }
-
-  // Clear token when the page loads
-  useEffect(() => {
-    const removeToken = async () => {
-      try {
-        await SecureStore.deleteItemAsync('token'); // Securely remove token
-        console.log('Token removed');
-      } catch (error) {
-        console.error('Error removing token', error);
-      }
-    };
-
-    removeToken(); // Call the function to remove the token
-
-  }, []); // Empty dependency array ensures it runs only once, on mount
-
+  
   return (
     //Keyboard.. allows us to continue seeing the register button, in spite of opening the keyboard
     <KeyboardAvoidingView style={{flex: 1}} behavior='padding' keyboardVerticalOffset={80}>
