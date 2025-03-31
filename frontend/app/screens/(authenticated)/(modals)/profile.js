@@ -41,7 +41,7 @@ const Profile = ()=>{
         <BlurView intensity={80} tint='dark' style={{flex:1, paddingTop:100,backgroundColor:Colors.gray}}>
             <View style={{ alignItems: 'center' }}>
                 <TouchableOpacity onPress={{}} style={styles.captureBtn}>
-                    {user.imageUrl &&//the imageUrl is fetched from Clerk, as its a inherent property of each user
+                    {user?.imageUrl &&//the imageUrl is fetched from Clerk, as its a inherent property of each user
                      <Image source={{ uri: user?.imageUrl }} style={styles.avatar} />}
                 </TouchableOpacity>
 

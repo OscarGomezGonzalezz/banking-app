@@ -1,18 +1,15 @@
 import React, { useState } from 'react';
 import { View, TextInput, Text, StyleSheet, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
 import { useRouter, Link } from 'expo-router';
-import { useSignUp } from "@clerk/clerk-expo";
-import Toast from 'react-native-toast-message';
+import { useSignUp, isClerkAPIResponseError } from "@clerk/clerk-expo";
 import Colors from '../constants/Colors';
 import { CustomButton } from '../index';
 
 export default function Register() {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [countryCode, setCountryCode] = useState("+34");
-  const [loading, setLoading] = useState(false); // Loading state to show a loading indicator while submitting
   const [error, setError] = useState('');
   const router = useRouter();
-  const [showToast, setShowToast] = useState(false);
   const { signUp } = useSignUp();
 
   const onSignUp = async () => {
@@ -26,8 +23,16 @@ export default function Register() {
        //router.push('screens/auth/[phone]')
        router.push(`screens/auth/${fullPhoneNumber}`);
 
-   } catch(Error){
-     console.error(Error);
+   } catch(e){
+     console.log('error', JSON.stringify(e, null, 2));
+        if (isClerkAPIResponseError(e)) {
+          if (e.errors[0].code === "form_identifier_exists" ||
+            e.errors[0].code === "form_param_format_invalid"
+           ) {
+            setError(e.errors[0].longMessage);
+            Alert.alert('Error', e.errors[0].message);
+          }
+        }
 
    }
 }
@@ -58,6 +63,9 @@ export default function Register() {
         />
       </View>
 
+      <View style={{alignSelf: 'center', marginTop: 20}}>
+        {error ? <Text style={{ color: "red", fontSize: 15 }}>{error}</Text> : null}
+      </View>
       <TouchableOpacity style={styles.button}
             onPress={() => router.push('screens/login')}
           >

@@ -5,13 +5,12 @@ import * as SecureStore from 'expo-secure-store';
 import Colors from '../constants/Colors';
 import { CustomButton } from '../index';
 import { useSignIn, isClerkAPIResponseError } from "@clerk/clerk-expo";
+import { Ionicons } from '@expo/vector-icons';
 
-import { Ionicons } from "@expo/vector-icons";
 
 const SignInType = {
   Phone: 'Phone',
-  Email: 'Email',
-  Google: 'Google'
+  FaceId: 'FaceId'
 };
 export default function Login() {
   const [phoneNumber, setPhoneNumber] = useState('');
@@ -23,34 +22,37 @@ export default function Login() {
   const onSignIn = async (type) => {
     if(type === SignInType.Phone) {
       try{  
-      const fullPhoneNumber = `${countryCode}${phoneNumber}`
-      const { supportedFirstFactors } = await signIn.create({
-        identifier: fullPhoneNumber,
-      });
+        const fullPhoneNumber = `${countryCode}${phoneNumber}`
+        const { supportedFirstFactors } = await signIn.create({
+          identifier: fullPhoneNumber,
+        });
       
-      const firstPhoneFactor = supportedFirstFactors.find((factor) => {
-        return factor.strategy === "phone_code";
-      });
+        const firstPhoneFactor = supportedFirstFactors.find((factor) => {
+          return factor.strategy === "phone_code";
+        });
       
-      const { phoneNumberId } = firstPhoneFactor;
+        const { phoneNumberId } = firstPhoneFactor;
       
-      await signIn.prepareFirstFactor({
-        strategy: "phone_code",
-        phoneNumberId,
-      });
-      router.push(`screens/auth/${fullPhoneNumber}&signin=true`)
+        await signIn.prepareFirstFactor({
+          strategy: "phone_code",
+          phoneNumberId,
+        });
+        router.push(`screens/auth/${fullPhoneNumber}&signin=true`)
       
       } catch(error){
-        console.log('error', JSON.stringify(err, null, 2));
-        if (isClerkAPIResponseError(err)) {
-          if (err.errors[0].code === 'form_identifier_not_found') {
-            Alert.alert('Error', err.errors[0].message);
+        console.log('error', JSON.stringify(error, null, 2));
+        if (isClerkAPIResponseError(error)) {
+          if (error.errors[0].code === 'form_identifier_not_found') {
+            setError(error.errors[0].message);
+            Alert.alert('Error', error.errors[0].message);
           }
         }
       }
+    } else if(type === SignInType.FaceId){
+      console.log("create faceid")
     }
   }
-  
+
   return (
     //Keyboard.. allows us to continue seeing the register button, in spite of opening the keyboard
     <KeyboardAvoidingView style={{flex: 1}} behavior='padding' keyboardVerticalOffset={80}>
@@ -76,9 +78,11 @@ export default function Login() {
           onChangeText={setPhoneNumber}
         />
       </View>
-
+      <View style={{alignSelf: 'center', marginTop: 20}}>
+        {error ? <Text style={{ color: "red", fontSize: 18 }}>{error}</Text> : null}
+      </View>
       <View style={styles.buttons}>
-      <CustomButton title="Continue" onPress={() => onSignIn(SignInType.Phone)} isRegister isDisabled={phoneNumber === ''} />
+        <CustomButton title="Continue" onPress={() => onSignIn(SignInType.Phone)} isRegister isDisabled={phoneNumber === ''} />
       </View>
       <View style={styles.socialButtons}>
         <View style={styles.stripe}></View>
@@ -86,14 +90,9 @@ export default function Login() {
         <View style={styles.stripe}></View>
       </View>
 
-      <TouchableOpacity style={styles.button} onPress={()=>handleLogin(SignInType.Email)}>
-        <Ionicons name="mail" size={24} color={"black"}></Ionicons>
-        <Text style={styles.buttonText}>Continue with email</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity style={styles.button} onPress={()=>handleLogin(SignInType.Google)}>
-        <Ionicons name="logo-google" size={24} color={"black"}></Ionicons>
-        <Text style={styles.buttonText}>Continue with Google</Text>
+      <TouchableOpacity style={styles.button} onPress={()=>onSignIn(SignInType.FaceId)}>
+        <Ionicons name="scan" size={24} color="black"/>
+        <Text style={styles.buttonText}>Access by showing your face</Text>
       </TouchableOpacity>
 
       

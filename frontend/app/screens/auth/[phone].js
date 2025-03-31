@@ -13,8 +13,8 @@ const PhoneScreen = () => {
   const { signIn } = useSignIn();
   const { signUp, setActive } = useSignUp();
   const router = useRouter();
-  console.log(phone); // "123456789"
-  console.log(signin); // "true"
+  console.log(phone); 
+  console.log(signin); 
 
 
   const ref = useBlurOnFulfill({ value: code, cellCount: CELL_COUNT });
@@ -25,48 +25,50 @@ const PhoneScreen = () => {
 
   useEffect(() => {
     if(code.length===6){
-        //verify code
-        if(signin && signin === 'true'){
-            verifySignin();
-        } else{
-            verifyCode();
-        }
-
+        verifyCode();
     }
 
   }, [code]);
 
   const verifyCode = async () => {
+    try {
+      // Try signing in first
+      await signIn.attemptFirstFactor({
+        strategy: "phone_code",
+        code,
+      });
+      await setActive({ session: signIn.createdSessionId });
+  
+    } catch (err) {
+      console.log("signIn error", err);
+  
+      // If the error indicates that the user is not found, try signing up instead
+      if (err) {
+        console.log("User not found, proceeding with sign-up...");
+  
         try {
-          await signUp.attemptPhoneNumberVerification({
-            code,
-          });
+          await signUp.attemptPhoneNumberVerification({ code });
           await setActive({ session: signUp.createdSessionId });
-        } catch (err) {
-          console.log("error", JSON.stringify(err, null, 2));
-          if (isClerkAPIResponseError(err)) {
-            Alert.alert("Error", err.errors[0].message);
+  
+        } catch (signupErr) {
+          console.log("Sign-up error", JSON.stringify(signupErr, null, 2));
+          if (isClerkAPIResponseError(signupErr)) {
+            Alert.alert("Error", signupErr.errors[0].message);
           }
         }
-      };
-  const verifySignin = async () => {
-    try {
-        await signIn.attemptFirstFactor({
-          strategy: "phone_code",
-          code,
-        });
-        await setActive({ session: signIn.createdSessionId });
-      } catch (err) {
-        console.log("error", JSON.stringify(err, null, 2));
-        if (isClerkAPIResponseError(err)) {
-          Alert.alert("Error", err.errors[0].message);
-        }
+  
+      } else if (isClerkAPIResponseError(err)) {
+        Alert.alert("Error", err.errors[0].message);
+      }
     }
   };
+
+  const printedPhone = phone.split("&")
+  
   return (
     <View style={styles.container}>
       <Text style={styles.title}>6-digit code</Text>
-      <Text style={styles.subtitle}>Code sent to {phone} just in case you have not already an account</Text>
+      <Text style={styles.subtitle}>Enter the code sent to {printedPhone[0]} </Text>
 
       <CodeField
       //this whole element import from github of react-native-confirmation-code-field,
