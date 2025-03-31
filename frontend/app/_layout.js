@@ -35,7 +35,7 @@ const Layout = ()=>{
     if (isSignedIn && !inAuthGroup) {
       router.push('screens/(authenticated)/(tabs)/home');
     } else if (!isSignedIn) {
-      router.push('screens/');//returning user to welcome page if not registered
+      router.push('screens/index');//returning user to welcome page if not registered
     }
   }, [isSignedIn]);
 

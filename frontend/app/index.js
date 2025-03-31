@@ -43,7 +43,6 @@ export default function Home() {
         <View style={styles.buttons}>
           <CustomButton title="Login" onPress={() => router.push('screens/login')} />
           <CustomButton title="Register" onPress={() => router.push('screens/register')} isRegister />
-          <CustomButton title="home" onPress={() => router.push('screens/home')} isRegister />
         </View>
       </View>
     </View>

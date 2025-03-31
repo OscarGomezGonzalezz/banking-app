@@ -1,11 +1,13 @@
 //import RoundBtn from '../components/RoundBtn';
 import Colors from "../../../constants/Colors";
+import { useHeaderHeight } from '@react-navigation/elements';
 
 import {View , Text, ScrollView, StyleSheet, Button} from 'react-native';
 
 const Page = () => {
 
     const balance = 1420;
+    const headerHeight = useHeaderHeight();
 
     const onAddMoney = () => {
         console.log('Add money');
@@ -13,7 +15,10 @@ const Page = () => {
 
     
     return (
-        <ScrollView style={{backgroundColor: Colors.background}}>
+        <ScrollView style={{backgroundColor: Colors.background}}
+        contentContainerStyle={{
+            paddingTop: headerHeight,//we get the height from our custom header in order not to colapse elements
+          }}>
             <View style={styles.account}>
             
             <View style={styles.row}>
