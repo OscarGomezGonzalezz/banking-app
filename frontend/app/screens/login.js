@@ -3,22 +3,41 @@ import { View, TextInput, Text, StyleSheet, TouchableOpacity, KeyboardAvoidingVi
 import { useRouter } from 'expo-router';
 import Colors from '../constants/Colors';
 import { CustomButton } from '../index';
-import { useSignIn, isClerkAPIResponseError } from "@clerk/clerk-expo";
+import { useSignIn, isClerkAPIResponseError, useSSO } from "@clerk/clerk-expo";
 import { Ionicons } from '@expo/vector-icons';
 import * as LocalAuthentication from 'expo-local-authentication';
+import * as WebBrowser from 'expo-web-browser'
+import SocialLoginButton from '../components/SocialButtons';
 
+//This is included in clerk docs: customflows/oauth-connectiona
+export const useWarmUpBrowser = () => {
+  useEffect(() => {
+    // Preloads the browser for Android devices to reduce authentication load time
+    // See: https://docs.expo.dev/guides/authentication/#improving-user-experience
+    void WebBrowser.warmUpAsync()
+    return () => {
+      // Cleanup: closes browser when component unmounts
+      void WebBrowser.coolDownAsync()
+    }
+  }, [])
+}
+// Handle any pending authentication sessions
+WebBrowser.maybeCompleteAuthSession()
 
 const SignInType = {
   Phone: 'Phone',
-  FaceId: 'FaceId'
+  FaceId: 'FaceId',
+  Email: 'Email'
 };
 
 export default function Login() {
+  useWarmUpBrowser()//explained above
   const [phoneNumber, setPhoneNumber] = useState('');
   const [countryCode, setCountryCode] = useState("+34");
   const [error, setError] = useState('');
   const router = useRouter();
   const { signIn } = useSignIn();
+
 
   const onSignIn = async (type) => {
     if(type === SignInType.Phone) {
@@ -51,8 +70,12 @@ export default function Login() {
       }
     } else if(type === SignInType.FaceId){
       authenticateWithBiometrics();
+    } else if(type === SignInType.Email){
+      authenticateWithEmail();
     }
   }
+
+
   const authenticateWithBiometrics = async () => {
     const hasHardware = await LocalAuthentication.hasHardwareAsync();
     const isEnrolled = await LocalAuthentication.isEnrolledAsync();
@@ -115,12 +138,16 @@ export default function Login() {
         <Text style={{color: Colors.gray, fontSize: 20}}>or</Text>
         <View style={styles.stripe}></View>
       </View>
-
+      <SocialLoginButton strategy="oauth_facebook" />
+      <SocialLoginButton strategy="oauth_google" />
+      <SocialLoginButton strategy="oauth_apple" />
+     
+     {/* 
       <TouchableOpacity style={styles.button} onPress={()=>onSignIn(SignInType.FaceId)}>
         <Ionicons name="scan" size={24} color="black"/>
         <Text style={styles.buttonText}>Access by showing your face</Text>
       </TouchableOpacity>
-
+    */}
       
     </View>
     </KeyboardAvoidingView>
