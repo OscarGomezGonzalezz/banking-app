@@ -94,9 +94,6 @@ const PhoneScreen = () => {
           </Fragment>
         )}
       />
-      <TouchableOpacity style={styles.button} onPress={() => router.push('screens/login')}>
-        <Text style={styles.buttonText}>Already registered? Go log in</Text>
-      </TouchableOpacity>
 
       
 

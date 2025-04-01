@@ -17,7 +17,7 @@ const Profile = ()=>{
     const handleSignOut = async () => {
         try {
           await signOut()
-          router.push("/screens");
+          router.replace('/')
 
         } catch (err) {
           // See https://clerk.com/docs/custom-flows/error-handling

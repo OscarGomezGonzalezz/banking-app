@@ -1,17 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { View, TextInput, Text, StyleSheet, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
 import { useRouter } from 'expo-router';
-import * as SecureStore from 'expo-secure-store';
 import Colors from '../constants/Colors';
 import { CustomButton } from '../index';
 import { useSignIn, isClerkAPIResponseError } from "@clerk/clerk-expo";
 import { Ionicons } from '@expo/vector-icons';
+import * as LocalAuthentication from 'expo-local-authentication';
 
 
 const SignInType = {
   Phone: 'Phone',
   FaceId: 'FaceId'
 };
+
 export default function Login() {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [countryCode, setCountryCode] = useState("+34");
@@ -49,9 +50,34 @@ export default function Login() {
         }
       }
     } else if(type === SignInType.FaceId){
-      console.log("create faceid")
+      authenticateWithBiometrics();
     }
   }
+  const authenticateWithBiometrics = async () => {
+    const hasHardware = await LocalAuthentication.hasHardwareAsync();
+    const isEnrolled = await LocalAuthentication.isEnrolledAsync();
+  
+    if (!hasHardware || !isEnrolled) {
+      console.log("No biometric authentication available");
+      return;
+    }
+  
+    const authResult = await LocalAuthentication.authenticateAsync({
+      promptMessage: "Authenticate with Face ID",
+      fallbackLabel: "Use Passcode",
+      disableDeviceFallback: true, // This prevents passcode fallback
+      cancelLabel: "Cancel",
+    });
+  
+    if (authResult.success) {
+      console.log("Authentication successful!");
+
+      router.replace('/(authenticated)/(tabs)/home');
+    } else {
+      console.log(authResult);
+      console.log("Authentication failed:", authResult.error);
+    }
+  };
 
   return (
     //Keyboard.. allows us to continue seeing the register button, in spite of opening the keyboard

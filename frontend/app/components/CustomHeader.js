@@ -16,7 +16,7 @@ const CustomHeader = ()=>{
             <View style={styles.container}>
                 <Link href={'/screens/(authenticated)/(modals)/profile'} asChild>
                 <TouchableOpacity style={styles.profilebutton} >
-                    <Text style={styles.buttonText}>OG</Text>
+                <Ionicons name="person" style={{padding:10}} size={20} color={Colors.dark}></Ionicons>
                 </TouchableOpacity>
                 </Link>
 
