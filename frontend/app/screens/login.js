@@ -22,22 +22,21 @@ export const useWarmUpBrowser = () => {
 // Handle any pending authentication sessions
 WebBrowser.maybeCompleteAuthSession()
 
-const SignInType = {
-  Phone: 'Phone',
-  Password: 'Password'
-};
-
 export default function Login() {
   useWarmUpBrowser()//explained above
   const [phoneNumber, setPhoneNumber] = useState('');
   const [countryCode, setCountryCode] = useState("+34");
   const [error, setError] = useState('');
   const router = useRouter();
-  const { signIn } = useSignIn();
+  const { signIn, setActive } = useSignIn();
+  const [signInPhone, setSignInPhone] = useState(true);
+
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
 
 
-  const onSignIn = async (type) => {
-    if(type === SignInType.Phone) {
+  const onSignIn = async () => {
+    if(signInPhone) {
       try{  
         const fullPhoneNumber = `${countryCode}${phoneNumber}`
         const { supportedFirstFactors } = await signIn.create({
@@ -65,10 +64,34 @@ export default function Login() {
           }
         }
       }
-    } else if(type === SignInType.FaceId){
-      authenticateWithBiometrics();
-    } else if(type === SignInType.Email){
-      authenticateWithEmail();
+    } else {
+      console.log("login con user y password");
+      try {
+        const signInAttempt = await signIn.create({
+          identifier: username,
+          password,
+        })
+        // If sign-in process is complete, set the created session as active
+      // and redirect the user
+      if (signInAttempt.status === 'complete') {
+        try {
+          await setActive({ session: signInAttempt.createdSessionId });
+          console.log('Successful login');
+          router.push('screens/(authenticated)/(tabs)/home')
+        } catch (error) {
+          console.error('Error setting active session:', error);
+        }
+      } else {
+        console.log('failed during sign in')
+      }
+      } catch (err) {
+        console.log("Sign-in error", JSON.stringify(err, null, 2));
+          if (isClerkAPIResponseError(err)) {
+            setError(err.errors[0].message);
+            Alert.alert("Error", err.errors[0].message);
+          }
+        console.error(JSON.stringify(err, null, 2))
+      }
     }
   }
 
@@ -80,7 +103,9 @@ export default function Login() {
     <View style={styles.container}>
 
       <Text style={styles.title}>It's good to see you again!</Text>
-      <Text style={styles.subtitle}>Enter the phone number associated with your account</Text>
+      {signInPhone &&(
+        <>
+        <Text style={styles.subtitle}>Enter the phone number associated with your account</Text>
       <View style={styles.inputContainer}>
         <TextInput
           style={styles.input}
@@ -103,7 +128,7 @@ export default function Login() {
         {error ? <Text style={{ color: "red", fontSize: 18 }}>{error}</Text> : null}
       </View>
       <View style={styles.buttons}>
-        <CustomButton title="Continue" onPress={() => onSignIn(SignInType.Phone)} isRegister isDisabled={phoneNumber === ''} />
+        <CustomButton title="Continue" onPress={() => onSignIn()} isRegister isDisabled={phoneNumber === ''} />
       </View>
       <View style={styles.socialButtons}>
         <View style={styles.stripe}></View>
@@ -111,10 +136,54 @@ export default function Login() {
         <View style={styles.stripe}></View>
       </View>
 
-      <TouchableOpacity style={styles.button} onPress={()=>onSignIn(SignInType.Password)}>
+      <TouchableOpacity style={styles.button} onPress={()=>setSignInPhone(false)}>
         <Ionicons name="lock-closed-outline" size={28} color="black"/>
         <Text style={styles.buttonText}>Access with username and password</Text>
       </TouchableOpacity>
+      </>
+    )}
+    {!signInPhone &&(
+     <>
+     <View>
+      <Text style={[styles.subtitle,{marginBottom: 20}]}>Enter your previous created credentials</Text>
+      <View style={{flex: 'column'}}>
+      <TextInput
+        style={[styles.input, {margin: 7}]}
+        placeholderTextColor={Colors.gray}
+        keyboardType='numeric'
+        value={username}
+        placeholder="username"
+        onChangeText={(username) => setUsername(username)}
+      />
+      <TextInput
+        style={[styles.input, {margin: 7, marginBottom: 0}]}
+        value={password}
+        placeholder='password'
+        placeholderTextColor={Colors.gray}
+        secureTextEntry={true}
+        onChangeText={(password) => setPassword(password)}
+      />
+      </View>
+ 
+      <View style={{alignSelf: 'center', marginTop: 20}}>
+        {error ? <Text style={{ color: "red", fontSize: 18 }}>{error}</Text> : null}
+      </View>
+      <View style={styles.buttons}>
+        <CustomButton title="Continue" onPress={() => onSignIn()} isRegister isDisabled={phoneNumber === ''} />
+      </View>
+      <View style={styles.socialButtons}>
+        <View style={styles.stripe}></View>
+        <Text style={{color: Colors.gray, fontSize: 20}}>or</Text>
+        <View style={styles.stripe}></View>
+      </View>
+      <TouchableOpacity style={styles.button} onPress={()=>setSignInPhone(true)}>
+        <Ionicons name="call-outline" size={26} color="black"/>
+        <Text style={styles.buttonText}>Access with your phone number</Text>
+      </TouchableOpacity>
+    </View>
+     </> 
+    )}
+      
     
       
     </View>

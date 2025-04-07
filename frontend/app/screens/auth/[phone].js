@@ -8,13 +8,12 @@ import {useRouter} from 'expo-router';
 const CELL_COUNT = 6;
 
 const PhoneScreen = () => {
-  const { phone, signin } = useLocalSearchParams();
+  const { phone } = useLocalSearchParams();
   const [code, setCode] = useState("");
   const { signIn } = useSignIn();
   const { signUp, setActive } = useSignUp();
   const router = useRouter();
   console.log(phone); 
-  console.log(signin); 
 
 
   const ref = useBlurOnFulfill({ value: code, cellCount: CELL_COUNT });
@@ -38,6 +37,7 @@ const PhoneScreen = () => {
         code,
       });
       await setActive({ session: signIn.createdSessionId });
+
   
     } catch (err) {
       console.log("signIn error", err);
@@ -49,6 +49,7 @@ const PhoneScreen = () => {
         try {
           await signUp.attemptPhoneNumberVerification({ code });
           await setActive({ session: signUp.createdSessionId });
+
   
         } catch (signupErr) {
           console.log("Sign-up error", JSON.stringify(signupErr, null, 2));
@@ -94,7 +95,12 @@ const PhoneScreen = () => {
           </Fragment>
         )}
       />
-
+      <TouchableOpacity style={styles.button}
+                  onPress={() => router.push('screens/login')}
+                >
+                  <Text style={styles.buttonText}>Already registered? Go log in</Text>
+            
+      </TouchableOpacity>
       
 
     </View>

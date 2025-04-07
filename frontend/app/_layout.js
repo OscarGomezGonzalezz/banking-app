@@ -4,7 +4,7 @@ import Colors from "./constants/Colors";
 import { useEffect } from 'react';
 import { router, Link} from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
-import { ClerkProvider, useAuth } from '@clerk/clerk-expo'
+import { ClerkProvider, useAuth, useUser } from '@clerk/clerk-expo'
 import { tokenCache } from '@clerk/clerk-expo/token-cache'
 import * as SplashScreen from 'expo-splash-screen';
 
@@ -24,17 +24,23 @@ SplashScreen.preventAutoHideAsync();
 const Layout = ()=>{
 
   const { isLoaded, isSignedIn } = useAuth();
-  const segments = useSegments();//used for knowing in which step of our app we are
+  const {user} = useUser()
+  //const segments = useSegments();//used for knowing in which step of our app we are
 
   useEffect(() => {
     if (!isLoaded) return;
     console.log('isSignedIn', isSignedIn)
 
-    const inAuthGroup = segments[0] === '(authenticated)';
 
-    if (isSignedIn && !inAuthGroup) {
+    if (isSignedIn
+      // && !inAuthGroup
+      ) {
+        if(!user?.username || !user?.password) {
+          router.push('screens/auth/completeAccount')
+        }
       router.push('screens/(authenticated)/(tabs)/home');
-    } else if (!isSignedIn) {
+        }
+     else if (!isSignedIn) {
       router.push('/');//returning user to welcome page if not registered
     }
   }, [isSignedIn]);
