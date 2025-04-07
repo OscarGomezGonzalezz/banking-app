@@ -5,9 +5,5 @@
 
 ## TODOs ##
 
-- enabling login also with email and password, which must be set mandatorily after register with phone number
+- check phone screen is correct when clerk allows sending sms
 - fetch different apis for retrieving trasnfers and account balances
-
-# Notas
-
-- He puesto un boton de home para poder navegar a la página

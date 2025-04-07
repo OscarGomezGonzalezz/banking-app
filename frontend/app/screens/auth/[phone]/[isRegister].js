@@ -13,7 +13,6 @@ const PhoneScreen = () => {
   const { signIn } = useSignIn();
   const { signUp, setActive } = useSignUp();
   const router = useRouter();
-  console.log(isRegister)
   const [error, setError] = useState('');
   console.log(phone); 
 
@@ -33,6 +32,10 @@ const PhoneScreen = () => {
       }
     }
   }, [code]);
+
+  useEffect(() => {
+    console.log('isRegister:', isRegister);
+  }, [isRegister]);
 
   const verifyCode = async () => {
     try {
@@ -96,11 +99,11 @@ const PhoneScreen = () => {
       <View style={{alignSelf: 'center', marginTop: 20}}>
               {error ? <Text style={{ color: "red", fontSize: 20 }}>{error}</Text> : null}
       </View>
-      {isRegister ? 
+      {isRegister === 'true' ? (
         <TouchableOpacity style={styles.button} onPress={() => router.push('screens/login')}>
           <Text style={styles.buttonText}>Already registered? Go log in</Text>  
-        </TouchableOpacity> : null
-      }
+        </TouchableOpacity>
+) : null}
       
 
     </View>
