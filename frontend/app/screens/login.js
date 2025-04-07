@@ -53,15 +53,15 @@ export default function Login() {
           strategy: "phone_code",
           phoneNumberId,
         });
-        router.push(`screens/auth/${fullPhoneNumber}&signin=true`)
+        
+       router.push(`screens/auth/${fullPhoneNumber}/${false}`);
       
       } catch(error){
         console.log('error', JSON.stringify(error, null, 2));
         if (isClerkAPIResponseError(error)) {
-          if (error.errors[0].code === 'form_identifier_not_found') {
             setError(error.errors[0].message);
             Alert.alert('Error', error.errors[0].message);
-          }
+          
         }
       }
     } else {

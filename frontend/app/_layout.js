@@ -25,25 +25,27 @@ const Layout = ()=>{
 
   const { isLoaded, isSignedIn } = useAuth();
   const {user} = useUser()
-  //const segments = useSegments();//used for knowing in which step of our app we are
+  const segments = useSegments();//used for knowing in which step of our app we are
 
   useEffect(() => {
     if (!isLoaded) return;
     console.log('isSignedIn', isSignedIn)
 
+    console.log(segments)//["screens", "(authenticated)", "(tabs)", "home"]
+    const inAuthGroup = segments[1] === '(authenticated)';
 
-    if (isSignedIn
-      // && !inAuthGroup
-      ) {
+    if (isSignedIn)
+       {
         if(!user?.username || !user?.password) {
-          router.push('screens/auth/completeAccount')
+          router.replace('screens/auth/completeAccount')
         }
-      router.push('screens/(authenticated)/(tabs)/home');
+        if(!inAuthGroup){router.push('screens/(authenticated)/(tabs)/home');}
+      
         }
      else if (!isSignedIn) {
       router.push('/');//returning user to welcome page if not registered
     }
-  }, [isSignedIn]);
+  }, [isSignedIn, user?.username, user?.password]);
 
   if(!isLoaded){
     return <Text>Loading...</Text>
@@ -90,7 +92,7 @@ const Layout = ()=>{
       />
       <Stack.Screen name="screens/help" options={{title: "Help", presentation:"modal"}}/>
       <Stack.Screen
-        name="screens/auth/[phone]"
+        name="screens/auth/[phone]/[isRegister]"
         options={{
           title: "",
           headerBackTitle: "",

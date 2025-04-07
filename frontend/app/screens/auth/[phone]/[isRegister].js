@@ -1,5 +1,5 @@
 import { useLocalSearchParams } from "expo-router";
-import Colors from "../../constants/Colors";
+import Colors from "../../../constants/Colors";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { useState, useEffect, Fragment } from 'react';
 import { isClerkAPIResponseError, useSignIn, useSignUp } from '@clerk/clerk-expo';
@@ -8,11 +8,13 @@ import {useRouter} from 'expo-router';
 const CELL_COUNT = 6;
 
 const PhoneScreen = () => {
-  const { phone } = useLocalSearchParams();
+  const { phone, isRegister } = useLocalSearchParams();
   const [code, setCode] = useState("");
   const { signIn } = useSignIn();
   const { signUp, setActive } = useSignUp();
   const router = useRouter();
+  console.log(isRegister)
+  const [error, setError] = useState('');
   console.log(phone); 
 
 
@@ -23,47 +25,43 @@ const PhoneScreen = () => {
   });
 
   useEffect(() => {
-    if(code.length===6){
+    if (code.length === 6) {
+      if (isRegister === true) {
+        verifySignIn();
+      } else {
         verifyCode();
+      }
     }
-
   }, [code]);
 
   const verifyCode = async () => {
     try {
-      // Try signing in first
-      await signIn.attemptFirstFactor({
-        strategy: "phone_code",
+      await signUp.attemptPhoneNumberVerification({
         code,
       });
-      await setActive({ session: signIn.createdSessionId });
-
-  
+      await setActive({ session: signUp.createdSessionId });
     } catch (err) {
-      console.log("signIn error", err);
-  
-      // If the error indicates that the user is not found, try signing up instead
-      if (err) {
-        console.log("User not found, proceeding with sign-up...");
-  
-        try {
-          await signUp.attemptPhoneNumberVerification({ code });
-          await setActive({ session: signUp.createdSessionId });
-
-  
-        } catch (signupErr) {
-          console.log("Sign-up error", JSON.stringify(signupErr, null, 2));
-          if (isClerkAPIResponseError(signupErr)) {
-            Alert.alert("Error", signupErr.errors[0].message);
-          }
-        }
-  
-      } else if (isClerkAPIResponseError(err)) {
-        Alert.alert("Error", err.errors[0].message);
+      console.log('error', JSON.stringify(err, null, 2));
+      if (isClerkAPIResponseError(err)) {
+        setError(err.errors[0].longMessage);
       }
     }
   };
 
+  const verifySignIn = async () => {
+    try {
+      await signIn.attemptFirstFactor({
+        strategy: 'phone_code',
+        code,
+      });
+      await setActive({ session: signIn.createdSessionId });
+    } catch (err) {
+      console.log('error', JSON.stringify(err, null, 2));
+      if (isClerkAPIResponseError(err)) {
+        setError(err.errors[0].longMessage);
+      }
+    }
+  };
   const printedPhone = phone.split("&")
   
   return (
@@ -95,12 +93,14 @@ const PhoneScreen = () => {
           </Fragment>
         )}
       />
-      <TouchableOpacity style={styles.button}
-                  onPress={() => router.push('screens/login')}
-                >
-                  <Text style={styles.buttonText}>Already registered? Go log in</Text>
-            
-      </TouchableOpacity>
+      <View style={{alignSelf: 'center', marginTop: 20}}>
+              {error ? <Text style={{ color: "red", fontSize: 20 }}>{error}</Text> : null}
+      </View>
+      {isRegister ? 
+        <TouchableOpacity style={styles.button} onPress={() => router.push('screens/login')}>
+          <Text style={styles.buttonText}>Already registered? Go log in</Text>  
+        </TouchableOpacity> : null
+      }
       
 
     </View>

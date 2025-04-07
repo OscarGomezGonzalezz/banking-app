@@ -21,8 +21,7 @@ export default function Register() {
        });
        signUp.preparePhoneNumberVerification();
        //router.push('screens/auth/[phone]')
-       router.push(`screens/auth/${fullPhoneNumber}`);
-
+       router.push(`screens/auth/${fullPhoneNumber}/${true}`);
    } catch(e){
      console.log('error', JSON.stringify(e, null, 2));
         if (isClerkAPIResponseError(e)) {
