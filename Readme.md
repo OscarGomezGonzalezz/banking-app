@@ -5,8 +5,7 @@
 
 ## TODOs ##
 
-- Login with Face id
-- Give functionality to several buttons
+- enabling login also with email and password, which must be set mandatorily after register with phone number
 - fetch different apis for retrieving trasnfers and account balances
 
 # Notas

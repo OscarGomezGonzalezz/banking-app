@@ -5,9 +5,7 @@ import Colors from '../constants/Colors';
 import { CustomButton } from '../index';
 import { useSignIn, isClerkAPIResponseError, useSSO } from "@clerk/clerk-expo";
 import { Ionicons } from '@expo/vector-icons';
-import * as LocalAuthentication from 'expo-local-authentication';
 import * as WebBrowser from 'expo-web-browser'
-import SocialLoginButton from '../components/SocialButtons';
 
 //This is included in clerk docs: customflows/oauth-connectiona
 export const useWarmUpBrowser = () => {
@@ -26,8 +24,7 @@ WebBrowser.maybeCompleteAuthSession()
 
 const SignInType = {
   Phone: 'Phone',
-  FaceId: 'FaceId',
-  Email: 'Email'
+  Password: 'Password'
 };
 
 export default function Login() {
@@ -76,32 +73,7 @@ export default function Login() {
   }
 
 
-  const authenticateWithBiometrics = async () => {
-    const hasHardware = await LocalAuthentication.hasHardwareAsync();
-    const isEnrolled = await LocalAuthentication.isEnrolledAsync();
   
-    if (!hasHardware || !isEnrolled) {
-      console.log("No biometric authentication available");
-      return;
-    }
-  
-    const authResult = await LocalAuthentication.authenticateAsync({
-      promptMessage: "Authenticate with Face ID",
-      fallbackLabel: "Use Passcode",
-      disableDeviceFallback: true, // This prevents passcode fallback
-      cancelLabel: "Cancel",
-    });
-  
-    if (authResult.success) {
-      console.log("Authentication successful!");
-
-      router.replace('/(authenticated)/(tabs)/home');
-    } else {
-      console.log(authResult);
-      console.log("Authentication failed:", authResult.error);
-    }
-  };
-
   return (
     //Keyboard.. allows us to continue seeing the register button, in spite of opening the keyboard
     <KeyboardAvoidingView style={{flex: 1}} behavior='padding' keyboardVerticalOffset={80}>
@@ -138,16 +110,12 @@ export default function Login() {
         <Text style={{color: Colors.gray, fontSize: 20}}>or</Text>
         <View style={styles.stripe}></View>
       </View>
-      <SocialLoginButton strategy="oauth_facebook" />
-      <SocialLoginButton strategy="oauth_google" />
-      <SocialLoginButton strategy="oauth_apple" />
-     
-     {/* 
-      <TouchableOpacity style={styles.button} onPress={()=>onSignIn(SignInType.FaceId)}>
-        <Ionicons name="scan" size={24} color="black"/>
-        <Text style={styles.buttonText}>Access by showing your face</Text>
+
+      <TouchableOpacity style={styles.button} onPress={()=>onSignIn(SignInType.Password)}>
+        <Ionicons name="lock-closed-outline" size={28} color="black"/>
+        <Text style={styles.buttonText}>Access with username and password</Text>
       </TouchableOpacity>
-    */}
+    
       
     </View>
     </KeyboardAvoidingView>
