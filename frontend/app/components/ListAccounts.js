@@ -19,7 +19,7 @@ function ListAccounts() {
           const querySnapshot = await getDocs(collection(db, "users", user.id, "accounts"));
           const accounts = [];
           querySnapshot.forEach((doc) => {
-            accounts.push(doc.data());
+            accounts.push({ accountID: doc.id, ...doc.data() });
           });
           setWallet(accounts); // Set the accounts data to state
 
@@ -56,10 +56,12 @@ function ListAccounts() {
   };
 
   const openWallet = async (item) => {
+    console.log(item)
     try {
         router.push({
             pathname: 'screens/(authenticated)/(modals)/walletModal',
             params:{
+                accountID: item.accountID,
                 beneficiary: item.beneficiary,
                 IBAN: item.IBAN,
                 BIC: item.BIC,

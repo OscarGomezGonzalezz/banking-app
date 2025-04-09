@@ -6,46 +6,58 @@ import { CustomButton } from '../../../index';
 import { useLocalSearchParams } from 'expo-router';
 import { useUser } from '@clerk/clerk-react';
 import db from '../../../firebase/firebaseConfig'
-import { collection, addDoc, doc } from "firebase/firestore"; 
+import { updateDoc,collection, addDoc, doc } from "firebase/firestore"; 
 import { useRouter } from 'expo-router';
 
 const WalletModal = ()=>{
     const [account,  setAccount] = useState({});
     const oldAccount = useLocalSearchParams();
-    console.log(oldAccount.IBAN);
     const { user } = useUser();
     const userId = user.id; 
     const router = useRouter();
 
 
-    // useEffect(()=>{
-    //     if(oldAccount?.IBAN){//if the account has been already created...
-    //         setAccount({
-    //             //and also an automatic created accountID
-    //             beneficiary: oldAccount.beneficiary,
-    //             IBAN: oldAccount.IBAN,
-    //             BIC: oldAccount.BIC,
-    //         })
-    //     }
-    // }, [oldAccount])
+    useEffect(()=>{
+         if(oldAccount?.accountID){//if the account has been already created...
+            console.log(oldAccount);
+            setAccount({
+                //and also an automatic created accountID
+                accountID: oldAccount.accountID,
+                beneficiary: oldAccount.beneficiary,
+                IBAN: oldAccount.IBAN,
+                BIC: oldAccount.BIC,
+            })
+        }
+    }, [])
 
     const saveBankAccount = async () => {
         try {
             // Generate a random quantity between 700 and 4000
             const randomQuantity = Math.floor(Math.random() * (4000 - 700 + 1)) + 700;
-
             // Add the random quantity to the account object
             const accountWithQuantity = { ...account, quantity: randomQuantity };
 
+            if (oldAccount?.accountID) {
+                // 🚀 UPDATE EXISTING ACCOUNT
+                const accountRef = doc(db, "users", userId, "accounts", oldAccount.accountID);
+                await updateDoc(accountRef, accountWithQuantity);
+    
+                console.log("Bank account updated with ID:", oldAccount.accountID);
+            } else {
+                 
             // Reference to the 'accounts' collection for this user
             const userAccountsRef = collection(doc(db, "users", userId)//This references a specific document for the user based on the userId
             , "accounts");//This references the accounts sub-collection inside the user's document.
             
             // Save the account information in the 'accounts' collection
             const docRef = await addDoc(userAccountsRef, accountWithQuantity);
+            //acountID is created by firebase, and then we will be able to access it when updating the account
     
             console.log("Bank account saved with ID: ", docRef.id);
             console.log('Bank account saved successfully!');
+
+            }
+            
             router.back();
         } catch (error) {
             console.error("Error saving bank account: ", error);
