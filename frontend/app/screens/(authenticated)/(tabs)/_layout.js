@@ -7,9 +7,12 @@ const Layout = ()=>{
     return (
         <Tabs screenOptions={{
             tabBarActiveTintColor: Colors.secondary,
+            tabBarIconStyle: {
+                marginTop: 8, // margin for icons
+              },
             tabBarBackground: () => (
                 <BlurView
-                 intensity={100}
+                 intensity={60}
                  tint={'extraLight'}
                  style={{
                     flex: 1,
@@ -18,14 +21,17 @@ const Layout = ()=>{
                   
                 />
               ),
-              tabBarStyle:{
+              tabBarStyle:{//padding
                 backgroundColor: 'transparent',
                 position: 'absolute',
-                bottom: 0,
-                left: 0,
-                right: 0,
+                bottom: 10,
+                left: 10,
+                right: 10,
                 elevation: 0,
                 borderTopWidth: 0,
+                borderRadius: 30,
+                height: 70,
+                overflow: 'hidden', // para que el blur no sobresalga
               }
         }}>
             <Tabs.Screen

@@ -3,18 +3,21 @@ import Colors from '../../../constants/Colors';
 import { useHeaderHeight } from '@react-navigation/elements';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
+import ListAccounts from '../../../components/ListAccounts';
+
 
 const Page = ()=>{
     const router = useRouter();
     const headerHeight = useHeaderHeight();
     const getTotalBalance = () =>{
-        return 3000;
+        return 3000;//fetch the sum from the backend
     }
 
     return (
-        <ScrollView style={{backgroundColor: Colors.background}}
+        <ScrollView style={{backgroundColor: Colors.background, flex:1}}
                 contentContainerStyle={{
                     paddingTop: headerHeight,//we get the height from our custom header in order not to colapse elements
+                    flexGrow: 1, //needed so that wallet container fill the screen down                  
                   }}>
 
             <View style={styles.container}>    
@@ -25,6 +28,7 @@ const Page = ()=>{
                     </View>
                     <Text style={styles.subtitle}>Your total balance</Text>
                 </View>
+
                 <View style={styles.wallet}>
                     <View style={styles.header}>
                         <Text style={styles.title}>My Wallet</Text>
@@ -32,6 +36,9 @@ const Page = ()=>{
                         onPress={() => router.push('screens/(authenticated)/(modals)/walletModal')}>
                             <Ionicons name="add" size={20} color="white"/>
                         </TouchableOpacity>
+                    </View>
+                    <View style={styles.listAccounts}>
+                        <ListAccounts/>
                     </View>
                 </View>
             </View>
@@ -68,22 +75,25 @@ const styles = StyleSheet.create({
         marginTop: 5,
         color: Colors.gray,
         fontSize: 16,
-        },
+    },
     wallet:{
         flex: 1,
         padding: 20,
         paddingTop: 10,
+        backgroundColor: Colors.lightGray,
+        borderTopLeftRadius: 30,
+        borderTopRightRadius: 30,
 
-        },
+    },
     header: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        marginBottom: 10
+        marginBottom: 10,
+        marginTop: 20
     },
     title: {
         fontSize: 20,
-        marginTop: 20,
         color: Colors.dark,
         fontWeight: "500"
     },
@@ -94,12 +104,15 @@ const styles = StyleSheet.create({
         borderRadius: 30, // mitad del ancho/alto → círculo perfecto
         justifyContent: 'center',
         alignItems: 'center',
-        elevation: 4, // sombra en Android
         shadowColor: '#000', // sombra en iOS
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.3,
         shadowRadius: 3,
-      },
+    },
+    listAccounts:{
+
+    }
+
     
 });
 export default Page
