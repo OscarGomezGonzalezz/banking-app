@@ -52,8 +52,8 @@ const Layout = ()=>{
                 tabBarIcon: ({ size, color }) => (
                     <FontAwesome5 name="credit-card" size={size} color={color} />
                 ),
-                header: () => <CustomHeader />,
                 headerTransparent: true,
+                headerShown: false
                 }}
             />
             <Tabs.Screen
@@ -63,8 +63,8 @@ const Layout = ()=>{
                 tabBarIcon: ({ size, color }) => (
                     <FontAwesome5 name="wallet" size={size} color={color} />
                 ),
-                header: () => <CustomHeader />,
                 headerTransparent: true,
+                headerShown: false
                 }}
             />
         </Tabs>

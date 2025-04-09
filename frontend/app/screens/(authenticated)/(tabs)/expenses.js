@@ -2,12 +2,11 @@ import {View, Text, ScrollView, StyleSheet} from 'react-native';
 import Colors from '../../../constants/Colors';
 import { useHeaderHeight } from '@react-navigation/elements';
 const Page = ()=>{
-    const headerHeight = useHeaderHeight();
 
     return (
         <ScrollView style={{backgroundColor: Colors.background}}
                 contentContainerStyle={{
-                    paddingTop: headerHeight,//we get the height from our custom header in order not to colapse elements
+                    paddingTop: 65,//we get the height from our custom header in order not to colapse elements
                   }}>
             <View style={styles.account}>    
                     <Text>

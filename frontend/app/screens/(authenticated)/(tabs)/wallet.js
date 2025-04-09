@@ -1,6 +1,5 @@
 import {View, Text, ScrollView, StyleSheet, TouchableOpacity} from 'react-native';
 import Colors from '../../../constants/Colors';
-import { useHeaderHeight } from '@react-navigation/elements';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import ListAccounts from '../../../components/ListAccounts';
@@ -12,7 +11,6 @@ import db from '../../../firebase/firebaseConfig';
 
 const Page = ()=>{
     const router = useRouter();
-    const headerHeight = useHeaderHeight();
     const [total, setTotal] = useState(0);
     const [wallet, setWallet] = useState([]);
     const { user } = useUser();
@@ -45,7 +43,7 @@ const Page = ()=>{
     return (
         <ScrollView style={{backgroundColor: Colors.background, flex:1}}
                 contentContainerStyle={{
-                    paddingTop: headerHeight,//we get the height from our custom header in order not to colapse elements
+                    paddingTop: 60,//we get the height from our custom header in order not to colapse elements
                     flexGrow: 1, //needed so that wallet container fill the screen down                  
                   }}>
 
