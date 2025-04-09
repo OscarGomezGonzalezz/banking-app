@@ -5,7 +5,7 @@ import { useRouter } from 'expo-router';
 
 function ListAccounts() {
   const [wallet, setWallet] = useState([]);
-  const [account, setAccount] = useState({ beneficiary: 'oscar', IBAN: '1111', BIC: 'CAIXESBB', quantity: 1000 });
+  const [account, setAccount] = useState({});
   const router = useRouter();
 
   const getAssociatedBank = (BIC) => {
@@ -33,7 +33,7 @@ function ListAccounts() {
   
   const fetchWallet = async () => {
     try {
-      const walletData = [account];
+      const walletData = [account];//change to fetch all of them
       setWallet(walletData.slice(0, 5));
     } catch (error) {
       console.error("Error loading wallet", error);

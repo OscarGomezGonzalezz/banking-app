@@ -26,6 +26,7 @@
     "expo-splash-screen": "~0.29.22",
     "expo-status-bar": "~2.0.1",
     "express": "^4.21.2",
+    "firebase": "^11.6.0",
     "jsonwebtoken": "^9.0.2",
     "mongodb": "^6.15.0",
     "multer": "^1.4.5-lts.2",
