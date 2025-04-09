@@ -5,7 +5,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 
 const Page = ()=>{
-    const router = useRouter
+    const router = useRouter();
     const headerHeight = useHeaderHeight();
     const getTotalBalance = () =>{
         return 3000;
@@ -29,7 +29,7 @@ const Page = ()=>{
                     <View style={styles.header}>
                         <Text style={styles.title}>My Wallet</Text>
                         <TouchableOpacity style={styles.roundButton} 
-                        onPress={() => router.push('screens/(authenticated)/(modals)/')}>
+                        onPress={() => router.push('screens/(authenticated)/(modals)/walletModal')}>
                             <Ionicons name="add" size={20} color="white"/>
                         </TouchableOpacity>
                     </View>

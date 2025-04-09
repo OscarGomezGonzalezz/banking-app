@@ -1,8 +1,8 @@
 import { Stack, useSegments } from "expo-router";
 import { TouchableOpacity, Text } from "react-native";
 import Colors from "./constants/Colors";
-import { useEffect } from 'react';
-import { router, Link} from "expo-router";
+import { use, useEffect } from 'react';
+import { useRouter, Link} from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { ClerkProvider, useAuth, useUser } from '@clerk/clerk-expo'
 import { tokenCache } from '@clerk/clerk-expo/token-cache'
@@ -26,7 +26,7 @@ const Layout = ()=>{
   const { isLoaded, isSignedIn } = useAuth();
   const {user} = useUser()
   const segments = useSegments();//used for knowing in which step of our app we are
-
+  const router = useRouter();
   useEffect(() => {
     if (!isLoaded) return;
     console.log('isSignedIn', isSignedIn)
@@ -36,16 +36,19 @@ const Layout = ()=>{
 
     if (isSignedIn)
        {
-        if(!user?.username || !user?.password) {
-          router.replace('screens/auth/completeAccount')
+        //if(user) console.log(user);
+        const needsToCompleteAccount = !user?.username || !user?.passwordEnabled;
+        console.log(!user?.username, !user?.passwordEnabled)//user.password does not exist in clerk users
+        if(needsToCompleteAccount) {
+          router.replace('/screens/auth/completeAccount')
+        }else if (!needsToCompleteAccount && !inAuthGroup) {
+          router.replace('/screens/(authenticated)/(tabs)/home');
         }
-        if(!inAuthGroup){router.push('screens/(authenticated)/(tabs)/home');}
       
-        }
-     else if (!isSignedIn) {
-      router.push('/');//returning user to welcome page if not registered
+        } else {
+      router.replace('/');//returning user to welcome page if not registered
     }
-  }, [isSignedIn, user?.username, user?.password]);
+  }, [isSignedIn, user?.username, user?.passwordEnabled]);
 
   if(!isLoaded){
     return <Text>Loading...</Text>
@@ -108,6 +111,20 @@ const Layout = ()=>{
       <Stack.Screen name="screens/(authenticated)/(tabs)" options={{headerShown: false}}/>
       <Stack.Screen
         name="screens/(authenticated)/(modals)/profile"
+        options={{
+          presentation: 'transparentModal',
+          animation: 'fade',
+          title: '',
+          headerTransparent: true,
+          headerLeft: () => (
+            <TouchableOpacity onPress={router.back}>
+              <Ionicons name="close-outline" size={34} color={'white'} />
+            </TouchableOpacity>
+          ),
+        }}
+      />
+      <Stack.Screen
+        name="screens/(authenticated)/(modals)/walletModal"
         options={{
           presentation: 'transparentModal',
           animation: 'fade',

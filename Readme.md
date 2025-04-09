@@ -6,5 +6,6 @@
 ## TODOs ##
 
 - check phone screen is correct when clerk allows sending sms
-- i need clerk works for doing this: set complete username and password once phone verified
+- set complete page
 - fetch different apis for retrieving trasnfers and account balances
+- each account has a bic which is associated with different bank institutions, which each one has x icon
