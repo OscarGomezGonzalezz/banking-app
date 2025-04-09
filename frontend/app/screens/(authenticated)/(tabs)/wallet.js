@@ -18,15 +18,19 @@ const Page = ()=>{
     const { user } = useUser();
 
     useEffect(() => {
-        async function fetchAccounts() {
+        async function fetchWalletBalance() {
             if (user?.id) { // Ensure the user is logged in
               try {
                 const querySnapshot = await getDocs(collection(db, "users", user.id, "accounts"));
                 const accounts = [];
+                let totalBalance = 0;
                 querySnapshot.forEach((doc) => {
+                totalBalance += doc.data().quantity;
                   accounts.push(doc.data());
                 });
+                setTotal(totalBalance); 
                 setWallet(accounts); // Set the accounts data to state
+
       
               } catch (error) {
                 console.error("Error fetching accounts:", error);
@@ -34,28 +38,8 @@ const Page = ()=>{
             }
           }
       
-          fetchAccounts(); // Fetch accounts on component mount
-        async function fetchTotalBalance() {
-            if (user?.id) { // Ensure the user is logged in
-                try {
-                const querySnapshot = await getDocs(collection(db, "users", user.id, "accounts"));
-                let totalBalance = 0;
-                console.log(querySnapshot)
-                querySnapshot.forEach((doc) => {
-                    console.log("data", doc.data());
-                    totalBalance += doc.data().quantity;
-                });
-                console.log("totalbalance:",totalBalance);
-                setTotal(totalBalance); // Set the accounts data to state
-                
-                } catch (error) {
-                console.error("Error fetching accounts:", error);
-                }
-            }
-        }
-        fetchAccounts()
-        fetchTotalBalance(); 
-      }, []); // Run when refreshing the window
+          fetchWalletBalance(); // Fetch accounts on component mount
+      }, [wallet]); // Run when refreshing the window
     
 
     return (

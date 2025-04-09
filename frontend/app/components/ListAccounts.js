@@ -48,7 +48,7 @@ function ListAccounts() {
   
       case 'TRREDEMMXXX': // Trade Republic
       case 'TRREDEMM':
-        return 'Trade Republic Bank';
+        return 'Trade Republic';
   
       default:
         return 'Unknown Bank';

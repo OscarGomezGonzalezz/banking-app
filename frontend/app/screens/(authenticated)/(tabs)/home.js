@@ -1,17 +1,44 @@
 //import RoundBtn from '../components/RoundBtn';
 import Colors from "../../../constants/Colors";
 import { useHeaderHeight } from '@react-navigation/elements';
+import { useState, useEffect } from 'react';
+import { useUser } from '@clerk/clerk-react';
+import { collection, getDocs } from "firebase/firestore"; 
+import db from '../../../firebase/firebaseConfig'; 
 
 import {View , Text, ScrollView, StyleSheet, Button} from 'react-native';
 
 const Page = () => {
+    const [wallet, setWallet] = useState([]);
+    const { user } = useUser();
+    const [total, setTotal] = useState(0);
 
-    const balance = 1420;
+    useEffect(() => {
+        async function fetchWalletBalance() {
+            if (user?.id) { // Ensure the user is logged in
+              try {
+                const querySnapshot = await getDocs(collection(db, "users", user.id, "accounts"));
+                const accounts = [];
+                let totalBalance = 0;
+                querySnapshot.forEach((doc) => {
+                totalBalance += doc.data().quantity;
+                  accounts.push(doc.data());
+                });
+                setTotal(totalBalance); 
+                setWallet(accounts); // Set the accounts data to state
+
+      
+              } catch (error) {
+                console.error("Error fetching accounts:", error);
+              }
+            }
+          }
+      
+          fetchWalletBalance(); // Fetch accounts on component mount
+      }, [wallet]); // Run when refreshing the window
+
     const headerHeight = useHeaderHeight();
 
-    const onAddMoney = () => {
-        console.log('Add money');
-    }
 
     
     return (
@@ -22,7 +49,7 @@ const Page = () => {
             <View style={styles.account}>
             
             <View style={styles.row}>
-            <Text style={styles.balance}>{balance}</Text>
+            <Text style={styles.balance}>{total}</Text>
             <Text style={styles.currency}>€</Text>
             </View>
             <Text>
