@@ -4,14 +4,59 @@ import { useHeaderHeight } from '@react-navigation/elements';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import ListAccounts from '../../../components/ListAccounts';
+import { useState, useEffect } from 'react';
+import { useUser } from '@clerk/clerk-react';
+import { collection, getDocs } from "firebase/firestore"; 
+import db from '../../../firebase/firebaseConfig'; 
 
 
 const Page = ()=>{
     const router = useRouter();
     const headerHeight = useHeaderHeight();
-    const getTotalBalance = () =>{
-        return 3000;//fetch the sum from the backend
-    }
+    const [total, setTotal] = useState(0);
+    const [wallet, setWallet] = useState([]);
+    const { user } = useUser();
+
+    useEffect(() => {
+        async function fetchAccounts() {
+            if (user?.id) { // Ensure the user is logged in
+              try {
+                const querySnapshot = await getDocs(collection(db, "users", user.id, "accounts"));
+                const accounts = [];
+                querySnapshot.forEach((doc) => {
+                  accounts.push(doc.data());
+                });
+                setWallet(accounts); // Set the accounts data to state
+      
+              } catch (error) {
+                console.error("Error fetching accounts:", error);
+              }
+            }
+          }
+      
+          fetchAccounts(); // Fetch accounts on component mount
+        async function fetchTotalBalance() {
+            if (user?.id) { // Ensure the user is logged in
+                try {
+                const querySnapshot = await getDocs(collection(db, "users", user.id, "accounts"));
+                let totalBalance = 0;
+                console.log(querySnapshot)
+                querySnapshot.forEach((doc) => {
+                    console.log("data", doc.data());
+                    totalBalance += doc.data().quantity;
+                });
+                console.log("totalbalance:",totalBalance);
+                setTotal(totalBalance); // Set the accounts data to state
+                
+                } catch (error) {
+                console.error("Error fetching accounts:", error);
+                }
+            }
+        }
+        fetchAccounts()
+        fetchTotalBalance(); 
+      }, []); // Run when refreshing the window
+    
 
     return (
         <ScrollView style={{backgroundColor: Colors.background, flex:1}}
@@ -23,7 +68,7 @@ const Page = ()=>{
             <View style={styles.container}>    
                 <View style={styles.balanceContainer}>
                     <View style={styles.balanceQuantity}>
-                        <Text style={styles.balance}>{getTotalBalance()?.toFixed(2)}</Text>
+                        <Text style={styles.balance}>{total?.toFixed(2)}</Text>
                         <Text style={styles.currency}>€</Text>
                     </View>
                     <Text style={styles.subtitle}>Your total balance</Text>

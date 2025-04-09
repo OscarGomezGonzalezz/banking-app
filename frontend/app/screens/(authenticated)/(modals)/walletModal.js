@@ -18,25 +18,31 @@ const WalletModal = ()=>{
     const router = useRouter();
 
 
-    useEffect(()=>{
-        if(oldAccount?.IBAN){//if the account has been already created...
-            setAccount({
-                //and also an automatic created accountID
-                beneficiary: oldAccount.beneficiary,
-                IBAN: oldAccount.IBAN,
-                BIC: oldAccount.BIC,
-            })
-        }
-    }, [oldAccount])
+    // useEffect(()=>{
+    //     if(oldAccount?.IBAN){//if the account has been already created...
+    //         setAccount({
+    //             //and also an automatic created accountID
+    //             beneficiary: oldAccount.beneficiary,
+    //             IBAN: oldAccount.IBAN,
+    //             BIC: oldAccount.BIC,
+    //         })
+    //     }
+    // }, [oldAccount])
 
     const saveBankAccount = async () => {
         try {
+            // Generate a random quantity between 700 and 4000
+            const randomQuantity = Math.floor(Math.random() * (4000 - 700 + 1)) + 700;
+
+            // Add the random quantity to the account object
+            const accountWithQuantity = { ...account, quantity: randomQuantity };
+
             // Reference to the 'accounts' collection for this user
             const userAccountsRef = collection(doc(db, "users", userId)//This references a specific document for the user based on the userId
             , "accounts");//This references the accounts sub-collection inside the user's document.
             
             // Save the account information in the 'accounts' collection
-            const docRef = await addDoc(userAccountsRef, account);
+            const docRef = await addDoc(userAccountsRef, accountWithQuantity);
     
             console.log("Bank account saved with ID: ", docRef.id);
             console.log('Bank account saved successfully!');

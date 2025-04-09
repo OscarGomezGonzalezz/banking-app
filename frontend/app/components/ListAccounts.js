@@ -2,11 +2,35 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
+import { collection, getDocs } from "firebase/firestore"; 
+import { useUser } from '@clerk/clerk-react'; // Use Clerk's hook to get user details
+import db from '../firebase/firebaseConfig'; 
 
 function ListAccounts() {
   const [wallet, setWallet] = useState([]);
   const [account, setAccount] = useState({});
+  const { user } = useUser();
   const router = useRouter();
+
+  useEffect(() => {
+    async function fetchAccounts() {
+      if (user?.id) { // Ensure the user is logged in
+        try {
+          const querySnapshot = await getDocs(collection(db, "users", user.id, "accounts"));
+          const accounts = [];
+          querySnapshot.forEach((doc) => {
+            accounts.push(doc.data());
+          });
+          setWallet(accounts); // Set the accounts data to state
+
+        } catch (error) {
+          console.error("Error fetching accounts:", error);
+        }
+      }
+    }
+
+    fetchAccounts(); // Fetch accounts on component mount
+  }, [wallet]); // Only run this effect when wallet changes
 
   const getAssociatedBank = (BIC) => {
     switch (BIC?.toUpperCase()) {
@@ -27,16 +51,7 @@ function ListAccounts() {
         return 'Trade Republic Bank';
   
       default:
-        return 'Banco desconocido';
-    }
-  };
-  
-  const fetchWallet = async () => {
-    try {
-      const walletData = [account];//change to fetch all of them
-      setWallet(walletData.slice(0, 5));
-    } catch (error) {
-      console.error("Error loading wallet", error);
+        return 'Unknown Bank';
     }
   };
 
@@ -55,14 +70,10 @@ function ListAccounts() {
     }
   }; 
   
-  useEffect(() => {
-    fetchWallet();
-  }, []);
 
   return (
     <View style={{ gap: 12 , marginTop: 20}}>
       {wallet
-        .filter(acc => acc.beneficiary === 'oscar')//change to useid from clerk
         .map(item => (
           <TouchableOpacity
             key={item.IBAN}
@@ -91,7 +102,6 @@ function ListAccounts() {
 const styles = StyleSheet.create({
     account: {
         backgroundColor: 'white',
-        borderRadius: 16,
         padding: 16,
         shadowColor: '#000',
         shadowOpacity: 0.1,
@@ -108,7 +118,7 @@ const styles = StyleSheet.create({
         gap: 3,
     },
     balance: {
-        fontSize: 20,
+        fontSize: 17,
         fontWeight: 'bold',
         color: 'green'
     },
