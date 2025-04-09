@@ -1,5 +1,5 @@
 import { Tabs } from 'expo-router';
-import {FontAwesome} from '@expo/vector-icons'
+import {FontAwesome5} from '@expo/vector-icons'
 import Colors from '../../../constants/Colors';
 import {BlurView} from 'expo-blur';
 import CustomHeader from '../../../components/CustomHeader';;
@@ -33,7 +33,7 @@ const Layout = ()=>{
                 options={{
                 title: 'Home',
                 tabBarIcon: ({ size, color }) => (
-                    <FontAwesome name="home" size={size} color={color} />
+                    <FontAwesome5 name="home" size={size} color={color} />
                 ),
                 header: () => <CustomHeader />,
                 headerTransparent: true,
@@ -44,18 +44,18 @@ const Layout = ()=>{
                 options={{
                 title: 'Expenses',
                 tabBarIcon: ({ size, color }) => (
-                    <FontAwesome name="credit-card" size={size} color={color} />
+                    <FontAwesome5 name="credit-card" size={size} color={color} />
                 ),
                 header: () => <CustomHeader />,
                 headerTransparent: true,
                 }}
             />
             <Tabs.Screen
-                name="transfers"
+                name="wallet"
                 options={{
-                title: 'Transfers',
+                title: 'Wallet',
                 tabBarIcon: ({ size, color }) => (
-                    <FontAwesome name="exchange" size={size} color={color} />
+                    <FontAwesome5 name="wallet" size={size} color={color} />
                 ),
                 header: () => <CustomHeader />,
                 headerTransparent: true,

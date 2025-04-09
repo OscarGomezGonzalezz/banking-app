@@ -1,22 +1,16 @@
-import {View, Text, ScrollView, StyleSheet} from 'react-native';
+import {View, Text, StyleSheet} from 'react-native';
 import Colors from '../../../constants/Colors';
 import { useHeaderHeight } from '@react-navigation/elements';
-const Page = ()=>{
+import { BlurView } from 'expo-blur';
+const Wallet = ()=>{
     const headerHeight = useHeaderHeight();
 
     return (
-        <ScrollView style={{backgroundColor: Colors.background}}
-                contentContainerStyle={{
-                    paddingTop: headerHeight,//we get the height from our custom header in order not to colapse elements
-                  }}>
-            <View style={styles.account}>    
-                    <Text>
-                        widgets expenses from 1
-                    </Text>
-                    
-                   
+        <BlurView intensity={80} tint='dark' style={{flex:1, paddingTop:100,backgroundColor:Colors.gray}}>
+            <View style={{ alignItems: 'center' }}>
+                
             </View>
-        </ScrollView>
+        </BlurView>
     )
 }
 const styles = StyleSheet.create({
@@ -44,4 +38,4 @@ const styles = StyleSheet.create({
         padding: 20,
     }
 });
-export default Page
+export default Wallet

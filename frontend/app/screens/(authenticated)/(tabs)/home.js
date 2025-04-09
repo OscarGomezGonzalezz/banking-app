@@ -24,10 +24,12 @@ const Page = () => {
             <View style={styles.row}>
             <Text style={styles.balance}>{balance}</Text>
             <Text style={styles.currency}>€</Text>
-            
             </View>
+            <Text>
+                put total balance, recent transactions from 2 and create transactions
+                choosing specific account
+            </Text>
             </View>
-
             <View style={styles.actionRow}>
             {/* <RoundBtn icon={'add'} text={'Add money'} onPress={onAddMoney}/>
             <RoundBtn icon={'refresh'} text={'Exchange'}/>
