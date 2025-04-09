@@ -93,7 +93,20 @@ const Layout = ()=>{
           ),
         }}
       />
-      <Stack.Screen name="screens/help" options={{title: "Help", presentation:"modal"}}/>
+      <Stack.Screen name="screens/help" options={{
+        title: "Help",
+        presentation:"modal",
+        headerStyle: { backgroundColor: Colors.secondary },  // Custom header background
+        headerTintColor: '#fff',  // Text color in header
+        headerTitleStyle: { fontWeight: 'bold' }, // Title style
+        }}/>
+      <Stack.Screen name="screens/correspondences" options={{ 
+        title: "Correspondences", 
+        presentation: "modal",
+        headerStyle: { backgroundColor: Colors.secondary },  // Custom header background
+        headerTintColor: '#fff',  // Text color in header
+        headerTitleStyle: { fontWeight: 'bold' }, // Title style
+      }} />
       <Stack.Screen
         name="screens/auth/[phone]/[isRegister]"
         options={{

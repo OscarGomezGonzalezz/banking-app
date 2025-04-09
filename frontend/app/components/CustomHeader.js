@@ -25,10 +25,14 @@ const CustomHeader = ()=>{
                     <TextInput style={styles.searchBar} placeholder="Search" placeholderTextColor={Colors.dark} />
                 </View>
                 <View style={[styles.profilebutton,{backgroundColor: Colors.lightGray}]}>
-                    <Ionicons name={'cash-outline'} size={20} color={Colors.dark} />
+                    <TouchableOpacity onPress={() => router.push('/screens/correspondences')}>
+                    <Ionicons name={'mail'} size={20} color={Colors.dark} />
+                    </TouchableOpacity>
                 </View>
                 <View style={[styles.profilebutton, {backgroundColor: Colors.lightGray}]}>
-                    <Ionicons name={'stats-chart'} size={20} color={Colors.dark} />
+                    <TouchableOpacity onPress={() => router.push('/screens/help')}>
+                        <Ionicons name={'help-circle'} size={20} color={Colors.dark} />
+                    </TouchableOpacity>
                 </View>
               
             </View>

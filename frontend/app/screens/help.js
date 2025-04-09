@@ -1,8 +1,6 @@
 import { View, Text, ScrollView } from 'react-native';
-import { useRouter } from 'expo-router';
 
 const Help = () => {
-  const router = useRouter();
 
   return (
     <ScrollView style={{ flex: 1, padding: 20, backgroundColor: '#F5F5F5' }}>
