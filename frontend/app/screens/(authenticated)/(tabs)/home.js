@@ -7,6 +7,7 @@ import { collection, getDocs } from "firebase/firestore";
 import db from '../../../firebase/firebaseConfig'; 
 
 import {View , Text, ScrollView, StyleSheet, Button} from 'react-native';
+import HomeCard from "../../../components/HomeCard";
 
 const Page = () => {
     const [wallet, setWallet] = useState([]);
@@ -48,20 +49,16 @@ const Page = () => {
           }}>
             <View style={styles.account}>
             
-            <View style={styles.row}>
-            <Text style={styles.balance}>{total}</Text>
-            <Text style={styles.currency}>€</Text>
-            </View>
+           <HomeCard/>
+
+
             <Text>
                 put total balance, recent transactions from 2 and create transactions
                 choosing specific account
             </Text>
             </View>
             <View style={styles.actionRow}>
-            {/* <RoundBtn icon={'add'} text={'Add money'} onPress={onAddMoney}/>
-            <RoundBtn icon={'refresh'} text={'Exchange'}/>
-            <RoundBtn icon={'list'} text={'Details'}/> */}
-            
+       
            
             </View>
         </ScrollView>
