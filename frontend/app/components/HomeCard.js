@@ -11,44 +11,45 @@ const HomeCard = () => {
             style={styles.bgImage}
         >
             <View style={styles.container}>
-                {/* Total Balance */}
-                <View style={styles.totalBalanceRow}>
-                    <Text style={styles.balance}>Total Balance</Text>
-                </View>
-                <Text style={styles.balanceNumber}>$2343.23</Text>
+    {/* Total Balance */}
+    <View style={styles.totalBalanceRow}>
+        <Text style={styles.balance}>Total Balance</Text>
+    </View>
+    
+    <Text style={styles.balanceNumber}>$2343.23</Text>
 
-                {/* Income & Expenses */}
-                <View style={styles.stats}>
-                    {/* Income */}
-                    <View style={styles.statItem}>
-                        <View style={styles.incomeExpense}>
-                            <View style={[styles.statsIcon, { backgroundColor: '#d4fcd4' }]}>
-                                <Ionicons name="arrow-up" size={20} color="green" />
-                            </View>
-                            <Text style={styles.statLabel}>Income</Text>
-                        </View>
-                        <Text style={[styles.statAmount, { color: "green" }]}>$2342</Text>
-                    </View>
-
-                    {/* Expenses */}
-                    <View style={styles.statItem}>
-                        <View style={styles.incomeExpense}>
-                            <View style={[styles.statsIcon, { backgroundColor: '#fcd4d4' }]}>
-                                <Ionicons name="arrow-down" size={20} color="red" />
-                            </View>
-                            <Text style={styles.statLabel}>Expenses</Text>
-                        </View>
-                        <Text style={[styles.statAmount, { color: "red" }]}>$1234</Text>
-                    </View>
+    {/* Income & Expenses — moved up */}
+    <View style={styles.stats}>
+        {/* Income */}
+        <View style={styles.statItem}>
+            <View style={styles.incomeExpense}>
+                <View style={[styles.statsIcon, { backgroundColor: '#d4fcd4' }]}>
+                    <Ionicons name="arrow-up" size={16} color="green" />
                 </View>
+                <Text style={styles.statLabel}>Income</Text>
             </View>
+            <Text style={[styles.statAmount, { color: "green" }]}>$2342</Text>
+        </View>
+
+        {/* Expenses */}
+        <View style={styles.statItem}>
+            <View style={styles.incomeExpense}>
+                <View style={[styles.statsIcon, { backgroundColor: '#fcd4d4' }]}>
+                    <Ionicons name="arrow-down" size={16} color="red" />
+                </View>
+                <Text style={styles.statLabel}>Expenses</Text>
+            </View>
+            <Text style={[styles.statAmount, { color: "red" }]}>$1234</Text>
+        </View>
+    </View>
+</View>
+
         </ImageBackground>
     );
 };
 
 
 export default HomeCard;
-
 
 const styles = StyleSheet.create({
     bgImage: {
@@ -61,7 +62,7 @@ const styles = StyleSheet.create({
         flex: 1,
         paddingHorizontal: scale(20),
         paddingVertical: scale(15),
-        justifyContent: "space-between",
+        justifyContent: "flex-start", // para alinear arriba
     },
     totalBalanceRow: {
         flexDirection: "row",
@@ -69,20 +70,21 @@ const styles = StyleSheet.create({
         alignItems: "center",
     },
     balance: {
-        fontSize: scale(18),
+        fontSize: scale(13),
         fontWeight: '500',
         color: "black",
     },
     balanceNumber: {
-        fontSize: scale(32),
+        fontSize: scale(22),
         fontWeight: 'bold',
         color: "black",
         marginTop: scale(5),
+        marginBottom: scale(12), // para dejar hueco al bloque de stats
     },
     stats: {
         flexDirection: "row",
         justifyContent: "space-between",
-        marginTop: scale(20),
+        marginTop: 0, // lo traemos más arriba
     },
     statItem: {
         width: "48%",
@@ -90,23 +92,24 @@ const styles = StyleSheet.create({
     incomeExpense: {
         flexDirection: "row",
         alignItems: "center",
-        marginBottom: scale(5),
+        marginBottom: scale(2),
     },
     statsIcon: {
-        width: scale(28),
-        height: scale(28),
-        borderRadius: scale(14),
+        width: scale(18),
+        height: scale(18),
+        borderRadius: scale(9),
         justifyContent: "center",
         alignItems: "center",
-        marginRight: scale(8),
+        marginRight: scale(6),
     },
     statLabel: {
-        fontSize: scale(14),
+        fontSize: scale(11),
         fontWeight: "500",
-        color: "#fff",
+        color: "#333",
     },
     statAmount: {
-        fontSize: scale(16),
-        fontWeight: "bold",
+        fontSize: scale(13),
+        fontWeight: "600",
+        color: "#000",
     },
 });
