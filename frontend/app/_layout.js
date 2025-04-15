@@ -29,26 +29,30 @@ const Layout = ()=>{
   const router = useRouter();
   useEffect(() => {
     if (!isLoaded) return;
-    console.log('isSignedIn', isSignedIn)
-
-    console.log(segments)//["screens", "(authenticated)", "(tabs)", "home"]
-    const inAuthGroup = segments[1] === '(authenticated)';
-
-    if (isSignedIn)
-       {
-        //if(user) console.log(user);
-        const needsToCompleteAccount = !user?.username || !user?.passwordEnabled;
-        console.log(!user?.username, !user?.passwordEnabled)//user.password does not exist in clerk users
-        if(needsToCompleteAccount) {
-          router.replace('/screens/auth/completeAccount')
-        }else if (!needsToCompleteAccount && !inAuthGroup) {
+  
+    const timeout = setTimeout(() => {
+      console.log('isSignedIn', isSignedIn);
+      console.log(segments); // ["screens", "(authenticated)", "(tabs)", "home"]
+  
+      const inAuthGroup = segments[1] === '(authenticated)';
+      const needsToCompleteAccount = !user?.username || !user?.passwordEnabled;
+      console.log(!user?.username, !user?.passwordEnabled);
+  
+      if (isSignedIn) {
+        if (needsToCompleteAccount) {
+          router.replace('/screens/auth/completeAccount');
+        } else if (!inAuthGroup) {
           router.replace('/screens/(authenticated)/(tabs)/home');
         }
-      
-        } else {
-      router.replace('/');//returning user to welcome page if not registered
-    }
+      } else {
+        router.replace('/');
+      }
+    }, 1000); // 1000 ms = 1 second of delay for visualizing purposes
+    //in the completeAccount Page
+  
+    return () => clearTimeout(timeout);
   }, [isSignedIn, user?.username, user?.passwordEnabled]);
+  
 
   if(!isLoaded){
     return <Text>Loading...</Text>
@@ -119,6 +123,15 @@ const Layout = ()=>{
               <Ionicons name="arrow-back" size={34} color={Colors.dark} />
             </TouchableOpacity>
           ),
+        }}
+      />
+      <Stack.Screen
+        name="screens/auth/completeAccount"
+        options={{
+          title: "",
+          headerBackTitle: "",
+          headerShadowVisible: false,
+          headerStyle: { backgroundColor: Colors.background },
         }}
       />
       <Stack.Screen name="screens/(authenticated)/(tabs)" options={{headerShown: false}}/>

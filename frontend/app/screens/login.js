@@ -3,7 +3,7 @@ import { View, TextInput, Text, StyleSheet, TouchableOpacity, KeyboardAvoidingVi
 import { useRouter } from 'expo-router';
 import Colors from '../constants/Colors';
 import { CustomButton } from '../index';
-import { useSignIn, isClerkAPIResponseError, useSSO } from "@clerk/clerk-expo";
+import { useSignIn, isClerkAPIResponseError } from "@clerk/clerk-expo";
 import { Ionicons } from '@expo/vector-icons';
 import * as WebBrowser from 'expo-web-browser'
 
