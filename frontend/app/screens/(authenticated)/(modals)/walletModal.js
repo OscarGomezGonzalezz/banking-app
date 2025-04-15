@@ -26,6 +26,7 @@ const WalletModal = ()=>{
                 beneficiary: oldAccount.beneficiary,
                 IBAN: oldAccount.IBAN,
                 BIC: oldAccount.BIC,
+                quantity: Number(oldAccount.quantity),//otherway total will be undefined
             })
         }
     }, [])
@@ -38,9 +39,14 @@ const WalletModal = ()=>{
             const accountWithQuantity = { ...account, quantity: randomQuantity };
 
             if (oldAccount?.accountID) {
-                // 🚀 UPDATE EXISTING ACCOUNT
+                //UPDATE EXISTING ACCOUNT
                 const accountRef = doc(db, "users", userId, "accounts", oldAccount.accountID);
-                await updateDoc(accountRef, accountWithQuantity);
+                //If IBAN is changed, then the quantity of the account will be different
+                if(oldAccount.IBAN !== account.IBAN) {
+                    await updateDoc(accountRef, accountWithQuantity);
+                } else{
+                    await updateDoc(accountRef, account)
+                }
     
                 console.log("Bank account updated with ID:", oldAccount.accountID);
             } else {

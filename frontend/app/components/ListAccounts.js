@@ -65,6 +65,7 @@ function ListAccounts() {
                 beneficiary: item.beneficiary,
                 IBAN: item.IBAN,
                 BIC: item.BIC,
+                quantity: item.quantity
             }
         })
     } catch (error) {

@@ -5,7 +5,6 @@ import { useState, useEffect } from 'react';
 import { useUser } from '@clerk/clerk-react';
 import { collection, getDocs, Transaction } from "firebase/firestore"; 
 import db from '../../../firebase/firebaseConfig'; 
-import { format } from 'date-fns'; // Optional: For better date formatting
 
 import {View , Text, ScrollView, StyleSheet, Button} from 'react-native';
 import HomeCard from "../../../components/HomeCard";
