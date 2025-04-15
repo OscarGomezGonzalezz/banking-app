@@ -6,7 +6,7 @@ import { CustomButton } from '../../../index';
 import { useLocalSearchParams } from 'expo-router';
 import { useUser } from '@clerk/clerk-react';
 import db from '../../../firebase/firebaseConfig'
-import { updateDoc,collection, addDoc, doc } from "firebase/firestore"; 
+import { updateDoc,collection, addDoc, doc, deleteDoc } from "firebase/firestore"; 
 import { useRouter } from 'expo-router';
 
 const WalletModal = ()=>{
@@ -69,6 +69,21 @@ const WalletModal = ()=>{
             console.error("Error saving bank account: ", error);
         }
     };
+    const deleteBankAccount = async () => {
+        try {
+          if (oldAccount?.accountID) {
+            const accountRef = doc(db, "users", userId, "accounts", oldAccount.accountID);
+            await deleteDoc(accountRef);
+            console.log("Bank account deleted with ID:", oldAccount.accountID);
+            router.back(); // Vuelve a la pantalla anterior tras borrar
+          } else {
+            console.warn("No account to delete: accountID is missing.");
+          }
+        } catch (error) {
+          console.error("Error deleting bank account:", error);
+        }
+      };
+      
 
     return (
         <BlurView intensity={80} tint='dark' style={{flex:1, paddingTop:100,backgroundColor:Colors.gray}}>
@@ -108,6 +123,11 @@ const WalletModal = ()=>{
             </ScrollView>
             <View style={styles.footer}>
                 <CustomButton title="Save bank account" onPress={()=>saveBankAccount()} isRegister/>
+                {oldAccount?.accountID && (
+                <>
+                <CustomButton title="Delete bank account" onPress={()=>deleteBankAccount()} isDelete/> 
+                </>
+                )}
             </View>
         </BlurView>
     )
@@ -120,7 +140,7 @@ const styles = StyleSheet.create({
         width: '85%',
         marginTop: 100,
         marginBottom: 35,
-        gap: 20,
+        gap: 10,
         marginHorizontal: 20
     },
     title: {

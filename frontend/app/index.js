@@ -4,7 +4,7 @@ import { useRouter } from 'expo-router';
 import Colors from './constants/Colors';
 import { ResizeMode, Video } from 'expo-av';
 
-export const CustomButton = ({ title, onPress, isRegister, isDisabled }) => {
+export const CustomButton = ({ title, onPress, isRegister, isDisabled, isDelete }) => {
   const [isHovered, setIsHovered] = useState(false);
 
   return (
@@ -14,6 +14,7 @@ export const CustomButton = ({ title, onPress, isRegister, isDisabled }) => {
         isRegister && styles.registerButton, // Register button color
         isHovered && styles.hovered, // Hover effect
         isDisabled && styles.disabled,//set disbled unless an action is performed
+        isDelete && styles.deleteButton,
       ]}
       onPress={onPress}
       onMouseEnter={() => setIsHovered(true)}
@@ -91,6 +92,9 @@ const styles = StyleSheet.create({
   },
   registerButton: {
     backgroundColor: Colors.secondary, // Special color for Register
+  },
+  deleteButton: {
+    backgroundColor: 'red', // Special color for Register
   },
   hovered: {
     backgroundColor: Colors.primaryMuted, // Change color on hover

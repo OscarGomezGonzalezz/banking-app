@@ -6,6 +6,5 @@
 ## TODOs ##
 
 - check phone screen is correct when clerk allows sending sms
-- set complete page
 - fetch different apis for retrieving trasnfers
 - search bar works for search transactions

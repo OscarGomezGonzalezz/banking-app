@@ -30,7 +30,7 @@ const Layout = ()=>{
   useEffect(() => {
     if (!isLoaded) return;
   
-    const timeout = setTimeout(() => {
+   
       console.log('isSignedIn', isSignedIn);
       console.log(segments); // ["screens", "(authenticated)", "(tabs)", "home"]
   
@@ -42,15 +42,18 @@ const Layout = ()=>{
         if (needsToCompleteAccount) {
           router.replace('/screens/auth/completeAccount');
         } else if (!inAuthGroup) {
-          router.replace('/screens/(authenticated)/(tabs)/home');
+          const timeout = setTimeout(() => {
+            router.replace('/screens/(authenticated)/(tabs)/home');
+          }, 1000); // 1 segundo
+    
+          return () => clearTimeout(timeout); // Limpieza del timeout si cambia el estado
         }
       } else {
         router.replace('/');
-      }
-    }, 1000); // 1000 ms = 1 second of delay for visualizing purposes
-    //in the completeAccount Page
+      }// 1000 ms = 1 second of delay for visualizing purposes
+    //in the completeAccount Page(completePage will be fetched instantly
+    //  after succesful registration and we dont want that)
   
-    return () => clearTimeout(timeout);
   }, [isSignedIn, user?.username, user?.passwordEnabled]);
   
 
