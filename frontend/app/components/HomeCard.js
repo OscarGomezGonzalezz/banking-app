@@ -11,43 +11,49 @@ const HomeCard = () => {
             style={styles.bgImage}
         >
             <View style={styles.container}>
-    {/* Total Balance */}
-    <View style={styles.totalBalanceRow}>
-        <Text style={styles.balance}>Total Balance</Text>
-    </View>
-    
-    <Text style={styles.balanceNumber}>$2343.23</Text>
-
-    {/* Income & Expenses — moved up */}
-    <View style={styles.stats}>
-        {/* Income */}
-        <View style={styles.statItem}>
-            <View style={styles.incomeExpense}>
-                <View style={[styles.statsIcon, { backgroundColor: '#d4fcd4' }]}>
-                    <Ionicons name="arrow-up" size={16} color="green" />
+                {/* Total Balance */}
+                <View style={styles.totalBalanceRow}>
+                    <Text style={styles.balance}>Total Balance</Text>
                 </View>
-                <Text style={styles.statLabel}>Income</Text>
-            </View>
-            <Text style={[styles.statAmount, { color: "green" }]}>$2342</Text>
-        </View>
+                
+                <Text style={styles.balanceNumber}>$2343.23</Text>
 
-        {/* Expenses */}
-        <View style={styles.statItem}>
-            <View style={styles.incomeExpense}>
-                <View style={[styles.statsIcon, { backgroundColor: '#fcd4d4' }]}>
-                    <Ionicons name="arrow-down" size={16} color="red" />
+                {/* Income & Expenses — moved up */}
+                <View style={styles.stats}>
+                    {/* Income */}
+                    <View style={styles.statItem}>
+                        <View style={styles.incomeExpense}>
+                            <View style={[styles.statsIcon, { backgroundColor: '#d4fcd4' }]}>
+                                <Ionicons name="arrow-up" size={16} color="green" />
+                            </View>
+                            <Text style={styles.statLabel}>Income</Text>
+                        </View>
+                        <Text style={[styles.statAmount, { color: "green" }]}>$2342</Text>
+                    </View>
+
+                    {/* Expenses */}
+                    <View style={styles.statItem}>
+                        <View style={styles.incomeExpense}>
+                            <View style={[styles.statsIcon, { backgroundColor: '#fcd4d4' }]}>
+                                <Ionicons name="arrow-down" size={16} color="red" />
+                            </View>
+                            <Text style={styles.statLabel}>Expenses</Text>
+                        </View>
+                        <Text style={[styles.statAmount, { color: "red" }]}>$1234</Text>
+                    </View>
                 </View>
-                <Text style={styles.statLabel}>Expenses</Text>
             </View>
-            <Text style={[styles.statAmount, { color: "red" }]}>$1234</Text>
-        </View>
-    </View>
-</View>
 
+            {/* Top right icon */}
+            <Ionicons
+                name="ellipsis-horizontal"
+                size={24}
+                color="black"
+                style={styles.topRightIcon}
+            />
         </ImageBackground>
     );
 };
-
 
 export default HomeCard;
 
@@ -57,12 +63,13 @@ const styles = StyleSheet.create({
         width: "100%",
         borderRadius: scale(10),
         overflow: "hidden",
+        position: "relative", // This is to position the icon absolutely
     },
     container: {
         flex: 1,
         paddingHorizontal: scale(20),
         paddingVertical: scale(15),
-        justifyContent: "flex-start", // para alinear arriba
+        justifyContent: "flex-start", // Align top
     },
     totalBalanceRow: {
         flexDirection: "row",
@@ -79,12 +86,12 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: "black",
         marginTop: scale(5),
-        marginBottom: scale(12), // para dejar hueco al bloque de stats
+        marginBottom: scale(12), // Space for stats
     },
     stats: {
         flexDirection: "row",
         justifyContent: "space-between",
-        marginTop: 0, // lo traemos más arriba
+        marginTop: 0, // Bring it up
     },
     statItem: {
         width: "48%",
@@ -111,5 +118,10 @@ const styles = StyleSheet.create({
         fontSize: scale(13),
         fontWeight: "600",
         color: "#000",
+    },
+    topRightIcon: {
+        position: "absolute",
+        top: scale(10),
+        right: scale(10),
     },
 });

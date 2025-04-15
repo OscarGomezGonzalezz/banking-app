@@ -3,16 +3,49 @@ import Colors from "../../../constants/Colors";
 import { useHeaderHeight } from '@react-navigation/elements';
 import { useState, useEffect } from 'react';
 import { useUser } from '@clerk/clerk-react';
-import { collection, getDocs } from "firebase/firestore"; 
+import { collection, getDocs, Transaction } from "firebase/firestore"; 
 import db from '../../../firebase/firebaseConfig'; 
+import { format } from 'date-fns'; // Optional: For better date formatting
 
 import {View , Text, ScrollView, StyleSheet, Button} from 'react-native';
 import HomeCard from "../../../components/HomeCard";
+import TransactionList from "../../../components/TransactionList";
 
 const Page = () => {
     const [wallet, setWallet] = useState([]);
     const { user } = useUser();
     const [total, setTotal] = useState(0);
+    const sampleData = [
+      {
+        id: 1,
+        description: 'Salary',
+        amount: 1500,
+        methodOfPayment: 'Bank Transfer',
+        date: '2025-04-10T00:00:00Z'
+      },
+      {
+        id: 2,
+        description: 'Supermarket',
+        amount: -250,
+        methodOfPayment: 'Credit Card',
+        date: '2025-04-12T00:00:00Z'
+      },
+      {
+        id: 3,
+        description: 'Rent',
+        amount: -800,
+        methodOfPayment: 'Bank Transfer',
+        date: '2025-04-01T00:00:00Z'
+      },
+      {
+        id: 4,
+        description: 'Freelance Work',
+        amount: 600,
+        methodOfPayment: 'PayPal',
+        date: '2025-04-05T00:00:00Z'
+      }
+    ];
+    
 
     useEffect(() => {
         async function fetchWalletBalance() {
@@ -47,20 +80,24 @@ const Page = () => {
         contentContainerStyle={{
             paddingTop: headerHeight,//we get the height from our custom header in order not to colapse elements
           }}>
+
             <View style={styles.account}>
             
            <HomeCard/>
 
-
+            
             <Text>
                 put total balance, recent transactions from 2 and create transactions
                 choosing specific account
             </Text>
-            </View>
-            <View style={styles.actionRow}>
-       
            
+
             </View>
+
+            <View style={styles.actionRow}>
+            <TransactionList data={sampleData} /> 
+            </View>
+         
         </ScrollView>
     );
 };
