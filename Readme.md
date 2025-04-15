@@ -6,5 +6,5 @@
 ## TODOs ##
 
 - check phone screen is correct when clerk allows sending sms
-- fetch different apis for retrieving trasnfers
+- fetch different apis for retrieving transactions(expenses,send and receive money...)
 - search bar works for search transactions

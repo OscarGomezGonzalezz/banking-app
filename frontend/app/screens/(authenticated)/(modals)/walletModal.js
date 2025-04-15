@@ -15,6 +15,7 @@ const WalletModal = ()=>{
     const { user } = useUser();
     const userId = user.id; 
     const router = useRouter();
+    const [error, setError] = useState('');
 
 
     useEffect(()=>{
@@ -33,6 +34,22 @@ const WalletModal = ()=>{
 
     const saveBankAccount = async () => {
         try {
+              if (!account.beneficiary || account.beneficiary.trim().length < 3) {
+                setError("Enter the first and last name of the beneficiary");
+                return;
+              }
+              //ES11111111111
+              if (!account.IBAN || !/^([A-Z]{2})(\d{2})([A-Z0-9]{1,30})$/.test(account.IBAN)) {
+                setError("Please enter a valid IBAN.");
+                return;
+              }
+
+              if (!account.BIC || account.BIC.trim().length < 2) {
+                setError("BIC number must contain at least 2 characters.");
+                return;
+              }
+          
+          
             // Generate a random quantity between 700 and 4000
             const randomQuantity = Math.floor(Math.random() * (4000 - 700 + 1)) + 700;
             // Add the random quantity to the account object
@@ -119,6 +136,9 @@ const WalletModal = ()=>{
                         value={account.BIC}
                         onChangeText={(text) => setAccount({ ...account, BIC: text })}
                     />
+                </View>
+                <View style={{alignSelf: 'center', marginTop: 20}}>
+                    {error ? <Text style={{ color: "red", fontSize: 18 }}>{error}</Text> : null}
                 </View>
             </ScrollView>
             <View style={styles.footer}>
