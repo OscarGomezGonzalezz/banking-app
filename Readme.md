@@ -7,5 +7,5 @@
 
 - check phone screen is correct when clerk allows sending sms
 - set complete page
-- fetch different apis for retrieving trasnfers and account balances
-- each account has a bic which is associated with different bank institutions
+- fetch different apis for retrieving trasnfers
+- search bar works for search transactions
