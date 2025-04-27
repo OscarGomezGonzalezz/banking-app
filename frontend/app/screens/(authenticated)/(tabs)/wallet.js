@@ -6,7 +6,7 @@ import ListAccounts from '../../../components/ListAccounts';
 import { useState, useEffect } from 'react';
 import { useUser } from '@clerk/clerk-react';
 import { collection, getDocs } from "firebase/firestore"; 
-import DropDownPicker from 'react-native-dropdown-picker';
+import { SelectList } from 'react-native-dropdown-select-list'
 import db from '../../../firebase/firebaseConfig'; 
 import { CustomButton } from '../../../index';
 
@@ -20,12 +20,13 @@ const Page = ()=>{
     const [beneficiary, setBeneficiary] = useState('');
     const [country, setCountry] = useState('');
     const [error, setError] = useState('');
-    const countries = [
-        { label: 'España', value: 'spain' },
-        { label: 'Alemania', value: 'germany' },
-        { label: 'Francia', value: 'france' },
-        { label: 'Pasaporte/Other', value: 'passport' },
-    ];
+    const data = [
+        {key:'Spain', value:'Spain'},
+        {key:'Germany', value:'Germany'},
+        {key:'France', value:'France'},
+        {key:'Passport', value:'Passport'},
+        
+    ]
 
     useEffect(() => {
         async function fetchWalletBalance() {
@@ -145,7 +146,21 @@ const Page = ()=>{
             <Modal visible={modalVisible} animationType="slide" transparent={true} onRequestClose={() => setModalVisible(false)}>
                 <View style={{ flex: 1, paddingTop: 100, backgroundColor: 'white', paddingHorizontal: 20 }}>
                     <Text style={styles.title}>We need first to verify your identity</Text>
-
+                    <SelectList 
+                        setSelected={(value) => setCountry(value)} 
+                        data={data} 
+                        save="value"
+                        placeholder='Select the country of your document'
+                        dropdownStyles={{
+                            backgroundColor: Colors.lightGray, // color de fondo del menú desplegable
+                        }}
+                        boxStyles={styles.input} // Se lo aplicas aquí
+                        inputStyles={{
+                            fontSize: 18, // porque el tamaño del texto va aparte
+                            color: '#000' // opcional, para el color del texto
+                        }}
+                        
+                    />
 
                     <TextInput
                         style={styles.input}
@@ -258,7 +273,8 @@ const styles = StyleSheet.create({
         borderRadius: 16,
         fontSize: 20,
         marginRight: 10,
-        marginTop: 10
+        marginTop: 10,
+        borderWidth: 0
     },
     footer: {
         flexDirection: 'row',
@@ -281,19 +297,7 @@ const styles = StyleSheet.create({
     countryText: {
         fontSize: 18,
     },
-    pickerContainer: {
-        height: 40,
-        marginTop: 20,
-
-        marginBottom: 200
-    },
-    picker: {
-        backgroundColor: Colors.lightGray,
-        borderRadius: 16,
-    },
-    dropDown: {
-        backgroundColor: Colors.lightGray,
-    },
+    
 });
 
 export default Page;
