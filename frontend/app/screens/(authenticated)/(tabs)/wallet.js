@@ -1,4 +1,4 @@
-import {View, Text, ScrollView, StyleSheet, TouchableOpacity} from 'react-native';
+import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Modal, TextInput, FlatList, Alert } from 'react-native';
 import Colors from '../../../constants/Colors';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
@@ -6,18 +6,30 @@ import ListAccounts from '../../../components/ListAccounts';
 import { useState, useEffect } from 'react';
 import { useUser } from '@clerk/clerk-react';
 import { collection, getDocs } from "firebase/firestore"; 
+import DropDownPicker from 'react-native-dropdown-picker';
 import db from '../../../firebase/firebaseConfig'; 
-
+import { CustomButton } from '../../../index';
 
 const Page = ()=>{
     const router = useRouter();
     const [total, setTotal] = useState(0);
     const [wallet, setWallet] = useState([]);
     const { user } = useUser();
+    const [modalVisible, setModalVisible] = useState(false);
+    const [idDocument, setIdDocument] = useState('');
+    const [beneficiary, setBeneficiary] = useState('');
+    const [country, setCountry] = useState('');
+    const [error, setError] = useState('');
+    const countries = [
+        { label: 'España', value: 'spain' },
+        { label: 'Alemania', value: 'germany' },
+        { label: 'Francia', value: 'france' },
+        { label: 'Pasaporte/Other', value: 'passport' },
+    ];
 
     useEffect(() => {
         async function fetchWalletBalance() {
-            if (user?.id) { // Ensure the user is logged in
+            if (user?.id) {
               try {
                 const querySnapshot = await getDocs(collection(db, "users", user.id, "accounts"));
                 const accounts = [];
@@ -27,27 +39,88 @@ const Page = ()=>{
                   accounts.push(doc.data());
                 });
                 setTotal(totalBalance); 
-                setWallet(accounts); // Set the accounts data to state
-
-      
+                setWallet(accounts);
               } catch (error) {
                 console.error("Error fetching accounts:", error);
               }
             }
-          }
-      
-          fetchWalletBalance(); // Fetch accounts on component mount
-      }, [wallet]); // Run when refreshing the window
-    
+        }
+        fetchWalletBalance();
+    }, [wallet]);
+
+    function validateDocument() {
+        switch (country.toLowerCase()) {
+            case 'spain':
+                return validateSpanishDNI();
+            case 'germany':
+                return validateGermanID();
+            case 'france':
+                return validateFrenchID();
+            case 'passport':
+                return validatePassport();
+            default:
+                return false; 
+        }
+    }
+
+    function validateSpanishDNI() {
+        const dniRegex = /^\d{8}[A-Z]$/i;
+        return dniRegex.test(idDocument);
+    }
+
+    function validateGermanID() {
+        const germanIdRegex = /^[0-9]{10}$/;
+        return germanIdRegex.test(idDocument);
+    }
+
+    function validateFrenchID() {
+        const frenchIdRegex = /^[0-9A-Z]{12}$/i;
+        return frenchIdRegex.test(idDocument);
+    }
+
+    function validatePassport() {
+        const passportRegex = /^[A-Z0-9]{6,9}$/i;
+        return passportRegex.test(idDocument);
+    }
+
+    const handleAddAccount = () => {
+        if (!idDocument) {
+            setModalVisible(true);
+        } else {
+            router.push('screens/(authenticated)/(modals)/walletModal');
+        }
+    };
+
+    const handleSubmitDocument = () => {
+        if (!idDocument || idDocument.trim().length === 0) {
+            setError('Please, enter a valid id');
+            return;
+        }
+
+        const validDocumentFormat = /^[A-Za-z0-9]{8,12}$/; 
+        if (!validDocumentFormat.test(idDocument)) {
+            setError('The document format is invalid. Make sure it has between 8 and 12 alphanumeric characters.');
+            return;
+        }
+
+        if (!beneficiary || beneficiary.trim().length < 3) {
+            setError("Enter the first and last name of the beneficiary");
+            return;
+        }
+
+        if (validateDocument(country)) {
+            Alert.alert('Valid document!', 'The document number is valid.');
+            return;
+        } else {
+            Alert.alert('Invalid document!', 'The document number is invalid.');
+        }
+
+        setModalVisible(false);
+    };
 
     return (
-        <ScrollView style={{backgroundColor: Colors.background, flex:1}}
-                contentContainerStyle={{
-                    paddingTop: 60,//we get the height from our custom header in order not to colapse elements
-                    flexGrow: 1, //needed so that wallet container fill the screen down                  
-                  }}>
-
-            <View style={styles.container}>    
+        <ScrollView style={{ backgroundColor: Colors.background, flex: 1 }} contentContainerStyle={{ paddingTop: 60, flexGrow: 1 }}>
+            <View style={styles.container}>
                 <View style={styles.balanceContainer}>
                     <View style={styles.balanceQuantity}>
                         <Text style={styles.balance}>{total?.toFixed(2)}</Text>
@@ -59,24 +132,65 @@ const Page = ()=>{
                 <View style={styles.wallet}>
                     <View style={styles.header}>
                         <Text style={styles.title}>My Wallet</Text>
-                        <TouchableOpacity style={styles.roundButton} 
-                        onPress={() => router.push('screens/(authenticated)/(modals)/walletModal')}>
+                        <TouchableOpacity style={styles.roundButton} onPress={handleAddAccount}>
                             <Ionicons name="add" size={20} color="white"/>
                         </TouchableOpacity>
                     </View>
                     <View style={styles.listAccounts}>
-                        <ListAccounts/>
+                        <ListAccounts />
                     </View>
                 </View>
             </View>
+
+            <Modal visible={modalVisible} animationType="slide" transparent={true} onRequestClose={() => setModalVisible(false)}>
+                <View style={{ flex: 1, paddingTop: 100, backgroundColor: 'white', paddingHorizontal: 20 }}>
+                    <Text style={styles.title}>We need first to verify your identity</Text>
+
+
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Enter your ID document number"
+                        placeholderTextColor={Colors.gray}
+                        value={idDocument}
+                        onChangeText={setIdDocument}
+                    />
+
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Enter your full name"
+                        placeholderTextColor={Colors.gray}
+                        value={beneficiary}
+                        onChangeText={setBeneficiary}
+                    />
+
+                    <View style={{ alignSelf: 'center', marginTop: 20 }}>
+                        {error ? <Text style={{ color: "red", fontSize: 18 }}>{error}</Text> : null}
+                    </View>
+
+                    <Text style={styles.subtitle}>
+                        <Ionicons name="information-circle" size={28} color={Colors.gray} />
+                        Attention 
+                    </Text>
+                    <Text style={[styles.subtitle, { fontSize: 16 }]}>
+                        Your full name must match exactly with the beneficiary name of any bank accounts added in this app.
+                        This helps to ensure security and prevent fraudulent activity.
+                    </Text>
+
+                    <View style={styles.footer}>
+                        <CustomButton title="Continue" onPress={handleSubmitDocument} isRegister isDisabled={idDocument === ''} />
+                        <CustomButton title="Cancel" onPress={() => setModalVisible(false)} isRegister isDelete />
+                    </View>
+                </View>
+            </Modal>
         </ScrollView>
-    )
-}
+    );
+};
+
 const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'space-between',
-    paddingHorizontal: 20,
+        paddingHorizontal: 20,
     },
     balanceQuantity: {
         flexDirection: 'row',
@@ -84,11 +198,10 @@ const styles = StyleSheet.create({
         gap: 10,
     },
     balanceContainer: {
-        marginTop:25,
+        marginTop: 25,
         justifyContent: "center",
         alignItems: 'center',
         marginBottom: 30
-
     },
     balance: {
         fontSize: 45,
@@ -98,19 +211,20 @@ const styles = StyleSheet.create({
         fontSize: 20,
         fontWeight: 500,
     },
-    subtitle:{
-        marginTop: 5,
+    subtitle: {
+        marginTop: 20,
         color: Colors.gray,
-        fontSize: 16,
+        fontSize: 28,
+        fontWeight: '500',
+        alignSelf: 'center'
     },
-    wallet:{
+    wallet: {
         flex: 1,
         padding: 20,
         paddingTop: 10,
         backgroundColor: Colors.lightGray,
         borderTopLeftRadius: 30,
         borderTopRightRadius: 30,
-
     },
     header: {
         flexDirection: 'row',
@@ -120,26 +234,66 @@ const styles = StyleSheet.create({
         marginTop: 20
     },
     title: {
-        fontSize: 20,
+        fontSize: 40,
+        marginTop: 0,
+        fontWeight: 'bold',
         color: Colors.dark,
-        fontWeight: "500"
+        marginBottom: 30
     },
     roundButton: {
-        backgroundColor: Colors.secondary, // azul iOS, puedes cambiarlo
+        backgroundColor: Colors.secondary,
         width: 30,
         height: 30,
-        borderRadius: 30, // mitad del ancho/alto → círculo perfecto
+        borderRadius: 30,
         justifyContent: 'center',
         alignItems: 'center',
-        shadowColor: '#000', // sombra en iOS
+        shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.3,
         shadowRadius: 3,
     },
-    listAccounts:{
+    input: {
+        backgroundColor: Colors.lightGray,
+        padding: 20,
+        borderRadius: 16,
+        fontSize: 20,
+        marginRight: 10,
+        marginTop: 10
+    },
+    footer: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignSelf: "center",
+        width: '100%',
+        marginTop: 200,
+        marginBottom: 35,
+        gap: 10,
+    },
+    countryButton: {
+        padding: 10,
+        marginVertical: 5,
+        backgroundColor: Colors.lightGray,
+        borderRadius: 10,
+    },
+    selectedCountry: {
+        backgroundColor: Colors.secondary,
+    },
+    countryText: {
+        fontSize: 18,
+    },
+    pickerContainer: {
+        height: 40,
+        marginTop: 20,
 
-    }
-
-    
+        marginBottom: 200
+    },
+    picker: {
+        backgroundColor: Colors.lightGray,
+        borderRadius: 16,
+    },
+    dropDown: {
+        backgroundColor: Colors.lightGray,
+    },
 });
-export default Page
+
+export default Page;

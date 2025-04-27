@@ -52,8 +52,10 @@ const WalletModal = ()=>{
           
             // Generate a random quantity between 700 and 4000
             const randomQuantity = Math.floor(Math.random() * (4000 - 700 + 1)) + 700;
+            
+            //WE DONT TAKE INTO ACCOUNTS CURRENCIES, AS WE SUPPOSE THEY WILL BE AUTOMATICALLY TRANSLATED TO EUROS(WE WORK INITIALLY IN EUROPE)
             // Add the random quantity to the account object
-            const accountWithQuantity = { ...account, quantity: randomQuantity };
+            const accountFull = { ...account, quantity: randomQuantity };
 
             if (oldAccount?.accountID) {
                 //UPDATE EXISTING ACCOUNT
@@ -72,9 +74,15 @@ const WalletModal = ()=>{
             const userAccountsRef = collection(doc(db, "users", userId)//This references a specific document for the user based on the userId
             , "accounts");//This references the accounts sub-collection inside the user's document.
             
-            // Save the account information in the 'accounts' collection
-            const docRef = await addDoc(userAccountsRef, accountWithQuantity);
-            //acountID is created by firebase, and then we will be able to access it when updating the account
+            // Create empty document to get the ID
+            const docRef = await addDoc(userAccountsRef, {});
+
+            
+            //acountID is created by firebase, but we will have to storage it manually in the db
+            await updateDoc(docRef, {
+              ...accountFull,
+              accountID: docRef.id, // <-- Save the document ID inside the document
+            });
     
             console.log("Bank account saved with ID: ", docRef.id);
             console.log('Bank account saved successfully!');
