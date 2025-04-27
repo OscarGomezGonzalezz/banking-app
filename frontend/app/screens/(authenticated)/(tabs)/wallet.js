@@ -50,6 +50,7 @@ const Page = ()=>{
     }, [wallet]);
 
     function validateDocument() {
+        console.log(country)
         switch (country.toLowerCase()) {
             case 'spain':
                 return validateSpanishDNI();
@@ -97,23 +98,14 @@ const Page = ()=>{
             setError('Please, enter a valid id');
             return;
         }
-
-        const validDocumentFormat = /^[A-Za-z0-9]{8,12}$/; 
-        if (!validDocumentFormat.test(idDocument)) {
-            setError('The document format is invalid. Make sure it has between 8 and 12 alphanumeric characters.');
+        if (!validateDocument(country)) {
+            setError('The document format is invalid. Make sure it complies with regulations');
             return;
         }
 
         if (!beneficiary || beneficiary.trim().length < 3) {
             setError("Enter the first and last name of the beneficiary");
             return;
-        }
-
-        if (validateDocument(country)) {
-            Alert.alert('Valid document!', 'The document number is valid.');
-            return;
-        } else {
-            Alert.alert('Invalid document!', 'The document number is invalid.');
         }
 
         setModalVisible(false);
@@ -281,7 +273,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignSelf: "center",
         width: '100%',
-        marginTop: 200,
+        marginTop: 150,
         marginBottom: 35,
         gap: 10,
     },

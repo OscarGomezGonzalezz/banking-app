@@ -8,4 +8,7 @@
 - check phone screen is correct when clerk allows sending sms
 - fetch different apis for retrieving transactions(expenses,send and receive money...)
 - search bar works for search transactions
-- añadir know your client feature para que el beneficiario de la cuenta tenga que ser la persona autenticada en la app, que sera quien use la app
+- hacer que al completar foemn the identity el fullname se guarde de algun modo, creo que no con clerk, porque se puede cambiar desde el profile y eso es distinto
+- al añadir la bank account, beneficiary == beneficiario puesto en el form de identity
+-poner que el beneficiary en el form add account sea por defecto el de beneficiario
+- tabla transacciones, asociadas a cuenta, y no a usuario
