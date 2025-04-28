@@ -15,11 +15,12 @@ const Page = ()=>{
     const [total, setTotal] = useState(0);
     const [wallet, setWallet] = useState([]);
     const { user } = useUser();
-    const [modalVisible, setModalVisible] = useState(false);
-    const [idDocument, setIdDocument] = useState('');
-    const [country, setCountry] = useState('');
+    const [idDocument, setIdDocument] = useState(user?.unsafeMetadata?.idDocument);
     const [firstName, setFirstName] = useState(user?.firstName);//in case there is username...
     const [lastName, setLastName] = useState(user?.lastName);
+
+    const [country, setCountry] = useState('');
+    const [modalVisible, setModalVisible] = useState(false);
     const [error, setError] = useState('');
     const data = [
         {key:'Spain', value:'Spain'},
@@ -29,8 +30,11 @@ const Page = ()=>{
         
     ]
 
+    const publicMetadata = user.publicMetadata;
+
     useEffect(() => {
         async function fetchWalletBalance() {
+
             if (user?.id) {
               try {
                 const querySnapshot = await getDocs(collection(db, "users", user.id, "accounts"));
@@ -95,7 +99,18 @@ const Page = ()=>{
     };
     const saveUser = async () => {
         try {
-            await user?.update({ firstName: firstName, lastName: lastName });
+            //PUBLIC AND PRIVATE METADATA CAN ONLY BE MODIFIED FROM THE BACKEND API, SO
+            // AS WE OUR APP DEALS WITH FICTICIOUS DATA WE WILL USE UNSAFE METADATA, WHICH 
+            // IS ABLE TO BE MODIFIED IN FRONTEND
+            // SOURCE: https://clerk.com/docs/references/javascript/user
+
+            await user?.update({
+                 firstName: firstName,
+                 lastName: lastName,
+                 unsafeMetadata: { idDocument: idDocument },
+                });
+            
+
             setModalVisible(false);
             router.push('screens/(authenticated)/(modals)/walletModal');
           } catch (error) {
