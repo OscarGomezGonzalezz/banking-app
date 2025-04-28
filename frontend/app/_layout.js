@@ -166,7 +166,18 @@ const Layout = ()=>{
           ),
         }}
       />
+      <Stack.Screen
+        name="screens/(authenticated)/(modals)/verifyIdentity"
+        options={{
+          presentation: 'transparentModal',
+          animation: 'fade',
+          title: '',
+          headerTransparent: true,
+      
+        }}
+      />
     </Stack>
+    
   );
 }
 const RootLayoutNav = () => {

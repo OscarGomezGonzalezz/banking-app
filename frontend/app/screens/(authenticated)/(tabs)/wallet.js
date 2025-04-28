@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Modal, TextInput, FlatList, Alert } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, TouchableOpacity, TextInput } from 'react-native';
 import Colors from '../../../constants/Colors';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
@@ -6,9 +6,7 @@ import ListAccounts from '../../../components/ListAccounts';
 import { useState, useEffect } from 'react';
 import { useUser } from '@clerk/clerk-react';
 import { collection, getDocs } from "firebase/firestore"; 
-import { SelectList } from 'react-native-dropdown-select-list'
 import db from '../../../firebase/firebaseConfig'; 
-import { CustomButton } from '../../../index';
 
 const Page = ()=>{
     const router = useRouter();
@@ -16,21 +14,6 @@ const Page = ()=>{
     const [wallet, setWallet] = useState([]);
     const { user } = useUser();
     const [idDocument, setIdDocument] = useState(user?.unsafeMetadata?.idDocument);
-    const [firstName, setFirstName] = useState(user?.firstName);//in case there is username...
-    const [lastName, setLastName] = useState(user?.lastName);
-
-    const [country, setCountry] = useState('');
-    const [modalVisible, setModalVisible] = useState(false);
-    const [error, setError] = useState('');
-    const data = [
-        {key:'Spain', value:'Spain'},
-        {key:'Germany', value:'Germany'},
-        {key:'France', value:'France'},
-        {key:'Passport', value:'Passport'},
-        
-    ]
-
-    const publicMetadata = user.publicMetadata;
 
     useEffect(() => {
         async function fetchWalletBalance() {
@@ -54,93 +37,20 @@ const Page = ()=>{
         fetchWalletBalance();
     }, [wallet]);
 
-    function validateDocument() {
-        console.log(country)
-        switch (country.toLowerCase()) {
-            case 'spain':
-                return validateSpanishDNI();
-            case 'germany':
-                return validateGermanID();
-            case 'france':
-                return validateFrenchID();
-            case 'passport':
-                return validatePassport();
-            default:
-                return false; 
-        }
-    }
-
-    function validateSpanishDNI() {
-        const dniRegex = /^\d{8}[A-Z]$/i;
-        return dniRegex.test(idDocument);
-    }
-
-    function validateGermanID() {
-        const germanIdRegex = /^[0-9]{10}$/;
-        return germanIdRegex.test(idDocument);
-    }
-
-    function validateFrenchID() {
-        const frenchIdRegex = /^[0-9A-Z]{12}$/i;
-        return frenchIdRegex.test(idDocument);
-    }
-
-    function validatePassport() {
-        const passportRegex = /^[A-Z0-9]{6,9}$/i;
-        return passportRegex.test(idDocument);
-    }
-
+   
     const handleAddAccount = () => {
-        if (!idDocument) {
-            setModalVisible(true);
+        if (!idDocument || idDocument === '' ) {
+            try{
+                console.log("hacer puysh");
+                
+                router.replace('screens/(authenticated)/(modals)/verifyIdentity');
+            } catch (e){
+            console.error(e)    
+            }
+            
         } else {
             router.push('screens/(authenticated)/(modals)/walletModal');
         }
-    };
-    const saveUser = async () => {
-        try {
-            //PUBLIC AND PRIVATE METADATA CAN ONLY BE MODIFIED FROM THE BACKEND API, SO
-            // AS WE OUR APP DEALS WITH FICTICIOUS DATA WE WILL USE UNSAFE METADATA, WHICH 
-            // IS ABLE TO BE MODIFIED IN FRONTEND
-            // SOURCE: https://clerk.com/docs/references/javascript/user
-
-            await user?.update({
-                 firstName: firstName,
-                 lastName: lastName,
-                 unsafeMetadata: { idDocument: idDocument },
-                });
-            
-
-            setModalVisible(false);
-            router.push('screens/(authenticated)/(modals)/walletModal');
-          } catch (error) {
-            console.error(error);
-          } finally {
-            setModalVisible(false);
-            router.push('screens/(authenticated)/(modals)/walletModal');
-          }
-    }
-    const handleSubmitDocument = () => {
-        if (!country || country.trim().length === 0) {
-            setError('Please select the country of your document');
-            return;
-        }
-        if (!idDocument || idDocument.trim().length === 0) {
-            setError('Please, enter a valid id');
-            return;
-        }
-        if (!validateDocument()) {
-            setError('The document format is invalid. Make sure it complies with regulations');
-            return;
-        }
-
-        if (!firstName || firstName.trim().length < 3 && !lastName || lastName.trim().length < 3) {
-            setError("Enter the first and last name of the beneficiary");
-            return;
-        }
-        saveUser();
-        //VER SI NOS PIDE VERIFICAR CON BASE DE DATOS FICTICIA
-
     };
 
     return (
@@ -166,68 +76,6 @@ const Page = ()=>{
                     </View>
                 </View>
             </View>
-
-            <Modal visible={modalVisible} animationType="slide" transparent={true} onRequestClose={() => setModalVisible(false)}>
-                <View style={{ flex: 1, paddingTop: 100, backgroundColor: 'white', paddingHorizontal: 20 }}>
-                    <Text style={styles.title}>We need first to verify your identity</Text>
-                    <SelectList 
-                        setSelected={(value) => setCountry(value)} 
-                        data={data} 
-                        save="value"
-                        placeholder='Select the country of your document'
-                        dropdownStyles={{
-                            backgroundColor: Colors.lightGray, // color de fondo del menú desplegable
-                        }}
-                        boxStyles={styles.input} // Se lo aplicas aquí
-                        inputStyles={{
-                            fontSize: 18, // porque el tamaño del texto va aparte
-                            color: '#000' // opcional, para el color del texto
-                        }}
-                        
-                    />
-
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Enter your ID document number"
-                        placeholderTextColor={Colors.gray}
-                        value={idDocument}
-                        onChangeText={setIdDocument}
-                    />
-
-                    <TextInput
-                        style={styles.input}
-                        placeholder="First name"
-                        placeholderTextColor={Colors.gray}
-                        value={firstName}
-                        onChangeText={setFirstName}
-                    />
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Last name"
-                        placeholderTextColor={Colors.gray}
-                        value={lastName}
-                        onChangeText={setLastName}
-                    />
-
-                    <View style={{ alignSelf: 'center', marginTop: 20 }}>
-                        {error ? <Text style={{ color: "red", fontSize: 18 }}>{error}</Text> : null}
-                    </View>
-
-                    <Text style={styles.subtitle}>
-                        <Ionicons name="information-circle" size={28} color={Colors.gray} />
-                        Attention 
-                    </Text>
-                    <Text style={[styles.subtitle, { fontSize: 16 }]}>
-                        Your full name must match exactly with the beneficiary name of any bank accounts added in this app.
-                        This helps to ensure security and prevent fraudulent activity.
-                    </Text>
-
-                    <View style={styles.footer}>
-                        <CustomButton title="Continue" onPress={handleSubmitDocument} isRegister isDisabled={idDocument === ''} />
-                        <CustomButton title="Cancel" onPress={() => setModalVisible(false)} isRegister isDelete />
-                    </View>
-                </View>
-            </Modal>
         </ScrollView>
     );
 };
