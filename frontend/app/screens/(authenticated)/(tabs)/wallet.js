@@ -17,8 +17,9 @@ const Page = ()=>{
     const { user } = useUser();
     const [modalVisible, setModalVisible] = useState(false);
     const [idDocument, setIdDocument] = useState('');
-    const [beneficiary, setBeneficiary] = useState('');
     const [country, setCountry] = useState('');
+    const [firstName, setFirstName] = useState(user?.firstName);//in case there is username...
+    const [lastName, setLastName] = useState(user?.lastName);
     const [error, setError] = useState('');
     const data = [
         {key:'Spain', value:'Spain'},
@@ -92,23 +93,39 @@ const Page = ()=>{
             router.push('screens/(authenticated)/(modals)/walletModal');
         }
     };
-
+    const saveUser = async () => {
+        try {
+            await user?.update({ firstName: firstName, lastName: lastName });
+            setModalVisible(false);
+            router.push('screens/(authenticated)/(modals)/walletModal');
+          } catch (error) {
+            console.error(error);
+          } finally {
+            setModalVisible(false);
+            router.push('screens/(authenticated)/(modals)/walletModal');
+          }
+    }
     const handleSubmitDocument = () => {
+        if (!country || country.trim().length === 0) {
+            setError('Please select the country of your document');
+            return;
+        }
         if (!idDocument || idDocument.trim().length === 0) {
             setError('Please, enter a valid id');
             return;
         }
-        if (!validateDocument(country)) {
+        if (!validateDocument()) {
             setError('The document format is invalid. Make sure it complies with regulations');
             return;
         }
 
-        if (!beneficiary || beneficiary.trim().length < 3) {
+        if (!firstName || firstName.trim().length < 3 && !lastName || lastName.trim().length < 3) {
             setError("Enter the first and last name of the beneficiary");
             return;
         }
+        saveUser();
+        //VER SI NOS PIDE VERIFICAR CON BASE DE DATOS FICTICIA
 
-        setModalVisible(false);
     };
 
     return (
@@ -164,10 +181,17 @@ const Page = ()=>{
 
                     <TextInput
                         style={styles.input}
-                        placeholder="Enter your full name"
+                        placeholder="First name"
                         placeholderTextColor={Colors.gray}
-                        value={beneficiary}
-                        onChangeText={setBeneficiary}
+                        value={firstName}
+                        onChangeText={setFirstName}
+                    />
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Last name"
+                        placeholderTextColor={Colors.gray}
+                        value={lastName}
+                        onChangeText={setLastName}
                     />
 
                     <View style={{ alignSelf: 'center', marginTop: 20 }}>
@@ -273,7 +297,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignSelf: "center",
         width: '100%',
-        marginTop: 150,
+        marginTop: 100,
         marginBottom: 35,
         gap: 10,
     },

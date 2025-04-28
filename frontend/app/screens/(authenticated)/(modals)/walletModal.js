@@ -10,9 +10,10 @@ import { updateDoc,collection, addDoc, doc, deleteDoc } from "firebase/firestore
 import { useRouter } from 'expo-router';
 
 const WalletModal = ()=>{
-    const [account,  setAccount] = useState({});
     const oldAccount = useLocalSearchParams();
     const { user } = useUser();
+    const mandatoryBeneficiary = `${user.firstName} ${user.lastName}`;
+    const [account,  setAccount] = useState({beneficiary: mandatoryBeneficiary});
     const userId = user.id; 
     const router = useRouter();
     const [error, setError] = useState('');
@@ -38,6 +39,11 @@ const WalletModal = ()=>{
                 setError("Enter the first and last name of the beneficiary");
                 return;
               }
+              if (account.beneficiary !== mandatoryBeneficiary) {
+                setError("The beneficiary name of any bank accounts added must exactly match your full name indicated in the identity verification process");
+                return;
+              }
+
               //ES11111111111
               if (!account.IBAN || !/^([A-Z]{2})(\d{2})([A-Z0-9]{1,30})$/.test(account.IBAN)) {
                 setError("Please enter a valid IBAN.");
@@ -119,7 +125,7 @@ const WalletModal = ()=>{
                 <View style={styles.inputContainer}>
                     <TextInput
                         style={styles.input}
-                        placeholder="Beneficiary"
+                        placeholder={mandatoryBeneficiary}
                         placeholderTextColor={Colors.gray}
                         keyboardType='numeric'
                         value={account.beneficiary}
