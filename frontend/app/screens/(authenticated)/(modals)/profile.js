@@ -57,6 +57,7 @@ const Profile = ()=>{
                         </View>
                     )}
                     {edit && (//if we press the box (setEdit = true), we display the following
+                        <View style={styles.container}>
                         <View style={styles.editRow}>
                         <TextInput
                             placeholder="First Name"
@@ -74,9 +75,16 @@ const Profile = ()=>{
                             <Ionicons name="checkmark-outline" size={24} color={'white'} />
                         </TouchableOpacity>
                         </View>
+                        <Text style={styles.subtitle}>
+                          <Ionicons name="information-circle" size={18} color={'red'}/>
+                          {' '} 
+                          You will need to verify your new fullname 
+                        </Text>
+                        </View>
+                        
                     )}
                 </View>
-            </View>
+                </View>
 
             <View style={styles.actions}>
                 
@@ -129,7 +137,6 @@ const styles = StyleSheet.create({
         alignItems: "center",
     },
     editRow: {
-      flex: 1,
       flexDirection: 'row',
       gap: 12,
       alignItems: 'center',
@@ -170,5 +177,19 @@ const styles = StyleSheet.create({
       flexDirection: 'row',
       gap: 20,
     },
+
+    subtitle: {
+      flexDirection: 'row',
+        marginTop: 20,
+        color: 'red',
+        fontSize: 18,
+        fontWeight: '500',
+        alignSelf: 'center',
+    },
+    container: {
+      flex: 1,
+      justifyContent: 'space-between',
+      paddingHorizontal: 20,
+  },
   });
 export default Profile
