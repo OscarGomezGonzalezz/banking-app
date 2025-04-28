@@ -30,10 +30,14 @@ const Profile = ()=>{
     try {
       await user?.update({ firstName: firstName, lastName: lastName });
       setEdit(false);
+
+      router.replace('screens/(authenticated)/(modals)/verifyIdentity');
+
     } catch (error) {
       console.error(error);
     } finally {
       setEdit(false);
+      router.replace('screens/(authenticated)/(modals)/verifyIdentity');
     }
   };
  

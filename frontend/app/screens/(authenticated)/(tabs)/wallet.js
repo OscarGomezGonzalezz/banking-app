@@ -40,13 +40,7 @@ const Page = ()=>{
    
     const handleAddAccount = () => {
         if (!idDocument || idDocument === '' ) {
-            try{
-                console.log("hacer puysh");
-                
-                router.replace('screens/(authenticated)/(modals)/verifyIdentity');
-            } catch (e){
-            console.error(e)    
-            }
+            router.push('screens/(authenticated)/(modals)/verifyIdentity');
             
         } else {
             router.push('screens/(authenticated)/(modals)/walletModal');

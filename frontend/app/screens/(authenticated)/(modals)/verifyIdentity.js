@@ -76,16 +76,12 @@ const VerifyIdentity = ()=>{
                     lastName: lastName,
                     unsafeMetadata: { idDocument: idDocument },
                 });
-            
-
-            setModalVisible(false);
-            //router.push('screens/(authenticated)/(modals)/walletModal');
+            router.push('screens/(authenticated)/(modals)/walletModal');
             console.log("router.push('screens/(authenticated)/(modals)/walletModal')");
         } catch (error) {
         console.error(error);
         } finally {
-        setModalVisible(false);
-        //router.push('screens/(authenticated)/(modals)/walletModal');
+        router.push('screens/(authenticated)/(modals)/walletModal');
         console.log("router.push('screens/(authenticated)/(modals)/walletModal')");
         }
     }
@@ -114,7 +110,6 @@ const VerifyIdentity = ()=>{
 
 
     return (
-        <BlurView style={{flex:1, paddingTop:100,backgroundColor:'white'}}>
             <View style={{ flex: 1, paddingTop: 100, backgroundColor: 'white', paddingHorizontal: 20 }}>
                 <Text style={styles.title}>We need first to verify your identity</Text>
                 <SelectList 
@@ -171,10 +166,9 @@ const VerifyIdentity = ()=>{
 
                 <View style={styles.footer}>
                     <CustomButton title="Continue" onPress={handleSubmitDocument} isRegister isDisabled={idDocument === ''} />
-                    <CustomButton title="Cancel" onPress={() => setModalVisible(false)} isRegister isDelete />
+                    <CustomButton title="Cancel" onPress={() => router.back()} isRegister isDelete />
                 </View>
             </View>
-        </BlurView>
         
     )
 }
