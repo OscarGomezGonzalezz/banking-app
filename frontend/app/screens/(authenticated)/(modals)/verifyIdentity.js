@@ -5,7 +5,7 @@ import { Ionicons } from '@expo/vector-icons';
 import {useState}from 'react'
 import { CustomButton } from '../../../index';
 import { useUser } from '@clerk/clerk-react';
-import { useRouter } from 'expo-router';
+import { useRouter, useLocalSearchParams } from 'expo-router';
 
 import { SelectList } from 'react-native-dropdown-select-list'
 
@@ -18,6 +18,9 @@ const VerifyIdentity = ()=>{
     const [country, setCountry] = useState('');
     const router = useRouter();
     const [error, setError] = useState('');
+
+    const { oldFirstName, oldLastName } = useLocalSearchParams();
+    console.log(oldFirstName, oldLastName)
 
     const data = [
         {key:'Spain', value:'Spain'},
@@ -77,13 +80,31 @@ const VerifyIdentity = ()=>{
                     unsafeMetadata: { idDocument: idDocument },
                 });
             router.push('screens/(authenticated)/(modals)/walletModal');
-            console.log("router.push('screens/(authenticated)/(modals)/walletModal')");
         } catch (error) {
         console.error(error);
         } finally {
         router.push('screens/(authenticated)/(modals)/walletModal');
         console.log("router.push('screens/(authenticated)/(modals)/walletModal')");
         }
+    }
+    const cancel = async () => {
+        if(oldFirstName && oldLastName){
+            try{
+
+                await user?.update({
+                    firstName: oldFirstName,
+                    lastName: oldLastName,
+                }); 
+
+                router.push('screens/(authenticated)/(modals)/profile');
+            } catch(e){
+                console.error(e);
+            }   
+
+        } else{
+            router.push('screens/(authenticated)/(tabs)/wallet');
+        }
+
     }
     const handleSubmitDocument = () => {
         if (!country || country.trim().length === 0) {
@@ -166,7 +187,7 @@ const VerifyIdentity = ()=>{
 
                 <View style={styles.footer}>
                     <CustomButton title="Continue" onPress={handleSubmitDocument} isRegister isDisabled={idDocument === ''} />
-                    <CustomButton title="Cancel" onPress={() => router.back()} isRegister isDelete />
+                    <CustomButton title="Cancel" onPress={() => cancel()} isRegister isDelete />
                 </View>
             </View>
         

@@ -8,6 +8,5 @@
 - check phone screen is correct when clerk allows sending sms
 - fetch different apis for retrieving transactions(expenses,send and receive money...)
 - search bar works for search transactions
-- pasar verify identity a modals/ para reusarlo en profile al cambiar el username: para
-ello acceder a documentId desde una db y no como variable
+- arreglar el enrutado
 - tabla transacciones, asociadas a cuenta, y no a usuario

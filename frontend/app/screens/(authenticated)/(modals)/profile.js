@@ -28,16 +28,32 @@ const Profile = ()=>{
 
   const onSaveUser = async () => {
     try {
+      // Compare the storaged fullname, with the one typed in the form 
+    const firstNameChanged = user?.firstName !== firstName;
+    const lastNameChanged = user?.lastName !== lastName;
+
+    // just update in case fullname is changed
+    if (firstNameChanged || lastNameChanged) {
+      const oldFirstName = user?.firstName;
+      const oldLastName = user?.lastName;
       await user?.update({ firstName: firstName, lastName: lastName });
       setEdit(false);
 
-      router.replace('screens/(authenticated)/(modals)/verifyIdentity');
+      router.replace({
+        pathname: 'screens/(authenticated)/(modals)/verifyIdentity',
+        params: {
+          oldFirstName,
+          oldLastName
+        },
+      });
+      
+    } else {
+      console.log('No changes detected.');
+      setEdit(false);
+    }
 
     } catch (error) {
       console.error(error);
-    } finally {
-      setEdit(false);
-      router.replace('screens/(authenticated)/(modals)/verifyIdentity');
     }
   };
  

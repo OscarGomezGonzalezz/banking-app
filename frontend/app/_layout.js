@@ -138,6 +138,7 @@ const Layout = ()=>{
         }}
       />
       <Stack.Screen name="screens/(authenticated)/(tabs)" options={{headerShown: false}}/>
+
       <Stack.Screen
         name="screens/(authenticated)/(modals)/profile"
         options={{
@@ -173,7 +174,6 @@ const Layout = ()=>{
           animation: 'fade',
           title: '',
           headerTransparent: true,
-      
         }}
       />
     </Stack>
