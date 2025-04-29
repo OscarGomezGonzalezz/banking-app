@@ -161,7 +161,7 @@ const Layout = ()=>{
           title: '',
           headerTransparent: true,
           headerLeft: () => (
-            <TouchableOpacity onPress={router.back}>
+            <TouchableOpacity onPress={router.replace('screens/(authenticated)/(tabs)/wallet')}>
               <Ionicons name="close-outline" size={34} color={'white'} />
             </TouchableOpacity>
           ),

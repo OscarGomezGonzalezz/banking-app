@@ -79,12 +79,11 @@ const VerifyIdentity = ()=>{
                     lastName: lastName,
                     unsafeMetadata: { idDocument: idDocument },
                 });
-            router.push('screens/(authenticated)/(modals)/walletModal');
+            router.replace('screens/(authenticated)/(modals)/walletModal');
         } catch (error) {
         console.error(error);
         } finally {
-        router.push('screens/(authenticated)/(modals)/walletModal');
-        console.log("router.push('screens/(authenticated)/(modals)/walletModal')");
+        router.replace('screens/(authenticated)/(modals)/walletModal');
         }
     }
     const cancel = async () => {
