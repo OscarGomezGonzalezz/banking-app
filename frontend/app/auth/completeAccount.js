@@ -3,7 +3,7 @@ import { useRouter } from "expo-router";
 import { useUser } from "@clerk/clerk-expo";
 import { useEffect, useState } from "react";
 import Colors from "../../constants/Colors";
-import { CustomButton } from '../../index';
+import { CustomButton } from '../index';
   
 const CompleteYourAccountScreen = () => {
   const { user, isLoaded } = useUser();

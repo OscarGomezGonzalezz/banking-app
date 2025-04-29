@@ -3,7 +3,7 @@ import { View, TextInput, Text, StyleSheet, TouchableOpacity, KeyboardAvoidingVi
 import { useRouter, Link } from 'expo-router';
 import { useSignUp, isClerkAPIResponseError } from "@clerk/clerk-expo";
 import Colors from '../constants/Colors';
-import { CustomButton } from '../index';
+import { CustomButton } from './index';
 
 export default function Register() {
   const [phoneNumber, setPhoneNumber] = useState('');
@@ -21,7 +21,7 @@ export default function Register() {
        });
        signUp.preparePhoneNumberVerification();
        //router.push('screens/auth/[phone]')
-       router.push(`screens/auth/${fullPhoneNumber}/${true}`);
+       router.navigate(`/auth/${fullPhoneNumber}/${true}`);
    } catch(e){
      console.log('error', JSON.stringify(e, null, 2));
         if (isClerkAPIResponseError(e)) {

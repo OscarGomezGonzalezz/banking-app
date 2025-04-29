@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, TextInput, Text, StyleSheet, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
 import { useRouter } from 'expo-router';
 import Colors from '../constants/Colors';
-import { CustomButton } from '../index';
+import { CustomButton } from './index';
 import { useSignIn, isClerkAPIResponseError } from "@clerk/clerk-expo";
 import { Ionicons } from '@expo/vector-icons';
 import * as WebBrowser from 'expo-web-browser'
@@ -54,7 +54,7 @@ export default function Login() {
           phoneNumberId,
         });
         
-       router.push(`screens/auth/${fullPhoneNumber}/${false}`);
+       router.navigate(`/auth/${fullPhoneNumber}/${false}`);
       
       } catch(error){
         console.log('error', JSON.stringify(error, null, 2));
@@ -77,7 +77,7 @@ export default function Login() {
         try {
           await setActive({ session: signInAttempt.createdSessionId });
           console.log('Successful login');
-          router.push('screens/(authenticated)/(tabs)/home')
+          router.navigate('/home')
         } catch (error) {
           console.error('Error setting active session:', error);
         }

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
-import Colors from './constants/Colors';
+import Colors from '../constants/Colors';
 import { ResizeMode, Video } from 'expo-av';
 
 export const CustomButton = ({ title, onPress, isRegister, isDisabled, isDelete }) => {
@@ -42,8 +42,9 @@ export default function Home() {
       <View style={styles.header}>
         <Text style={styles.title}>Welcome to your BankApp</Text>
         <View style={styles.buttons}>
-          <CustomButton title="Login" onPress={() => router.push('screens/login')} />
-          <CustomButton title="Register" onPress={() => router.push('screens/register')} isRegister />
+        {/* https://docs.expo.dev/router/basics/navigation/#native-navigation-basics-with-userouter */}
+          <CustomButton title="Login" onPress={() => router.navigate('/login')} />
+          <CustomButton title="Register" onPress={() => router.navigate('/register')} isRegister />
         </View>
       </View>
     </View>

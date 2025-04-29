@@ -1,7 +1,7 @@
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity, TextInput } from 'react-native';
 import Colors from '../../../constants/Colors';
 import { Ionicons } from '@expo/vector-icons';
-import { useRouter } from 'expo-router';
+import { useRouter, useSegments } from 'expo-router';
 import ListAccounts from '../../../components/ListAccounts';
 import { useState, useEffect } from 'react';
 import { useUser } from '@clerk/clerk-react';
@@ -14,7 +14,8 @@ const Page = ()=>{
     const [wallet, setWallet] = useState([]);
     const { user } = useUser();
     const [idDocument, setIdDocument] = useState(user?.unsafeMetadata?.idDocument);
-
+    console.log("wallet")
+    
     useEffect(() => {
         async function fetchWalletBalance() {
 
@@ -40,10 +41,10 @@ const Page = ()=>{
    
     const handleAddAccount = () => {
         if (!idDocument || idDocument === '' ) {
-            router.push('screens/(authenticated)/(modals)/verifyIdentity');
+            router.navigate('/verifyIdentity');
             
         } else {
-            router.push('screens/(authenticated)/(modals)/walletModal');
+            router.navigate('/walletModal');
         }
     };
 

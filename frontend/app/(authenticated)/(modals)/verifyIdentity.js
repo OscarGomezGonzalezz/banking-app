@@ -3,7 +3,7 @@ import Colors from '../../../constants/Colors';
 import { BlurView } from 'expo-blur';
 import { Ionicons } from '@expo/vector-icons';
 import {useState}from 'react'
-import { CustomButton } from '../../../index';
+import { CustomButton } from '../../index';
 import { useUser } from '@clerk/clerk-react';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 
@@ -79,11 +79,11 @@ const VerifyIdentity = ()=>{
                     lastName: lastName,
                     unsafeMetadata: { idDocument: idDocument },
                 });
-            router.replace('screens/(authenticated)/(modals)/walletModal');
+            router.navigate('/walletModal');
         } catch (error) {
         console.error(error);
         } finally {
-        router.replace('screens/(authenticated)/(modals)/walletModal');
+        router.navigate('/walletModal');
         }
     }
     const cancel = async () => {
@@ -95,13 +95,13 @@ const VerifyIdentity = ()=>{
                     lastName: oldLastName,
                 }); 
 
-                router.replace('screens/(authenticated)/(modals)/profile');
+                router.navigate('/profile');
             } catch(e){
                 console.error(e);
             }   
 
         } else{
-            router.replace('screens/(authenticated)/(tabs)/wallet');
+            router.navigate('/wallet');
         }
 
     }

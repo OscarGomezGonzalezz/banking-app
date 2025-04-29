@@ -6,7 +6,7 @@ import { scale } from 'react-native-size-matters';
 const HomeCard = () => {
     return (
         <ImageBackground
-            source={require("../../assets/card.png")}
+            source={require("../assets/card.png")}
             resizeMode="stretch"
             style={styles.bgImage}
         >

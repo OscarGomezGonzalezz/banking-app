@@ -1,7 +1,7 @@
 import { Stack, useSegments } from "expo-router";
 import { TouchableOpacity, Text } from "react-native";
-import Colors from "./constants/Colors";
-import { use, useEffect } from 'react';
+import Colors from "../constants/Colors";
+import { useEffect } from 'react';
 import { useRouter, Link} from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { ClerkProvider, useAuth, useUser } from '@clerk/clerk-expo'
@@ -32,7 +32,7 @@ const Layout = ()=>{
   
    
       console.log('isSignedIn', isSignedIn);
-      console.log(segments); // ["screens", "(authenticated)", "(tabs)", "home"]
+      console.log("segments:",segments); // ["screens", "(authenticated)", "(tabs)", "home"]
   
       const inAuthGroup = segments[1] === '(authenticated)';
       const needsToCompleteAccount = !user?.username || !user?.passwordEnabled;
@@ -40,16 +40,16 @@ const Layout = ()=>{
   
       if (isSignedIn) {
         if (needsToCompleteAccount) {
-          router.replace('/screens/auth/completeAccount');
+          router.navigate('/auth/completeAccount');
         } else if (!inAuthGroup) {
           const timeout = setTimeout(() => {
-            router.replace('/screens/(authenticated)/(tabs)/home');
+            router.navigate('/home');
           }, 1000); // 1 segundo
     
           return () => clearTimeout(timeout); // Limpieza del timeout si cambia el estado
         }
       } else {
-        router.replace('/');
+        router.navigate('/');
       }// 1000 ms = 1 second of delay for visualizing purposes
     //in the completeAccount Page(completePage will be fetched instantly
     //  after succesful registration and we dont want that)
@@ -66,7 +66,7 @@ const Layout = ()=>{
     <Stack>
       <Stack.Screen name="index" options={{ headerShown: false }} />
       <Stack.Screen
-        name="screens/register"
+        name="register"
         options={{
           title: "",
           headerBackTitle: "",
@@ -80,7 +80,7 @@ const Layout = ()=>{
         }}
       />
       <Stack.Screen
-        name="screens/login"
+        name="login"
         options={{
           title: "",
           headerBackTitle: "",
@@ -92,7 +92,7 @@ const Layout = ()=>{
             </TouchableOpacity>
           ),
           headerRight: () => (
-            <Link href={"screens/help"} asChild>
+            <Link href={"/help"} asChild>
             <TouchableOpacity>
               <Ionicons name="help-circle-outline" size={34} color={Colors.dark} />
             </TouchableOpacity>
@@ -100,14 +100,14 @@ const Layout = ()=>{
           ),
         }}
       />
-      <Stack.Screen name="screens/help" options={{
+      <Stack.Screen name="help" options={{
         title: "Help",
         presentation:"modal",
         headerStyle: { backgroundColor: Colors.secondary },  // Custom header background
         headerTintColor: '#fff',  // Text color in header
         headerTitleStyle: { fontWeight: 'bold' }, // Title style
         }}/>
-      <Stack.Screen name="screens/correspondences" options={{ 
+      <Stack.Screen name="correspondences" options={{ 
         title: "Correspondences", 
         presentation: "modal",
         headerStyle: { backgroundColor: Colors.secondary },  // Custom header background
@@ -115,7 +115,7 @@ const Layout = ()=>{
         headerTitleStyle: { fontWeight: 'bold' }, // Title style
       }} />
       <Stack.Screen
-        name="screens/auth/[phone]/[isRegister]"
+        name="auth/[phone]/[isRegister]"
         options={{
           title: "",
           headerBackTitle: "",
@@ -129,7 +129,7 @@ const Layout = ()=>{
         }}
       />
       <Stack.Screen
-        name="screens/auth/completeAccount"
+        name="auth/completeAccount"
         options={{
           title: "",
           headerBackTitle: "",
@@ -137,45 +137,14 @@ const Layout = ()=>{
           headerStyle: { backgroundColor: Colors.background },
         }}
       />
-      <Stack.Screen name="screens/(authenticated)/(tabs)" options={{headerShown: false}}/>
+      <Stack.Screen name="(authenticated)/(tabs)" options={{headerShown: false}}/>
+      <Stack.Screen name="(authenticated)/(modals)" options={{headerShown: false}}/>
 
-      <Stack.Screen
-        name="screens/(authenticated)/(modals)/profile"
-        options={{
-          presentation: 'transparentModal',
-          animation: 'fade',
-          title: '',
-          headerTransparent: true,
-          headerLeft: () => (
-            <TouchableOpacity onPress={router.back}>
-              <Ionicons name="close-outline" size={34} color={'white'} />
-            </TouchableOpacity>
-          ),
-        }}
-      />
-      <Stack.Screen
-        name="screens/(authenticated)/(modals)/walletModal"
-        options={{
-          presentation: 'transparentModal',
-          animation: 'fade',
-          title: '',
-          headerTransparent: true,
-          headerLeft: () => (
-            <TouchableOpacity onPress={router.replace('screens/(authenticated)/(tabs)/wallet')}>
-              <Ionicons name="close-outline" size={34} color={'white'} />
-            </TouchableOpacity>
-          ),
-        }}
-      />
-      <Stack.Screen
-        name="screens/(authenticated)/(modals)/verifyIdentity"
-        options={{
-          presentation: 'transparentModal',
-          animation: 'fade',
-          title: '',
-          headerTransparent: true,
-        }}
-      />
+{/* expo router removes the group routes(the ones between parenthesis) from the target route, but 
+we have to define these routes with their group parts of the route in layout 
+
+DOC: https://docs.expo.dev/router/basics/notation/
+*/}
     </Stack>
     
   );

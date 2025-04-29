@@ -14,7 +14,7 @@ const CustomHeader = ()=>{
             paddingTop: top
         }}>
             <View style={styles.container}>
-                <Link href={'/screens/(authenticated)/(modals)/profile'} asChild>
+                <Link href={'/profile'} asChild>
                 <TouchableOpacity style={styles.profilebutton} >
                 <Ionicons name="person" style={{padding:10}} size={20} color={Colors.dark}></Ionicons>
                 </TouchableOpacity>
@@ -25,12 +25,12 @@ const CustomHeader = ()=>{
                     <TextInput style={styles.searchBar} placeholder="Search" placeholderTextColor={Colors.dark} />
                 </View>
                 <View style={[styles.profilebutton,{backgroundColor: Colors.lightGray}]}>
-                    <TouchableOpacity onPress={() => router.push('/screens/correspondences')}>
+                    <TouchableOpacity onPress={() => router.navigate('/correspondences')}>
                     <Ionicons name={'mail'} size={20} color={Colors.dark} />
                     </TouchableOpacity>
                 </View>
                 <View style={[styles.profilebutton, {backgroundColor: Colors.lightGray}]}>
-                    <TouchableOpacity onPress={() => router.push('/screens/help')}>
+                    <TouchableOpacity onPress={() => router.navigate('/help')}>
                         <Ionicons name={'help-circle'} size={20} color={Colors.dark} />
                     </TouchableOpacity>
                 </View>

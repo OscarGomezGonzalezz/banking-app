@@ -3,7 +3,7 @@ import Colors from "../../../constants/Colors";
 import { useHeaderHeight } from '@react-navigation/elements';
 import { useState, useEffect } from 'react';
 import { useUser } from '@clerk/clerk-react';
-import { collection, getDocs, Transaction } from "firebase/firestore"; 
+import { collection, getDocs } from "firebase/firestore"; 
 import db from '../../../firebase/firebaseConfig'; 
 
 import {View , Text, ScrollView, StyleSheet, Button} from 'react-native';
@@ -14,6 +14,7 @@ const Page = () => {
     const [wallet, setWallet] = useState([]);
     const { user } = useUser();
     const [total, setTotal] = useState(0);
+    console.log("home");
     const sampleData = [
       {
         id: 1,

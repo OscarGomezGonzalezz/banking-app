@@ -2,7 +2,7 @@ import {ScrollView,View, Text, StyleSheet, TextInput} from 'react-native';
 import Colors from '../../../constants/Colors';
 import { BlurView } from 'expo-blur';
 import {useEffect, useState}from 'react'
-import { CustomButton } from '../../../index';
+import { CustomButton } from '../../index';
 import { useLocalSearchParams } from 'expo-router';
 import { useUser } from '@clerk/clerk-react';
 import db from '../../../firebase/firebaseConfig'

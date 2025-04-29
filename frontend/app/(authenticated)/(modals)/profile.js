@@ -13,11 +13,12 @@ const Profile = ()=>{
     const [lastName, setLastName] = useState(user?.lastName);
     const [edit, setEdit] = useState(false);
     const router = useRouter();
+    console.log("profile")
 
     const handleSignOut = async () => {
         try {
           await signOut()
-          router.replace('/')
+          router.navigate('/')
 
         } catch (err) {
           // See https://clerk.com/docs/custom-flows/error-handling
@@ -39,8 +40,8 @@ const Profile = ()=>{
       await user?.update({ firstName: firstName, lastName: lastName });
       setEdit(false);
 
-      router.replace({
-        pathname: 'screens/(authenticated)/(modals)/verifyIdentity',
+      router.navigate({
+        pathname: '/verifyIdentity',
         params: {
           oldFirstName,
           oldLastName
