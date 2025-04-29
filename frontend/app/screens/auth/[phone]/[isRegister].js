@@ -16,6 +16,9 @@ const PhoneScreen = () => {
   const [error, setError] = useState('');
   console.log(phone); 
 
+  const printedPhone = phone.split("&")
+  console
+
 
   const ref = useBlurOnFulfill({ value: code, cellCount: CELL_COUNT });
   const [props, getCellOnLayoutHandler] = useClearByFocusCell({
@@ -23,26 +26,43 @@ const PhoneScreen = () => {
     setValue: setCode,
   });
 
+
   useEffect(() => {
     if (code.length === 6) {
-      if (isRegister === true) {
-        verifySignIn();
+      const register = isRegister === true || isRegister === 'true'; // otherway it takes true as a string and will go to else
+      if (register === true) {
+       
+        verifySignUp();
       } else {
-        verifyCode();
+        verifySignIn();
+        
       }
     }
   }, [code]);
 
-  useEffect(() => {
-    console.log('isRegister:', isRegister);
-  }, [isRegister]);
-
-  const verifyCode = async () => {
+  //ref: https://clerk.com/docs/references/javascript/sign-up
+  const verifySignUp = async () => {
     try {
+      //according to clerk documentation in configure/email,username and password:
+      // As we have setted the option password for users: Passwords are required during
+      // sign up unless the user signs up with a social connection or a Web3 wallet.
+      await signUp.create({
+        phoneNumber: phone,
+        password: 'changethispassword3.14',
+      });
+
+      await signUp.prepareVerification({
+        strategy: 'phone_code',
+      });
       await signUp.attemptPhoneNumberVerification({
         code,
       });
+      // just continue if verification is success
+    if (signUp.status === 'complete') {
       await setActive({ session: signUp.createdSessionId });
+    } else {
+      console.log('Verification not complete. Current status:', signUp.status);
+    }
     } catch (err) {
       console.log('error', JSON.stringify(err, null, 2));
       if (isClerkAPIResponseError(err)) {
@@ -51,13 +71,30 @@ const PhoneScreen = () => {
     }
   };
 
+  // ref: https://clerk.com/docs/references/javascript/sign-in
   const verifySignIn = async () => {
     try {
+      await signIn.create({ 
+        strategy: 'phone_code',
+        identifier: phone 
+      });
+
+      //as phonenumberid is managed internally by clerk, we prefer to skip the prepare step
+      // await signIn.prepareFirstFactor({
+      //   strategy: 'phone_code',
+      //   phoneNumberId: phone,
+      // })
+
       await signIn.attemptFirstFactor({
         strategy: 'phone_code',
         code,
       });
-      await setActive({ session: signIn.createdSessionId });
+      console.log('attempted');
+      if (signIn.status === 'complete') {
+        await setActive({ session: signIn.createdSessionId });
+      } else {
+        console.log('Verification not complete. Current status:', signIn.status);
+      }
     } catch (err) {
       console.log('error', JSON.stringify(err, null, 2));
       if (isClerkAPIResponseError(err)) {
@@ -65,7 +102,6 @@ const PhoneScreen = () => {
       }
     }
   };
-  const printedPhone = phone.split("&")
   
   return (
     <View style={styles.container}>

@@ -35,7 +35,12 @@ const CompleteYourAccountScreen = () => {
      
 
        //WARNIGN TESTING: if user already has a passwird, it reports an error
-      await user.updatePassword({ newPassword: password });
+      await user.updatePassword({ 
+        newPassword: password, 
+        //according to clerk documentation in configure/email,username and password:
+        // As we have setted the option password for users: Passwords are required during
+        // sign up unless the user signs up with a social connection or a Web3 wallet.
+        currentPassword: 'changethispassword3.14' });
 
 
       //we need test first all posible errors of username, cause other way we wont be able

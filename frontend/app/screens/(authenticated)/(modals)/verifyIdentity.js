@@ -96,13 +96,13 @@ const VerifyIdentity = ()=>{
                     lastName: oldLastName,
                 }); 
 
-                router.push('screens/(authenticated)/(modals)/profile');
+                router.replace('screens/(authenticated)/(modals)/profile');
             } catch(e){
                 console.error(e);
             }   
 
         } else{
-            router.push('screens/(authenticated)/(tabs)/wallet');
+            router.replace('screens/(authenticated)/(tabs)/wallet');
         }
 
     }
