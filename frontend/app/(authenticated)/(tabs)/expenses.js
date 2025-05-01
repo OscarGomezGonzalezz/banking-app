@@ -3,6 +3,8 @@ import Colors from '../../../constants/Colors';
 import { useHeaderHeight } from '@react-navigation/elements';
 const Page = ()=>{
 
+    console.log("expenses");
+
     return (
         <ScrollView style={{backgroundColor: Colors.background}}
                 contentContainerStyle={{
