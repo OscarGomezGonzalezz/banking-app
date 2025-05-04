@@ -18,7 +18,7 @@ const Page = () => {
   const progress = limit > 0 ? spent / limit : 0;
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
+    <GestureHandlerRootView style={{ flex: 1, paddingHorizontal:10 }}>
       <ScrollView
         style={{ backgroundColor: Colors.background }}
         contentContainerStyle={{
@@ -120,7 +120,7 @@ const Page = () => {
           </View>
         )}
 
-        <View style={{ flex: 1 }}>
+        <View style={{ flex: 1}}>
           <WidgetList />
         </View>
       </ScrollView>
