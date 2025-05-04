@@ -24,7 +24,7 @@ const Page = () => {
         contentContainerStyle={{
           paddingTop: 60,
           flexGrow: 1,
-          paddingHorizontal: 20,
+          paddingHorizontal: 10,
           justifyContent: 'center',
         }}
       >

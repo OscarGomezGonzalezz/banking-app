@@ -7,7 +7,7 @@
 
 - search bar works for search transactions
 - tabla transacciones, asociadas a cuenta, y no a usuario
-- proceso presupuesto maximo y set alerta
+- darle realismo a expenses
 
 
 ## Testing data in clerk/configure/application/settings

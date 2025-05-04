@@ -7,9 +7,9 @@ import SortableList from './SortableList';
 
 const tiles = [
   { id: 'spent' },
+  { id: 'categories' },
+  { id: 'accounts' },
   { id: 'cashback' },
-  { id: 'recent' },
-  { id: 'cards' },
 ];
 
 const WidgetList = () => {
