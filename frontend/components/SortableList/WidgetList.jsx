@@ -14,11 +14,7 @@ const tiles = [
 
 const WidgetList = () => {
   return (
-    <View
-      style={{
-        paddingHorizontal: MARGIN,
-        marginBottom: 80,
-      }}
+    <View style={{flex: 1}}
     >
       <SortableList
         editing={true}
