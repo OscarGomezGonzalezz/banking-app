@@ -14,8 +14,8 @@ const tiles = [
 
 const WidgetList = () => {
   return (
-    <View style={{flex: 1}}
-    >
+    <View style={{flex: 1}}>
+    
       <SortableList
         editing={true}
         onDragEnd={(positions) => console.log(JSON.stringify(positions, null, 2))}
