@@ -1,48 +1,37 @@
 import {View, Text, ScrollView, StyleSheet} from 'react-native';
 import Colors from '../../../constants/Colors';
 import { useHeaderHeight } from '@react-navigation/elements';
+import WidgetList from '../../../components/SortableList/WidgetList'
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 const Page = ()=>{
 
     console.log("expenses");
 
     return (
-        <ScrollView style={{backgroundColor: Colors.background}}
-                contentContainerStyle={{
-                    paddingTop: 65,//we get the height from our custom header in order not to colapse elements
-                  }}>
-            <View style={styles.account}>    
-                    <Text>
-                        widgets expenses from 1
-                    </Text>
-                    
-                   
+        <ScrollView style={{ backgroundColor: Colors.background, flex: 1 }} contentContainerStyle={{ paddingTop: 60, flexGrow: 1 }}>
+            <View style={styles.container}>
+                <Text style={styles.title}>My expenses</Text>
             </View>
+            {/* This implementation is inspired by William Candillon video (passing everything to jsx)*/}
+            <GestureHandlerRootView style={styles.widgets}>
+                <WidgetList />
+                </GestureHandlerRootView>
         </ScrollView>
     )
 }
 const styles = StyleSheet.create({
-    account: {
-        margin: 80,
-        alignItems: 'center',
-    },
-    row: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center',
-        gap: 10,
-    },
-    balance: {
-        fontSize: 40,
-        fontWeight: 'bold',
-    },
-    currency: {
-        fontSize: 20,
-        fontWeight: 500,
-    },
-    actionRow: {
-        flexDirection: 'row',
+    container: {
         justifyContent: 'space-between',
-        padding: 20,
+        paddingHorizontal: 20,
+    },
+      title: {
+        fontSize: 60,
+        marginBottom: 10,
+        fontWeight: 'bold',
+        color: Colors.dark,
+      },
+    widgets:{
+        flex: 1
     }
 });
 export default Page

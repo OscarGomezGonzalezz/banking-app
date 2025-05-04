@@ -5,6 +5,7 @@ import { scale } from 'react-native-size-matters';
 
 const HomeCard = ({total}) => {
     return (
+        <View>
         <ImageBackground
             source={require("../assets/card.png")}
             resizeMode="stretch"
@@ -52,6 +53,7 @@ const HomeCard = ({total}) => {
                 style={styles.topRightIcon}
             />
         </ImageBackground>
+        </View>
     );
 };
 
