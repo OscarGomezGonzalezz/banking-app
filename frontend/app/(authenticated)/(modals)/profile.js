@@ -13,7 +13,6 @@ const Profile = ()=>{
     const [lastName, setLastName] = useState(user?.lastName);
     const [edit, setEdit] = useState(false);
     const router = useRouter();
-    console.log("profile")
 
     const handleSignOut = async () => {
         try {

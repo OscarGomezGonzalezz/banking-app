@@ -5,11 +5,14 @@ import WidgetList from '../../../components/SortableList/WidgetList';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import { Ionicons } from '@expo/vector-icons';
+import { useUser } from '@clerk/clerk-react';
 
 const Page = () => {
   const spent = 1050;
-  const [limit, setLimit] = useState(0);
-  const [step, setStep] = useState(0);
+  const { user } = useUser();
+  const [limit, setLimit] = useState(user?.unsafeMetadata?.limit);
+
+  const [step, setStep] = useState(() => (limit > 0 ? 2 : 0));
   // step 0 = setAlert btn, 1 = input, 2 = progress circle
 
   const progress = limit > 0 ? spent / limit : 0;
@@ -47,8 +50,20 @@ const Page = () => {
             />
             <View style={styles.buttons}>
             <TouchableOpacity
-              onPress={() => {
-                if (limit > 0) setStep(2);
+              onPress={ async () => {
+                if (limit > 0){
+                    try{
+                        await user?.update({
+                            unsafeMetadata: {
+                            ...user.unsafeMetadata,  // valores previos
+                            limit,}
+                        });
+                        setStep(2);
+                    } catch (e){
+                        console.error(e);
+                    }
+
+                } 
               }}
               style={styles.saveButton}
             >
@@ -56,7 +71,12 @@ const Page = () => {
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => {
-                setStep(0);
+                if(limit > 0){
+
+                    setStep(2);
+                } else{
+                    setStep(0);
+                }
               }}
               style={[styles.saveButton, {backgroundColor: Colors.secondary}]}
             >

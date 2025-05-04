@@ -17,7 +17,7 @@ const Page = ()=>{
     const [wallet, setWallet] = useState([]);
     const { user } = useUser();
     const [idDocument, setIdDocument] = useState(user?.unsafeMetadata?.idDocument);
-    console.log("wallet")
+    
     
     //This is necessary for using router.back(), which is more stetic than router.replace()
     useFocusEffect(
