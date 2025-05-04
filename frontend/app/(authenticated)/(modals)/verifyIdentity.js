@@ -68,6 +68,7 @@ const VerifyIdentity = ()=>{
 
 
     const saveUser = async () => {
+        if(oldFirstName && oldLastName){
         try {
             //PUBLIC AND PRIVATE METADATA CAN ONLY BE MODIFIED FROM THE BACKEND API, SO
             // AS WE OUR APP DEALS WITH FICTICIOUS DATA WE WILL USE UNSAFE METADATA, WHICH 
@@ -79,11 +80,11 @@ const VerifyIdentity = ()=>{
                     lastName: lastName,
                     unsafeMetadata: { idDocument: idDocument },
                 });
-            router.navigate('/walletModal');
+            router.navigate('/profile');
         } catch (error) {
         console.error(error);
-        } finally {
-        router.navigate('/walletModal');
+        }} else{
+            router.navigate('/walletModal');
         }
     }
     const cancel = async () => {

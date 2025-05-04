@@ -19,7 +19,9 @@ const Layout = () => {
         name="profile"
         options={{
           headerLeft: () => (
-            <TouchableOpacity onPress={router.back}>
+            // router.navigate('home') instead of router back needed when pressing back after veryfing identity after changing full nmae
+            // Besides, it has to be envolved in a function instead of in a callback, as it returns a promise
+            <TouchableOpacity onPress={() => router.replace('/home')}>
               <Ionicons name="close-outline" size={34} color={'white'} />
             </TouchableOpacity>
           ),

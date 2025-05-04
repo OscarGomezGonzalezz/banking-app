@@ -7,6 +7,9 @@ import { useState, useEffect } from 'react';
 import { useUser } from '@clerk/clerk-react';
 import { collection, getDocs } from "firebase/firestore"; 
 import db from '../../../firebase/firebaseConfig'; 
+import { set } from 'date-fns';
+import { useFocusEffect } from '@react-navigation/native';
+import { useCallback } from 'react';
 
 const Page = ()=>{
     const router = useRouter();
@@ -16,28 +19,41 @@ const Page = ()=>{
     const [idDocument, setIdDocument] = useState(user?.unsafeMetadata?.idDocument);
     console.log("wallet")
     
-    useEffect(() => {
-        async function fetchWalletBalance() {
-
-            if (user?.id) {
-              try {
-                const querySnapshot = await getDocs(collection(db, "users", user.id, "accounts"));
-                const accounts = [];
-                let totalBalance = 0;
-                querySnapshot.forEach((doc) => {
-                totalBalance += doc.data().quantity;
-                  accounts.push(doc.data());
-                });
-                setTotal(totalBalance); 
+    //This is necessary for using router.back(), which is more stetic than router.replace()
+    useFocusEffect(
+        useCallback(() => {
+          let isActive = true;
+    
+          async function fetchData() {
+            if (!user?.id || !isActive) return;
+            try {
+              const snap = await getDocs(collection(db, "users", user.id, "accounts"));
+              const accounts = [];
+              let totalBalance = 0;
+    
+              snap.forEach(doc => {
+                const data = doc.data();
+                accounts.push(data);
+                totalBalance += data.quantity;
+              });
+    
+              if (isActive) {
                 setWallet(accounts);
-              } catch (error) {
-                console.error("Error fetching accounts:", error);
+                setTotal(totalBalance);
               }
+            } catch (e) {
+              console.error("Error fetching accounts:", e);
             }
-        }
-        fetchWalletBalance();
-    }, [wallet]);
-
+          }
+    
+          fetchData();
+    
+          return () => {
+            // evita actualizar el estado si la pantalla pierde el foco
+            isActive = false;
+          };
+        }, [user?.id])
+      );
    
     const handleAddAccount = () => {
         if (!idDocument || idDocument === '' ) {
@@ -67,7 +83,7 @@ const Page = ()=>{
                         </TouchableOpacity>
                     </View>
                     <View style={styles.listAccounts}>
-                        <ListAccounts />
+                        <ListAccounts wallet={wallet}/>
                     </View>
                 </View>
             </View>

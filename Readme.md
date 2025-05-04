@@ -7,7 +7,6 @@
 
 - fetch different apis for retrieving transactions(expenses,send and receive money...)
 - search bar works for search transactions
-- arreglar el enrutado: ¿por que el layout de tabs hace que se rendericen todo el rato?
 - tabla transacciones, asociadas a cuenta, y no a usuario
 
 

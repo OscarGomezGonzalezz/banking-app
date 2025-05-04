@@ -6,6 +6,9 @@ import { useUser } from '@clerk/clerk-react';
 import { collection, getDocs } from "firebase/firestore"; 
 import db from '../../../firebase/firebaseConfig'; 
 
+import { useFocusEffect } from '@react-navigation/native';
+import { useCallback } from 'react';
+
 import {View , Text, ScrollView, StyleSheet, Button} from 'react-native';
 import HomeCard from "../../../components/HomeCard";
 import TransactionList from "../../../components/TransactionList";
@@ -47,29 +50,34 @@ const Page = () => {
     ];
     
 
-    useEffect(() => {
+    useFocusEffect(
+      useCallback(() => {
+        let isActive = true;
+  
         async function fetchWalletBalance() {
-            if (user?.id) { // Ensure the user is logged in
-              try {
-                const querySnapshot = await getDocs(collection(db, "users", user.id, "accounts"));
-                const accounts = [];
-                let totalBalance = 0;
-                querySnapshot.forEach((doc) => {
-                totalBalance += doc.data().quantity;
-                  accounts.push(doc.data());
-                });
-                setTotal(totalBalance); 
-                setWallet(accounts); // Set the accounts data to state
-
-      
-              } catch (error) {
-                console.error("Error fetching accounts:", error);
-              }
+          if (!user?.id || !isActive) return;
+          try {
+            const querySnapshot = await getDocs(collection(db, "users", user.id, "accounts"));
+            let totalBalance = 0;
+            querySnapshot.forEach((doc) => {
+              totalBalance += doc.data().quantity;
+            });
+            if (isActive) {
+              setTotal(totalBalance);
             }
+          } catch (error) {
+            console.error("Error fetching accounts:", error);
           }
-      
-          fetchWalletBalance(); // Fetch accounts on component mount
-      }, [wallet]); // Run when refreshing the window
+        }
+  
+        fetchWalletBalance();
+  
+        return () => {
+          // cuando la pantalla pierde foco, evitamos actualizar estado
+          isActive = false;
+        };
+      }, [user?.id])
+    );
 
     const headerHeight = useHeaderHeight();
 
@@ -83,9 +91,7 @@ const Page = () => {
 
             <View style={styles.account}>
             
-           <HomeCard/>
-
-            
+           <HomeCard total={total}/>
             <Text>
                 put total balance, recent transactions from 2 and create transactions
                 choosing specific account

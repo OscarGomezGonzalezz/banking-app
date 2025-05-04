@@ -40,7 +40,7 @@ const Profile = ()=>{
       await user?.update({ firstName: firstName, lastName: lastName });
       setEdit(false);
 
-      router.navigate({
+      router.push({
         pathname: '/verifyIdentity',
         params: {
           oldFirstName,

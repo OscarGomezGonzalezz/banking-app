@@ -1,36 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import { collection, getDocs } from "firebase/firestore"; 
 import { useUser } from '@clerk/clerk-react'; // Use Clerk's hook to get user details
-import db from '../firebase/firebaseConfig'; 
 
-function ListAccounts() {
-  const [wallet, setWallet] = useState([]);
-  const [account, setAccount] = useState({});
-  const { user } = useUser();
+function ListAccounts({wallet}) {
   const router = useRouter();
-
-  useEffect(() => {
-    async function fetchAccounts() {
-      if (user?.id) { // Ensure the user is logged in
-        try {
-          const querySnapshot = await getDocs(collection(db, "users", user.id, "accounts"));
-          const accounts = [];
-          querySnapshot.forEach((doc) => {
-            accounts.push({ accountID: doc.id, ...doc.data() });
-          });
-          setWallet(accounts); // Set the accounts data to state
-
-        } catch (error) {
-          console.error("Error fetching accounts:", error);
-        }
-      }
-    }
-
-    fetchAccounts(); // Fetch accounts on component mount
-  }, [wallet]); // Only run this effect when wallet changes
 
   const getAssociatedBank = (BIC) => {
     switch (BIC?.toUpperCase()) {
@@ -58,8 +33,8 @@ function ListAccounts() {
   const openWallet = async (item) => {
     console.log(item)
     try {
-        router.push({
-            pathname: 'screens/(authenticated)/(modals)/walletModal',
+        router.push({//it has to be push in order to can do .back() then
+            pathname: '/walletModal',
             params:{
                 accountID: item.accountID,
                 beneficiary: item.beneficiary,

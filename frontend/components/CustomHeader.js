@@ -14,11 +14,11 @@ const CustomHeader = ()=>{
             paddingTop: top
         }}>
             <View style={styles.container}>
-                <Link href={'/profile'} asChild>
-                <TouchableOpacity style={styles.profilebutton} >
+                
+                <TouchableOpacity style={styles.profilebutton} onPress={() => router.push('/profile')} >
                 <Ionicons name="person" style={{padding:10}} size={20} color={Colors.dark}></Ionicons>
                 </TouchableOpacity>
-                </Link>
+                
 
                 <View style={styles.search}>
                     <Ionicons name="search" style={{padding:10}} size={20} color={Colors.dark}></Ionicons>

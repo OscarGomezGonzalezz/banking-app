@@ -95,7 +95,7 @@ const WalletModal = ()=>{
 
             }
             
-            router.replace('screens/(authenticated)/(tabs)/wallet');
+            router.back();
         } catch (error) {
             console.error("Error saving bank account: ", error);
         }
@@ -106,7 +106,7 @@ const WalletModal = ()=>{
             const accountRef = doc(db, "users", userId, "accounts", oldAccount.accountID);
             await deleteDoc(accountRef);
             console.log("Bank account deleted with ID:", oldAccount.accountID);
-            router.back(); // Vuelve a la pantalla anterior tras borrar
+            router.back();
           } else {
             console.warn("No account to delete: accountID is missing.");
           }
