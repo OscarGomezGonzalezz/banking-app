@@ -68,23 +68,22 @@ const VerifyIdentity = ()=>{
 
 
     const saveUser = async () => {
-        if(oldFirstName && oldLastName){
+        
         try {
             //PUBLIC AND PRIVATE METADATA CAN ONLY BE MODIFIED FROM THE BACKEND API, SO
             // AS WE OUR APP DEALS WITH FICTICIOUS DATA WE WILL USE UNSAFE METADATA, WHICH 
             // IS ABLE TO BE MODIFIED IN FRONTEND
             // SOURCE: https://clerk.com/docs/references/javascript/user
-
+            let target = '/walletModal'
+            if(oldFirstName || oldLastName) target = '/profile'
             await user?.update({
                     firstName: firstName,
                     lastName: lastName,
                     unsafeMetadata: { idDocument: idDocument },
                 });
-            router.navigate('/profile');
+            router.navigate(target);
         } catch (error) {
         console.error(error);
-        }} else{
-            router.navigate('/walletModal');
         }
     }
     const cancel = async () => {
@@ -273,8 +272,8 @@ const styles = StyleSheet.create({
             justifyContent: 'center',
             alignSelf: "center",
             width: '100%',
-            marginTop: 100,
-            marginBottom: 35,
+            marginTop: 70,
+            marginBottom: 55,
             gap: 10,
         },
         countryButton: {

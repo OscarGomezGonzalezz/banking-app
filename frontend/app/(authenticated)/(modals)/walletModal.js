@@ -95,7 +95,7 @@ const WalletModal = ()=>{
 
             }
             
-            router.back();
+            router.replace('/wallet');
         } catch (error) {
             console.error("Error saving bank account: ", error);
         }

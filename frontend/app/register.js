@@ -66,7 +66,7 @@ export default function Register() {
         {error ? <Text style={{ color: "red", fontSize: 15 }}>{error}</Text> : null}
       </View>
       <TouchableOpacity style={styles.button}
-            onPress={() => router.push('screens/login')}
+            onPress={() => router.push('login')}
           >
             <Text style={styles.buttonText}>Already registered? Go log in</Text>
       
