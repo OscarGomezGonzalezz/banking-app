@@ -12,6 +12,7 @@ import { useCallback } from 'react';
 import {View, ScrollView, StyleSheet, Button} from 'react-native';
 import HomeCard from "../../../components/HomeCard";
 import TransactionList from "../../../components/TransactionList";
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 const sampleData = [
       {

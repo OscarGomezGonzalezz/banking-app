@@ -1,21 +1,44 @@
-import { View, Text, FlatList, StyleSheet, ScrollView } from 'react-native';
-import { FontAwesome } from '@expo/vector-icons'; // Make sure to install this library or use any other icon library
-import { format } from 'date-fns'; // Optional: For better date formatting
+import { useState, useMemo } from 'react';
+import {
+  View,
+  Text,
+  ScrollView,
+  FlatList,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+} from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { FontAwesome } from '@expo/vector-icons';
+import { format } from 'date-fns';
+import Colors from '../constants/Colors';
 
-/**
- * Componente para mostrar ingresos y gastos juntos
- * @param {{ data: Array<{ id: number, description: string, amount: number, methodOfPayment: string, date: string }> }} props
- */
 const IncomeExpenseList = ({ data }) => {
+  const [searchVisible, setSearchVisible] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+
+  // Filter the data by description, payment method, amount or formatted date
+  const filteredData = useMemo(() => {
+    const term = searchTerm.trim().toLowerCase();
+    if (!term) return data;
+    return data.filter(item => {
+      const dateStr = format(new Date(item.date), 'dd/MM/yyyy');
+      return (
+        item.description.toLowerCase().includes(term) ||
+        item.methodOfPayment.toLowerCase().includes(term) ||
+        String(item.amount).includes(term) ||
+        dateStr.includes(term)
+      );
+    });
+  }, [data, searchTerm]);
+
   const formatAmount = amount =>
     new Intl.NumberFormat('es-ES', {
       style: 'currency',
       currency: 'EUR',
     }).format(amount);
 
-  const formatDate = (date) => {
-    return format(new Date(date), 'dd/MM/yyyy'); // Format date to "DD/MM/YYYY"
-  };
+  const formatDate = date => format(new Date(date), 'dd/MM/yyyy');
 
   const renderItem = ({ item }) => (
     <View style={styles.itemBox}>
@@ -39,12 +62,31 @@ const IncomeExpenseList = ({ data }) => {
 
   return (
     <ScrollView style={styles.container}>
-      <Text style={styles.title}>Recent transactions</Text>
+      <View style={styles.headerTransac}>
+        <Text style={styles.title}>Recent transactions</Text>
+        <TouchableOpacity onPress={() => setSearchVisible(v => !v)}>
+          <Ionicons name="search" size={24} color={Colors.dark} />
+        </TouchableOpacity>
+      </View>
+
+      {searchVisible && (
+        <View style={styles.searchBarContainer}>
+          <TextInput
+            style={styles.searchInput}
+            placeholder="Search transactions..."
+            placeholderTextColor={Colors.gray}
+            value={searchTerm}
+            onChangeText={setSearchTerm}
+            autoFocus
+          />
+        </View>
+      )}
 
       <FlatList
-        data={data}
+        data={filteredData}
         renderItem={renderItem}
         keyExtractor={item => item.id.toString()}
+        contentContainerStyle={{ paddingBottom: 40 }}
       />
     </ScrollView>
   );
@@ -52,28 +94,39 @@ const IncomeExpenseList = ({ data }) => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1, // Take up full screen height
-    padding: 16,
-    backgroundColor: '#f5f5f5', // Optional: Add a background color for better contrast
+    backgroundColor: Colors.background,
+  },
+  headerTransac: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: 20,
   },
   title: {
-    fontSize: 24,
+    fontSize: 18,
     fontWeight: 'bold',
-    marginBottom: 8,
-    textAlign: 'center', // Center the title
+    color: Colors.dark,
+  },
+  searchBarContainer: {
+    paddingHorizontal: 20,
+    marginBottom: 10,
+  },
+  searchInput: {
+    height: 40,
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    backgroundColor: '#FFF',
+    borderWidth: 1,
+    borderColor: Colors.gray,
   },
   itemBox: {
     flexDirection: 'row',
-    alignItems: 'center',
     padding: 16,
-    marginBottom: 12,
-    backgroundColor: '#fff',
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: '#ddd',
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.lightGray,
   },
   iconContainer: {
-    marginRight: 16,
+    marginRight: 12,
   },
   itemDetails: {
     flex: 1,
@@ -84,22 +137,20 @@ const styles = StyleSheet.create({
   },
   methodOfPayment: {
     fontSize: 14,
-    color: '#555', // Slightly lighter color for the method of payment
-    marginBottom: 4,
+    color: Colors.gray,
+    marginVertical: 4,
   },
   incomeAmount: {
-    color: 'green',
     fontSize: 16,
-    fontWeight: 'bold',
+    color: 'green',
   },
   expenseAmount: {
-    color: 'red',
     fontSize: 16,
-    fontWeight: 'bold',
+    color: 'red',
   },
   date: {
-    fontSize: 14,
-    color: '#888', // Lighter color for the date
+    fontSize: 12,
+    color: Colors.gray,
     marginTop: 4,
   },
 });
