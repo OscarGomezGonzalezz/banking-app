@@ -14,37 +14,6 @@ import HomeCard from "../../../components/HomeCard";
 import TransactionList from "../../../components/TransactionList";
 
 
-
-const sampleData = [
-      {
-        id: 1,
-        description: 'Salary',
-        amount: 1500,
-        methodOfPayment: 'Bank Transfer',
-        date: '2025-04-10T00:00:00Z'
-      },
-      {
-        id: 2,
-        description: 'Supermarket',
-        amount: -250,
-        methodOfPayment: 'Credit Card',
-        date: '2025-04-12T00:00:00Z'
-      },
-      {
-        id: 3,
-        description: 'Rent',
-        amount: -800,
-        methodOfPayment: 'Bank Transfer',
-        date: '2025-04-01T00:00:00Z'
-      },
-      {
-        id: 4,
-        description: 'Freelance Work',
-        amount: 600,
-        methodOfPayment: 'PayPal',
-        date: '2025-04-05T00:00:00Z'
-      }
-    ];
 const Page = () => {
     const { user } = useUser();
     const [total, setTotal] = useState(0);
