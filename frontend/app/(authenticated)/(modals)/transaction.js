@@ -7,12 +7,11 @@ import db from '../../../firebase/firebaseConfig';
 import { CustomButton } from '../../index';
 import Colors from '../../../constants/Colors';
 
-const CrearTransaccion = () => {
+const CreateTransaction = () => {
   const { user } = useUser();
   const router = useRouter();
   const userId = user.id;
   
-  // Estado de los inputs
   const [amount, setAmount] = useState('');
   const [description, setDescription] = useState('');
   const [methodOfPayment, setMethodOfPayment] = useState('Credit Card');
@@ -20,7 +19,7 @@ const CrearTransaccion = () => {
 
   const handleSubmit = async () => {
     if (!amount || !description || !methodOfPayment) {
-      setError("Por favor complete todos los campos.");
+      setError("Please fill in all fields.");
       return;
     }
 
@@ -32,24 +31,24 @@ const CrearTransaccion = () => {
         date: Timestamp.now(),
       });
 
-      Alert.alert('Éxito', 'Transacción creada exitosamente');
-      router.replace('/screens/(authenticated)/(tabs)/wallet'); // Regresar a la wallet
+      Alert.alert('Success', 'Transaction saved successfully.');
+      router.replace('/screens/(authenticated)/(tabs)/wallet');
     } catch (error) {
-      console.error("Error guardando transacción:", error);
-      Alert.alert('Error', 'Hubo un problema al guardar la transacción');
+      console.error("Error saving transaction:", error);
+      Alert.alert('Error', 'There was a problem saving the transaction.');
     }
   };
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>Nueva Transacción</Text>
+        <Text style={styles.title}>New Transaction</Text>
       </View>
 
       <View style={styles.form}>
         <TextInput
           style={styles.input}
-          placeholder="Cantidad"
+          placeholder="Amount"
           keyboardType="numeric"
           value={amount}
           onChangeText={setAmount}
@@ -57,14 +56,14 @@ const CrearTransaccion = () => {
 
         <TextInput
           style={styles.input}
-          placeholder="Descripción"
+          placeholder="Description"
           value={description}
           onChangeText={setDescription}
         />
 
         <TextInput
           style={styles.input}
-          placeholder="Método de pago (ej. Tarjeta de Crédito)"
+          placeholder="Method of payment (e.g. Credit Card)"
           value={methodOfPayment}
           onChangeText={setMethodOfPayment}
         />
@@ -73,7 +72,7 @@ const CrearTransaccion = () => {
       </View>
 
       <View style={styles.footer}>
-        <CustomButton title="Guardar Transacción" onPress={handleSubmit} isRegister />
+        <CustomButton title="Save Transaction" onPress={handleSubmit} isRegister />
       </View>
     </ScrollView>
   );
@@ -119,4 +118,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CrearTransaccion;
+export default CreateTransaction;

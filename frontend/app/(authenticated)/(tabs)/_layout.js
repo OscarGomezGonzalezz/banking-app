@@ -86,7 +86,7 @@ const Layout = () => {
       {/* Must me added in layout(not in home), for being present 
       in the screen in spite of scrolling */}
       {isHome && (
-        <Pressable onPress={() => router.navigate('/create')} style={styles.fab}>
+        <Pressable onPress={() => router.navigate('/transaction')} style={styles.fab}>
           <Ionicons name="add" size={28} color="white" />
         </Pressable>
       )}
