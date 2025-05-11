@@ -8,9 +8,12 @@
 - search bar works for search transactions
 - tabla transacciones, asociadas a cuenta, y no a usuario
 - darle realismo a expenses
+- añadir en backend que un user no pueda tener mas de 4 cuentas
 
 
 ## Testing data in clerk/configure/application/settings
+
+FOR EXPO GO APP IN PHONE, COMPUTER MUST CONNECT PERSONAL HOSTPOINT OF PHONE
 
 * Test verification code:
 424242

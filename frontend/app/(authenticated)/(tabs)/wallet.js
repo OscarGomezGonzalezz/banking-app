@@ -1,13 +1,12 @@
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity, TextInput } from 'react-native';
 import Colors from '../../../constants/Colors';
 import { Ionicons } from '@expo/vector-icons';
-import { useRouter, useSegments } from 'expo-router';
+import { useRouter } from 'expo-router';
 import ListAccounts from '../../../components/ListAccounts';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useUser } from '@clerk/clerk-react';
 import { collection, getDocs } from "firebase/firestore"; 
-import db from '../../../firebase/firebaseConfig'; 
-import { set } from 'date-fns';
+import db from '../../../firebase/firebaseConfig';
 import { useFocusEffect } from '@react-navigation/native';
 import { useCallback } from 'react';
 

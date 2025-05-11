@@ -127,7 +127,7 @@ const WalletModal = ()=>{
                         style={styles.input}
                         placeholder={mandatoryBeneficiary}
                         placeholderTextColor={Colors.gray}
-                        keyboardType='numeric'
+                        keyboardType='default'
                         value={account.beneficiary}
                         onChangeText={(text) => setAccount({ ...account, beneficiary: text })}
                         // we are updating only the specific property (beneficiary, IBAN, or BIC) using the 
@@ -138,7 +138,7 @@ const WalletModal = ()=>{
                         style={[styles.input, {flex: 1}]}//We expand phone input range
                         placeholder="IBAN"
                         placeholderTextColor={Colors.gray}
-                        keyboardType='numeric'
+                        keyboardType='default'
                         value={account.IBAN}
                         onChangeText={(text) => setAccount({ ...account, IBAN: text })}
                     />
@@ -146,7 +146,7 @@ const WalletModal = ()=>{
                         style={[styles.input, {flex: 1}]}//We expand phone input range
                         placeholder="BIC"
                         placeholderTextColor={Colors.gray}
-                        keyboardType='numeric'
+                        keyboardType='default'
                         value={account.BIC}
                         onChangeText={(text) => setAccount({ ...account, BIC: text })}
                     />

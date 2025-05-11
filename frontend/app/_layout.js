@@ -42,11 +42,11 @@ const Layout = ()=>{
         if (needsToCompleteAccount) {
           router.navigate('/auth/completeAccount');
         } else if (!inAuthGroup) {
-          const timeout = setTimeout(() => {
+          //const timeout = setTimeout(() => {
             router.navigate('/home');
-          }, 1000); // 1 segundo
+          //}, 1000); // 1 segundo
     
-          return () => clearTimeout(timeout); // Limpieza del timeout si cambia el estado
+          //return () => clearTimeout(timeout); // Limpieza del timeout si cambia el estado
         }
       } else {
         router.navigate('/');
@@ -135,6 +135,11 @@ const Layout = ()=>{
           headerBackTitle: "",
           headerShadowVisible: false,
           headerStyle: { backgroundColor: Colors.background },
+          headerLeft: () => (
+            <TouchableOpacity onPress={router.back}>
+              <Ionicons name="arrow-back" size={34} color={Colors.dark} />
+            </TouchableOpacity>
+          ),
         }}
       />
       <Stack.Screen name="(authenticated)/(tabs)" options={{headerShown: false}}/>

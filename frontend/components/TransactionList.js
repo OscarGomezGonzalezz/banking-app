@@ -1,4 +1,3 @@
-import React from 'react';
 import { View, Text, FlatList, StyleSheet, ScrollView } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons'; // Make sure to install this library or use any other icon library
 import { format } from 'date-fns'; // Optional: For better date formatting

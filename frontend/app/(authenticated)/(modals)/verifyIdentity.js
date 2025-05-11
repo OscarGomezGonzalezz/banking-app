@@ -130,7 +130,7 @@ const VerifyIdentity = ()=>{
 
 
     return (
-            <View style={{ flex: 1, paddingTop: 100, backgroundColor: 'white', paddingHorizontal: 20 }}>
+            <ScrollView style={{ flex: 1, paddingTop: 100, backgroundColor: 'white', paddingHorizontal: 20 }}>
                 <Text style={styles.title}>We need first to verify your identity</Text>
                 <SelectList 
                     setSelected={(value) => setCountry(value)} 
@@ -188,7 +188,7 @@ const VerifyIdentity = ()=>{
                     <CustomButton title="Continue" onPress={handleSubmitDocument} isRegister isDisabled={idDocument === ''} />
                     <CustomButton title="Cancel" onPress={() => cancel()} isRegister isDelete />
                 </View>
-            </View>
+            </ScrollView>
         
     )
 }

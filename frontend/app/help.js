@@ -8,9 +8,9 @@ const Help = () => {
       <Text style={{ fontSize: 24, fontWeight: 'bold', marginBottom: 20 }}>Help & Support</Text>
 
       <View style={{ backgroundColor: '#FFF', padding: 15, borderRadius: 10, marginBottom: 10 }}>
-        <Text style={{ fontSize: 18, fontWeight: 'bold', marginBottom: 5 }}>How do I reset my password?</Text>
+        <Text style={{ fontSize: 18, fontWeight: 'bold', marginBottom: 5 }}>Can I hold bank accounts from other people?</Text>
         <Text style={{ color: '#555' }}>
-          Go to Settings Security Reset Password. Follow the steps and check your email for confirmation.
+          No, you just can manage bank accounts where you are the beneficiary. This helps ensure security and prevent fraudulent activity
         </Text>
       </View>
 
@@ -24,7 +24,7 @@ const Help = () => {
       <View style={{ backgroundColor: '#FFF', padding: 15, borderRadius: 10, marginBottom: 10 }}>
         <Text style={{ fontSize: 18, fontWeight: 'bold', marginBottom: 5 }}>How can I update my personal information?</Text>
         <Text style={{ color: '#555' }}>
-          You can update your phone number and address in the Profile section under Account Settings.
+          You can update your first and last name in the Profile section. For changing your phone number contact with support
         </Text>
       </View>
 

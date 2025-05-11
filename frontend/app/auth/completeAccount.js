@@ -70,7 +70,7 @@ const CompleteYourAccountScreen = () => {
         <TextInput
           style={[styles.input, {margin: 7}]}
           placeholderTextColor={Colors.gray}
-          keyboardType='numeric'
+          keyboardType='default'
           value={username}
           placeholder="username"
           onChangeText={(username) => setUsername(username)}
@@ -105,7 +105,7 @@ const styles = StyleSheet.create({
   },
   title: {
       fontSize: 40,
-      marginTop: 0,
+      marginTop: 20,
       fontWeight: 'bold',
       color: Colors.dark,
       marginBottom: 30

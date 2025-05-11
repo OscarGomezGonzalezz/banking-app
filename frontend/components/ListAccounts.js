@@ -1,8 +1,6 @@
-import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import { useUser } from '@clerk/clerk-react'; // Use Clerk's hook to get user details
 
 function ListAccounts({wallet}) {
   const router = useRouter();
