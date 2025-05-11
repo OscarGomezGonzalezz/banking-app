@@ -9,16 +9,11 @@ import db from '../../../firebase/firebaseConfig';
 import { useFocusEffect } from '@react-navigation/native';
 import { useCallback } from 'react';
 
-import {View , Text, ScrollView, StyleSheet, Button} from 'react-native';
+import {View, ScrollView, StyleSheet, Button} from 'react-native';
 import HomeCard from "../../../components/HomeCard";
 import TransactionList from "../../../components/TransactionList";
 
-const Page = () => {
-    const [wallet, setWallet] = useState([]);
-    const { user } = useUser();
-    const [total, setTotal] = useState(0);
-    console.log("home");
-    const sampleData = [
+const sampleData = [
       {
         id: 1,
         description: 'Salary',
@@ -48,6 +43,11 @@ const Page = () => {
         date: '2025-04-05T00:00:00Z'
       }
     ];
+const Page = () => {
+    const { user } = useUser();
+    const [total, setTotal] = useState(0);
+    console.log("home");
+    
     
 
     useFocusEffect(
@@ -92,10 +92,6 @@ const Page = () => {
             <View style={styles.account}>
             
            <HomeCard total={total}/>
-            <Text>
-                put total balance, recent transactions from 2 and create transactions
-                choosing specific account
-            </Text>
            
 
             </View>

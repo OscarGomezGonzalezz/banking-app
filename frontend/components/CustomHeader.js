@@ -1,4 +1,4 @@
-import {View, Text, StyleSheet, TouchableOpacity, TextInput} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity, Image} from 'react-native';
 import { BlurView } from 'expo-blur';
 import {useSafeAreaInsets} from 'react-native-safe-area-context'
 import Colors from '../constants/Colors';
@@ -21,8 +21,10 @@ const CustomHeader = ()=>{
                 
 
                 <View style={styles.search}>
-                    <Ionicons name="search" style={{padding:10}} size={20} color={Colors.dark}></Ionicons>
-                    <TextInput style={styles.searchBar} placeholder="Search" placeholderTextColor={Colors.dark} />
+                    <Image
+    source={require('../assets/UNIWALLET.png')}
+    style={[{ width: 100, height: 100, resizeMode: 'contain'}, styles.searchBar]}
+  />
                 </View>
                 <View style={[styles.profilebutton,{backgroundColor: Colors.lightGray}]}>
                     <TouchableOpacity onPress={() => router.navigate('/correspondences')}>
@@ -66,19 +68,13 @@ const styles = StyleSheet.create({
       search: {
         flex: 1,
         flexDirection: 'row',
-        justifyContent: 'center',
+        marginLeft: 50,
+        alignSelf: 'center',
+        justifyContent: "center",
+        borderRadius: 30,
         alignItems: 'center',
-        backgroundColor: Colors.lightGray,
-        borderRadius: 30,
-      },
-      searchBar: {
-        flex: 1,
-        paddingTop: 10,
-        paddingRight: 10,
-        paddingBottom: 10,
-        paddingLeft: 0,
-        color: Colors.dark,
-        borderRadius: 30,
+
+        backgroundColor: 'transparent'
       },
 })
 export default CustomHeader

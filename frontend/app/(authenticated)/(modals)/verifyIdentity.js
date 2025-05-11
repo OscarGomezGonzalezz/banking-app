@@ -19,8 +19,8 @@ const VerifyIdentity = ()=>{
     const router = useRouter();
     const [error, setError] = useState('');
 
-    const { oldFirstName, oldLastName } = useLocalSearchParams();
-    console.log(oldFirstName, oldLastName)
+    const { oldFirstName, oldLastName, backProfile } = useLocalSearchParams();
+    console.log(oldFirstName, oldLastName, backProfile)
 
     const data = [
         {key:'Spain', value:'Spain'},
@@ -75,7 +75,7 @@ const VerifyIdentity = ()=>{
             // IS ABLE TO BE MODIFIED IN FRONTEND
             // SOURCE: https://clerk.com/docs/references/javascript/user
             let target = '/walletModal'
-            if(oldFirstName || oldLastName) target = '/profile'
+            if(backProfile) target = '/profile'
             await user?.update({
                     firstName: firstName,
                     lastName: lastName,

@@ -40,7 +40,7 @@ export default function Home() {
         style={styles.video}
       />
       <View style={styles.header}>
-        <Text style={styles.title}>Welcome to your BankApp</Text>
+        <Text style={styles.title}>Welcome to UniWallet</Text>
         <View style={styles.buttons}>
         {/* https://docs.expo.dev/router/basics/navigation/#native-navigation-basics-with-userouter */}
           <CustomButton title="Login" onPress={() => router.navigate('/login')} />
@@ -78,7 +78,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     width: '100%',
-    marginTop: 400,
+    marginTop: 450,
     gap: 20,
   },
   button: {
