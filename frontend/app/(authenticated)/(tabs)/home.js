@@ -12,7 +12,8 @@ import { useCallback } from 'react';
 import {View, ScrollView, StyleSheet, Button} from 'react-native';
 import HomeCard from "../../../components/HomeCard";
 import TransactionList from "../../../components/TransactionList";
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+
+
 
 const sampleData = [
       {
@@ -47,6 +48,8 @@ const sampleData = [
 const Page = () => {
     const { user } = useUser();
     const [total, setTotal] = useState(0);
+    const [transactions, setTransactions] = useState([]); // State to hold all transactions
+    
     console.log("home");
     
     
@@ -80,6 +83,44 @@ const Page = () => {
       }, [user?.id])
     );
 
+    
+  useEffect(() => {
+      async function fetchAllTransactions() {
+        if (user?.id) {
+          try {
+            const accountsRef = collection(db, "users", user.id, "accounts");
+            const accountsSnapshot = await getDocs(accountsRef);
+
+            const allTransactions = [];
+
+            // Recorre cada cuenta
+            for (const accountDoc of accountsSnapshot.docs) {
+              const accountId = accountDoc.id;
+
+              const transactionsRef = collection(db, "users", user.id, "accounts", accountId, "transactions");
+              const transactionsSnapshot = await getDocs(transactionsRef);
+
+              transactionsSnapshot.forEach((txDoc) => {
+                console.log("Transaction data:", txDoc.data());
+                allTransactions.push({
+                  //id: txDoc.id,
+                  //accountId, // para saber de qué cuenta viene
+                  ...txDoc.data()
+                });
+              });
+            }
+
+            setTransactions(allTransactions); // Guarda todo en el estado
+          } catch (error) {
+            console.error("Error fetching all transactions:", error);
+          }
+        }
+      }
+
+      fetchAllTransactions();
+}, []);
+
+
     const headerHeight = useHeaderHeight();
 
 
@@ -98,7 +139,7 @@ const Page = () => {
             </View>
 
             <View style={styles.actionRow}>
-            <TransactionList data={sampleData} /> 
+            <TransactionList data={transactions} /> 
             </View>
          
         </ScrollView>
