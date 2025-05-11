@@ -2,11 +2,19 @@ import React from 'react';
 import { View, Text, FlatList, StyleSheet, ScrollView } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons'; // Make sure to install this library or use any other icon library
 import { format } from 'date-fns'; // Optional: For better date formatting
-
 /**
  * Componente para mostrar ingresos y gastos juntos
- * @param {{ data: Array<{ id: number, description: string, amount: number, methodOfPayment: string, date: string }> }} props
+ * @param {{ 
+ *   data: Array<{ 
+ *     id: number,  
+ *     amount: number,
+ *     description: string,
+ *     date: string | import('firebase/firestore').Timestamp,
+ *     methodOfPayment: string 
+ *   }> 
+ * }} props
  */
+
 const IncomeExpenseList = ({ data }) => {
   const formatAmount = amount =>
     new Intl.NumberFormat('es-ES', {
@@ -14,9 +22,10 @@ const IncomeExpenseList = ({ data }) => {
       currency: 'EUR',
     }).format(amount);
 
-  const formatDate = (date) => {
-    return format(new Date(date), 'dd/MM/yyyy'); // Format date to "DD/MM/YYYY"
-  };
+const formatDate = (date) => {
+  const dateObj = typeof date.toDate === 'function' ? date.toDate() : new Date(date);
+  return format(dateObj, 'dd/MM/yyyy');
+};
 
   const renderItem = ({ item }) => (
     <View style={styles.itemBox}>
