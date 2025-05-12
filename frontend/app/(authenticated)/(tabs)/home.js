@@ -21,14 +21,16 @@ const Page = () => {
     const [transactions, setTransactions] = useState([]); // State to hold all transactions
     const [totalIncome, setTotalIncome] = useState(0);
     const [totalExpenses, setTotalExpenses] = useState(0);
+    const [accountsLoaded, setAccountsLoaded] = useState(false); // Estado para controlar la carga de cuentas
+
     
     console.log("home");
-    
-    
+   
 
     useFocusEffect(
       useCallback(() => {
         let isActive = true;
+        setAccountsLoaded(false); // Reiniciar el estado de carga de cuentas al entrar en la pantalla
   
         async function fetchWalletBalance() {
           if (!user?.id || !isActive) return;
@@ -40,6 +42,7 @@ const Page = () => {
             });
             if (isActive) {
               setTotal(totalBalance);
+              setAccountsLoaded(true); // Marcar como cargadas las cuentas
             }
           } catch (error) {
             console.error("Error fetching accounts:", error);
@@ -57,6 +60,8 @@ const Page = () => {
 
     
   useEffect(() => {
+     if (!accountsLoaded) return; // Esperar hasta que las cuentas estén cargadas
+
       async function fetchAllTransactions() {
         if (user?.id) {
           try {
@@ -99,6 +104,10 @@ const Page = () => {
 
             setTransactions(allTransactions); // Guarda todo en el estado
           
+            let totalIn = total;
+            totalIn = totalIn + totalIncome - totalExpenses;
+
+            setTotal(totalIn);
             setTotalIncome(totalIncome);
             setTotalExpenses(totalExpenses);
           } catch (error) {
@@ -108,7 +117,7 @@ const Page = () => {
       }
 
       fetchAllTransactions();
-}, []);
+}, [accountsLoaded]);
 
 
     const headerHeight = useHeaderHeight();
