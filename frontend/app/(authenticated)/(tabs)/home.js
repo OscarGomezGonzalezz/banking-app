@@ -12,12 +12,15 @@ import { useCallback } from 'react';
 import {View, ScrollView, StyleSheet, Button} from 'react-native';
 import HomeCard from "../../../components/HomeCard";
 import TransactionList from "../../../components/TransactionList";
+import { set } from "date-fns";
 
 
 const Page = () => {
     const { user } = useUser();
     const [total, setTotal] = useState(0);
     const [transactions, setTransactions] = useState([]); // State to hold all transactions
+    const [totalIncome, setTotalIncome] = useState(0);
+    const [totalExpenses, setTotalExpenses] = useState(0);
     
     console.log("home");
     
@@ -61,6 +64,9 @@ const Page = () => {
             const accountsSnapshot = await getDocs(accountsRef);
 
             const allTransactions = [];
+             let totalIncome = 0;
+              let totalExpenses = 0;
+           
 
             // Recorre cada cuenta
             for (const accountDoc of accountsSnapshot.docs) {
@@ -71,6 +77,18 @@ const Page = () => {
 
               transactionsSnapshot.forEach((txDoc) => {
                 console.log("Transaction data:", txDoc.data());
+                
+                 const data = txDoc.data();
+                 const amount = parseFloat(data.amount);
+
+                    if (!isNaN(amount)) {
+                      if (amount > 0) {
+                        totalIncome += amount;
+                      } else {
+                        totalExpenses += Math.abs(amount);
+                      }
+                    }
+
                 allTransactions.push({
                   //id: txDoc.id,
                   //accountId, // para saber de qué cuenta viene
@@ -80,6 +98,9 @@ const Page = () => {
             }
 
             setTransactions(allTransactions); // Guarda todo en el estado
+          
+            setTotalIncome(totalIncome);
+            setTotalExpenses(totalExpenses);
           } catch (error) {
             console.error("Error fetching all transactions:", error);
           }
@@ -92,7 +113,7 @@ const Page = () => {
 
     const headerHeight = useHeaderHeight();
 
-
+       
     
     return (
         <ScrollView style={{backgroundColor: Colors.background}}
@@ -102,7 +123,8 @@ const Page = () => {
 
             <View style={styles.account}>
             
-           <HomeCard total={total}/>
+           <HomeCard total={total} expenses={totalExpenses} incomes={totalIncome} />
+
            
 
             </View>

@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, ImageBackground } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { scale } from 'react-native-size-matters';
 
-const HomeCard = ({total}) => {
+const HomeCard = ({total, expenses, incomes}) => {
     return (
         <View>
         <ImageBackground
@@ -29,7 +29,7 @@ const HomeCard = ({total}) => {
                             </View>
                             <Text style={styles.statLabel}>Income</Text>
                         </View>
-                        <Text style={[styles.statAmount, { color: "green" }]}>3000$</Text>
+                        <Text style={[styles.statAmount, { color: "green" }]}>{incomes}$</Text>
                     </View>
 
                     {/* Expenses */}
@@ -40,7 +40,7 @@ const HomeCard = ({total}) => {
                             </View>
                             <Text style={styles.statLabel}>Expenses</Text>
                         </View>
-                        <Text style={[styles.statAmount, { color: "red" }]}>1234$</Text>
+                        <Text style={[styles.statAmount, { color: "red" }]}>{expenses}$</Text>
                     </View>
                 </View>
             </View>

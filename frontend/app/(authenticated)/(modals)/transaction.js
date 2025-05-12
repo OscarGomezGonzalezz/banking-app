@@ -10,12 +10,11 @@ import {
 } from 'react-native';
 import { useUser } from '@clerk/clerk-react';
 import { useRouter } from 'expo-router';
-import { addDoc, collection, getDocs } from 'firebase/firestore';
-import { Picker } from '@react-native-picker/picker';
-import { Timestamp } from 'firebase/firestore';
+import { addDoc, collection, getDocs, Timestamp } from 'firebase/firestore';
 import db from '../../../firebase/firebaseConfig';
 import { CustomButton } from '../../index';
 import Colors from '../../../constants/Colors';
+import { SelectList } from 'react-native-dropdown-select-list';
 
 const CreateTransaction = () => {
   const { user } = useUser();
@@ -102,18 +101,23 @@ const CreateTransaction = () => {
           {loadingAccounts ? (
             <ActivityIndicator size="small" color={Colors.primary} />
           ) : (
-            <Picker
-              selectedValue={selectedAccountId}
-              onValueChange={(itemValue) => setSelectedAccountId(itemValue)}
-              style={styles.picker}
-              dropdownIconColor="#555"
-            >
-              <Picker.Item label="Select an account..." value="" />
-              {accounts.map(account => (
-                  <Picker.Item key={account.id} label={account.iban || 'Unnamed Account'} value={account.id} />
-        ))}
-
-            </Picker>
+            <SelectList
+              setSelected={(val) => setSelectedAccountId(val)}
+              data={accounts.map(account => ({
+                key: account.id,
+                value: account.iban || 'Unnamed Account',
+              }))}
+              save="key"
+              placeholder="Select an account"
+              boxStyles={{
+                backgroundColor: '#fff',
+                borderRadius: 8,
+                borderColor: Colors.gray,
+                borderWidth: 1,
+              }}
+              dropdownStyles={{ backgroundColor: '#fff' }}
+              inputStyles={{ color: '#333' }}
+            />
           )}
         </View>
 
@@ -156,17 +160,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   pickerContainer: {
-    backgroundColor: '#fff',
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: Colors.gray,
     marginBottom: 10,
-    overflow: 'hidden',
-  },
-  picker: {
-    height: 50,
-    color: '#333',
-    paddingHorizontal: 10,
   },
   footer: {
     marginTop: 40,
