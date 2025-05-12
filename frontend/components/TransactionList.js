@@ -17,12 +17,14 @@ const IncomeExpenseList = ({ data }) => {
   const [searchVisible, setSearchVisible] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
 
-  // Filter the data by description, payment method, amount or formatted date
   const filteredData = useMemo(() => {
     const term = searchTerm.trim().toLowerCase();
     if (!term) return data;
+
     return data.filter(item => {
-      const dateStr = format(new Date(item.date), 'dd/MM/yyyy');
+      const rawDate = item.date?.toDate?.() || new Date(item.date); // Compatibilidad
+      const dateStr = format(rawDate, 'dd/MM/yyyy');
+
       return (
         item.description.toLowerCase().includes(term) ||
         item.methodOfPayment.toLowerCase().includes(term) ||
@@ -38,7 +40,10 @@ const IncomeExpenseList = ({ data }) => {
       currency: 'EUR',
     }).format(amount);
 
-  const formatDate = date => format(new Date(date), 'dd/MM/yyyy');
+  const formatDate = date => {
+    const safeDate = date?.toDate?.() || new Date(date);
+    return format(safeDate, 'dd/MM/yyyy');
+  };
 
   const renderItem = ({ item }) => (
     <View style={styles.itemBox}>
@@ -85,7 +90,7 @@ const IncomeExpenseList = ({ data }) => {
       <FlatList
         data={filteredData}
         renderItem={renderItem}
-        keyExtractor={item => item.id.toString()}
+        keyExtractor={item => item.id?.toString() || Math.random().toString()}
         contentContainerStyle={{ paddingBottom: 40 }}
       />
     </ScrollView>
