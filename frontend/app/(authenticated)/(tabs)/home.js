@@ -22,7 +22,8 @@ const Page = () => {
     console.log("home");
     
     
-
+  //This is necessary for using router.back(), which is more stetic than router.replace().
+    //I think this could be solved by using .onSnapShot =>{}, but as this already works smoothly, we wont change it
     useFocusEffect(
       useCallback(() => {
         let isActive = true;

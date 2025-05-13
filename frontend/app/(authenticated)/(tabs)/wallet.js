@@ -18,7 +18,8 @@ const Page = ()=>{
     const [idDocument, setIdDocument] = useState(user?.unsafeMetadata?.idDocument);
     
     
-    //This is necessary for using router.back(), which is more stetic than router.replace()
+    //This is necessary for using router.back(), which is more stetic than router.replace().
+    //I think this could be solved by using .onSnapShot =>{}, but as this already works smoothly, we wont change it
     useFocusEffect(
         useCallback(() => {
           let isActive = true;
