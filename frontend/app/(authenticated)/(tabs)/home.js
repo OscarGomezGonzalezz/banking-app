@@ -25,96 +25,58 @@ const Page = () => {
     
     console.log("home");
     useFocusEffect(
-      useCallback(() => {
-        let isActive = true;
-        setAccountsLoaded(false); // Reiniciar el estado de carga de cuentas al entrar en la pantalla
-  
-        async function fetchWalletBalance() {
-          if (!user?.id || !isActive) return;
-          try {
-            const querySnapshot = await getDocs(collection(db, "users", user.id, "accounts"));
-            let totalBalance = 0;
-            querySnapshot.forEach((doc) => {
-              totalBalance += doc.data().quantity;
-            });
-            if (isActive) {
-              setTotal(totalBalance);
-              setAccountsLoaded(true); // Marcar como cargadas las cuentas
-            }
-          } catch (error) {
-            console.error("Error fetching accounts:", error);
-          }
+  useCallback(() => {
+    let isActive = true;
+
+    async function fetchWalletAndTransactions() {
+      if (!user?.id || !isActive) return;
+      try {
+        // 1. Load accounts
+        const accountsSnap = await getDocs(
+          collection(db, "users", user.id, "accounts")
+        );
+        let baseBalance = 0;
+        for (const acct of accountsSnap.docs) {
+          baseBalance += acct.data().quantity || 0;
         }
-  
-        fetchWalletBalance();
-  
-        return () => {
-          // cuando la pantalla pierde foco, evitamos actualizar estado
-          isActive = false;
-        };
-      }, [user?.id])
-    );
 
-    
-  useEffect(() => {
-     if (!accountsLoaded) return; // Esperar hasta que las cuentas estén cargadas
-
-      async function fetchAllTransactions() {
-        if (user?.id) {
-          try {
-            const accountsRef = collection(db, "users", user.id, "accounts");
-            const accountsSnapshot = await getDocs(accountsRef);
-
-            const allTransactions = [];
-             let totalIncome = 0;
-              let totalExpenses = 0;
-           
-
-            // Recorre cada cuenta
-            for (const accountDoc of accountsSnapshot.docs) {
-              const accountId = accountDoc.id;
-
-              const transactionsRef = collection(db, "users", user.id, "accounts", accountId, "transactions");
-              const transactionsSnapshot = await getDocs(transactionsRef);
-
-              transactionsSnapshot.forEach((txDoc) => {
-                console.log("Transaction data:", txDoc.data());
-                
-                 const data = txDoc.data();
-                 const amount = parseFloat(data.amount);
-
-                    if (!isNaN(amount)) {
-                      if (amount > 0) {
-                        totalIncome += amount;
-                      } else {
-                        totalExpenses += Math.abs(amount);
-                      }
-                    }
-
-                allTransactions.push({
-                  //id: txDoc.id,
-                  //accountId, // para saber de qué cuenta viene
-                  ...txDoc.data()
-                });
-              });
-            }
-
-            setTransactions(allTransactions); // Guarda todo en el estado
-          
-            let totalIn = total;
-            totalIn = totalIn + totalIncome - totalExpenses;
-
-            setTotal(totalIn);
-            setTotalIncome(totalIncome);
-            setTotalExpenses(totalExpenses);
-          } catch (error) {
-            console.error("Error fetching all transactions:", error);
-          }
+        // 2. Load transactions for all accounts
+        let totalIncome = 0;
+        let totalExpenses = 0;
+        const allTx = [];
+        for (const acct of accountsSnap.docs) {
+          const txSnap = await getDocs(
+            collection(db, "users", user.id, "accounts", acct.id, "transactions")
+          );
+          txSnap.forEach(doc => {
+            const amt = parseFloat(doc.data().amount) || 0;
+            if (amt > 0) totalIncome += amt;
+            else totalExpenses += Math.abs(amt);
+            allTx.push({ id: doc.id, accountId: acct.id, ...doc.data() });
+          });
         }
-      }
 
-      fetchAllTransactions();
-}, [accountsLoaded]);
+        // 3. Set state exactly once
+        if (isActive) {
+          setAccountsLoaded(true);
+          setTransactions(allTx);
+          setTotal(baseBalance + totalIncome - totalExpenses);
+          setTotalIncome(totalIncome);
+          setTotalExpenses(totalExpenses);
+        }
+      } catch (err) {
+        console.error("Error fetching wallet + transactions:", err);
+      } 
+    }
+
+    fetchWalletAndTransactions();
+
+    return () => {
+      isActive = false;
+    };
+  }, [user?.id])
+);
+;
 
 
     const headerHeight = useHeaderHeight();
