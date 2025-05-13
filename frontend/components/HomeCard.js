@@ -62,7 +62,7 @@ export default HomeCard;
 const styles = StyleSheet.create({
     bgImage: {
         height: scale(210),
-        width: "100%",
+        width: scale(290),
         borderRadius: scale(10),
         overflow: "hidden",
         position: "relative", // This is to position the icon absolutely

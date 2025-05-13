@@ -25,15 +25,6 @@ const Page = () => {
 
     
     console.log("home");
-<<<<<<< HEAD
-    
-    
-  //This is necessary for using router.back(), which is more stetic than router.replace().
-    //I think this could be solved by using .onSnapShot =>{}, but as this already works smoothly, we wont change it
-=======
-   
-
->>>>>>> 116fa6983dcdd617aca593bef2f5661069300044
     useFocusEffect(
       useCallback(() => {
         let isActive = true;
@@ -138,11 +129,7 @@ const Page = () => {
           }}>
 
             <View style={styles.account}>
-            
            <HomeCard total={total} expenses={totalExpenses} incomes={totalIncome} />
-
-           
-
             </View>
 
             <View style={styles.actionRow}>
@@ -156,7 +143,7 @@ const Page = () => {
 
 const styles = StyleSheet.create({
     account: {
-        margin: 80,
+        marginTop: 80,
         alignItems: 'center',
     },
     row: {

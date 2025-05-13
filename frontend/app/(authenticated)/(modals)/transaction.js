@@ -23,7 +23,7 @@ const CreateTransaction = () => {
 
   const [amount, setAmount] = useState('');
   const [description, setDescription] = useState('');
-  const [methodOfPayment, setMethodOfPayment] = useState('Credit Card');
+  const [methodOfPayment, setMethodOfPayment] = useState('');
   const [selectedAccountId, setSelectedAccountId] = useState('');
   const [accounts, setAccounts] = useState([]);
   const [error, setError] = useState('');
@@ -61,7 +61,7 @@ const CreateTransaction = () => {
       });
 
       Alert.alert('Success', 'Transaction saved successfully.');
-      router.replace('/screens/(authenticated)/(tabs)/wallet');
+      router.replace('/home');
     } catch (error) {
       console.error('Error saving transaction:', error);
       Alert.alert('Error', 'There was a problem saving the transaction.');
@@ -136,6 +136,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.background,
     padding: 16,
+    paddingTop:100,
   },
   header: {
     marginTop: 50,
@@ -163,8 +164,12 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   footer: {
-    marginTop: 40,
-    alignItems: 'center',
+
+    flexDirection: 'row',
+    justifyContent: 'center',
+    width: '100%',
+    gap: 20,
+
   },
   error: {
     color: 'red',

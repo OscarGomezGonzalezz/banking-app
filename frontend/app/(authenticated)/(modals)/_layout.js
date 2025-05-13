@@ -40,6 +40,16 @@ const Layout = () => {
       <Stack.Screen
         name="verifyIdentity"
       />
+      <Stack.Screen
+        name="transaction"
+        options={{
+          headerLeft: () => (
+            <TouchableOpacity onPress={router.back}>
+              <Ionicons name="close-outline" size={34} color={'black'} />
+            </TouchableOpacity>
+          ),
+        }}
+      />
     </Stack>
     
   );
