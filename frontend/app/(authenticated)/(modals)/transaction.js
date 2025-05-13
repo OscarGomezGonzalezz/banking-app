@@ -1,16 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import {
   View,
   Text,
   TextInput,
   StyleSheet,
   ScrollView,
-  Alert,
   ActivityIndicator,
 } from 'react-native';
 import { useUser } from '@clerk/clerk-react';
 import { useRouter } from 'expo-router';
-import { addDoc, collection, getDocs, Timestamp } from 'firebase/firestore';
+import { addDoc, collection, getDocs, Timestamp, getDoc, doc, updateDoc } from 'firebase/firestore';
 import db from '../../../firebase/firebaseConfig';
 import { CustomButton } from '../../index';
 import Colors from '../../../constants/Colors';
@@ -51,20 +50,41 @@ const CreateTransaction = () => {
       setError('Please fill in all fields.');
       return;
     }
+   const parsedAmount = parseFloat(amount);
+
+if (isNaN(parsedAmount) || parsedAmount <= 0) {
+  setError('Please enter a valid amount.');
+  return;
+}
 
     try {
+      const accountRef = doc(db, 'users', userId, 'accounts', selectedAccountId);
+
+    // 1. Obtener el saldo actual
+    const accountSnap = await getDoc(accountRef);
+    if (!accountSnap.exists()) {
+      setError('Selected account not found.');
+      return;
+    }
+    const currentTotal = accountSnap.data().total || 0;
+    const newTotal = currentTotal - parsedAmount;
+
       await addDoc(collection(db, 'users', userId, 'accounts', selectedAccountId, 'transactions'), {
-        amount: parseFloat(amount),
+        amount: -Math.abs(parsedAmount),
         description,
         methodOfPayment,
         date: Timestamp.now(),
       });
+      // 3. Actualizar el saldo
+    await updateDoc(accountRef, {
+      quantity: newTotal,
+    });
 
-      Alert.alert('Success', 'Transaction saved successfully.');
+
+
       router.replace('/home');
     } catch (error) {
       console.error('Error saving transaction:', error);
-      Alert.alert('Error', 'There was a problem saving the transaction.');
     }
   };
 

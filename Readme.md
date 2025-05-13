@@ -5,7 +5,7 @@
 
 ## TODOs ##
 
-- link total balance(considering expenses and incomes) in both home and wallet
+- link total balance(considering expenses and incomes) in both home and wallet, (restandola cantidad enviada de la cuenta seleccionada)
 - link expenses with expenses widgets
 
 

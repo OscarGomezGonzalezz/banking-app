@@ -12,7 +12,6 @@ import { useCallback } from 'react';
 import {View, ScrollView, StyleSheet, Button} from 'react-native';
 import HomeCard from "../../../components/HomeCard";
 import TransactionList from "../../../components/TransactionList";
-import { set } from "date-fns";
 
 
 const Page = () => {
