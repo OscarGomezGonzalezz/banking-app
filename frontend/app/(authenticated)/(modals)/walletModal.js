@@ -6,7 +6,7 @@ import { CustomButton } from '../../index';
 import { useLocalSearchParams } from 'expo-router';
 import { useUser } from '@clerk/clerk-react';
 import db from '../../../firebase/firebaseConfig'
-import { updateDoc,collection, addDoc, doc, deleteDoc } from "firebase/firestore"; 
+import { updateDoc,collection, addDoc, doc, deleteDoc, getDocs } from "firebase/firestore"; 
 import { useRouter } from 'expo-router';
 
 const WalletModal = ()=>{
@@ -34,7 +34,11 @@ const WalletModal = ()=>{
     }, [])
 
     const saveBankAccount = async () => {
+      // Reference to the 'accounts' collection for this user
+           
+      
         try {
+           
               if (!account.beneficiary || account.beneficiary.trim().length < 3) {
                 setError("Enter the first and last name of the beneficiary");
                 return;
@@ -54,6 +58,14 @@ const WalletModal = ()=>{
                 setError("BIC number must contain at least 2 characters.");
                 return;
               }
+              const userAccountsRef = collection(doc(db, "users", userId)//This references a specific document for the user based on the userId
+            , "accounts");//This references the accounts sub-collection inside the user's document.
+            const snapshot = await getDocs(userAccountsRef);
+            console.log(snapshot);
+            if (snapshot.size >= 5) {
+              setError("You have reached the most number of account enabled");
+              return;
+            }
           
           
             // Generate a random quantity between 700 and 4000
@@ -76,10 +88,6 @@ const WalletModal = ()=>{
                 console.log("Bank account updated with ID:", oldAccount.accountID);
             } else {
                  
-            // Reference to the 'accounts' collection for this user
-            const userAccountsRef = collection(doc(db, "users", userId)//This references a specific document for the user based on the userId
-            , "accounts");//This references the accounts sub-collection inside the user's document.
-            
             // Create empty document to get the ID
             const docRef = await addDoc(userAccountsRef, {});
 
@@ -151,7 +159,7 @@ const WalletModal = ()=>{
                         onChangeText={(text) => setAccount({ ...account, BIC: text })}
                     />
                 </View>
-                <View style={{alignSelf: 'center', marginTop: 20}}>
+                <View style={{alignSelf: 'center', marginTop: 20, paddingHorizontal: 20}}>
                     {error ? <Text style={{ color: "red", fontSize: 18 }}>{error}</Text> : null}
                 </View>
             </ScrollView>

@@ -17,22 +17,30 @@ const IncomeExpenseList = ({ data }) => {
   const [searchVisible, setSearchVisible] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
 
-  const filteredData = useMemo(() => {
-    const term = searchTerm.trim().toLowerCase();
-    if (!term) return data;
+ const filteredData = useMemo(() => {
+  const term = searchTerm.trim().toLowerCase();
+  const filtered = !term
+    ? data
+    : data.filter(item => {
+        const rawDate = item.date?.toDate?.() || new Date(item.date); // Compatibilidad
+        const dateStr = format(rawDate, 'dd/MM/yyyy');
 
-    return data.filter(item => {
-      const rawDate = item.date?.toDate?.() || new Date(item.date); // Compatibilidad
-      const dateStr = format(rawDate, 'dd/MM/yyyy');
+        return (
+          item.description.toLowerCase().includes(term) ||
+          item.methodOfPayment.toLowerCase().includes(term) ||
+          String(item.amount).includes(term) ||
+          dateStr.includes(term)
+        );
+      });
 
-      return (
-        item.description.toLowerCase().includes(term) ||
-        item.methodOfPayment.toLowerCase().includes(term) ||
-        String(item.amount).includes(term) ||
-        dateStr.includes(term)
-      );
-    });
-  }, [data, searchTerm]);
+  // Ordena por fecha descendente (más recientes primero)
+  return [...filtered].sort((a, b) => {
+    const dateA = a.date?.toDate?.() || new Date(a.date);
+    const dateB = b.date?.toDate?.() || new Date(b.date);
+    return dateB - dateA;
+  });
+}, [data, searchTerm]);
+
 
   const formatAmount = amount =>
     new Intl.NumberFormat('es-ES', {

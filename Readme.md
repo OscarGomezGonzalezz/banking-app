@@ -5,10 +5,8 @@
 
 ## TODOs ##
 
-- search bar works for search transactions
-- tabla transacciones, asociadas a cuenta, y no a usuario
-- darle realismo a expenses
-- añadir en backend que un user no pueda tener mas de 4 cuentas
+- link total balance(considering expenses and incomes) in both home and wallet
+- link expenses with expenses widgets
 
 
 ## Testing data in clerk/configure/application/settings
