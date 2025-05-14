@@ -6,7 +6,7 @@ import { SIZE } from './Config';
 import Colors from '../../constants/Colors';
 
 
-const Tile = ({ id, spent }) => {
+const Tile = ({ id, spent, expensesByAccount }) => {
 
   if (id === 'spent') {
     return (
@@ -47,12 +47,14 @@ const Tile = ({ id, spent }) => {
   }
 
   if (id === 'accounts') {
-    // Ejemplo de datos hardcodeados; en tu caso vendrán de la API
-    const topAccounts = [
-      { name: 'Bank1', total: 240.00, color: Colors.secondary },
-      { name: 'Bank2', total: 180.50, color: Colors.secondary },
-      { name: 'Bank3', total: 150.75, color: Colors.secondary },
-    ];
+    // entry data: {  "ES11AAA": 250, "ES33CCC": 500  }
+    
+    let topAccounts = Object.entries(expensesByAccount) //[ ["ES11AAA", 250],  ["ES22BBB", 1000], ]
+  .sort(([, expenseA], [, expenseB]) => expenseB - expenseA)  
+  .map(([iban, expense]) => ({ iban, expense }));
+
+ topAccounts = topAccounts.slice(0, 3);
+
   
     return (
       <View style={styles.container} pointerEvents="none">
@@ -60,12 +62,18 @@ const Tile = ({ id, spent }) => {
         <Text style={styles.header}>Accounts</Text>
         </View>
   
-        {topAccounts.map((cat, idx) => {
+        {topAccounts.map((account, index) => {
           // Calculamos el ancho relativo de la barra (porcentaje del máximo)
+          function maskIBAN(iban) {
+          if (!iban || iban.length <= 3) return iban;
+          return '*'.repeat(iban.length - iban.length/1.5) + iban.slice(-3);
+          }
+          account.iban = maskIBAN(account.iban);
+
           return (
-            <View key={idx} style={styles.row}>
-              <Text style={[styles.catName, { color: cat.color }]}>{cat.name}</Text>
-              <Text style={styles.amount}>€{cat.total.toFixed(2)}</Text>
+            <View key={account.iban} style={styles.row}>
+              <Text style={[styles.catName, { color: Colors.secondary }]}>{account.iban}</Text>
+              <Text style={styles.amount}>{account.expense}€</Text>
             </View>
           );
         })}

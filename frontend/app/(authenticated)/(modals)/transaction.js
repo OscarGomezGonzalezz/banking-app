@@ -137,7 +137,7 @@ if (isNaN(parsedAmount) || parsedAmount <= 0) {
               setSelected={(val) => setSelectedAccountId(val)}
               data={accounts.map(account => ({
                 key: account.id,
-                value: account.iban || 'Unnamed Account',
+                value: account.IBAN || 'Unnamed Account',
               }))}
               save="key"
               placeholder="Select an account"

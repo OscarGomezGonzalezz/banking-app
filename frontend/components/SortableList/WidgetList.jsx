@@ -12,7 +12,7 @@ const tiles = [
   { id: 'cashback' },
 ];
 
-const WidgetList = ({spent}) => {
+const WidgetList = ({spent, expensesByAccount}) => {
   return (
     <View style={{flex: 1}}>
     
@@ -26,6 +26,7 @@ const WidgetList = ({spent}) => {
             id={tile.id}
             onLongPress={() => true}
             spent={spent}
+            expensesByAccount={expensesByAccount}
           />
         ))}
       </SortableList>

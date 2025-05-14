@@ -2,7 +2,7 @@ import React, { useState, useCallback } from 'react';
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity, TextInput} from 'react-native';
 
 import db from '../../../firebase/firebaseConfig'; 
-import { collection, getDocs } from "firebase/firestore"; 
+import { collection, getDocs, getDoc, doc } from "firebase/firestore"; 
 import { useFocusEffect } from '@react-navigation/native';
 import Colors from '../../../constants/Colors';
 import WidgetList from '../../../components/SortableList/WidgetList';
@@ -15,6 +15,8 @@ const Page = () => {
   const { user } = useUser();
   const [limit, setLimit] = useState(user?.unsafeMetadata?.limit);
   const [totalExpenses, setTotalExpenses] = useState(0);
+
+  const [expensesByAccount, setExpensesByAccount] = useState({}); 
   const [accountsLoaded, setAccountsLoaded] = useState(false); // Estado para controlar la carga de cuentas
   const [step, setStep] = useState(() => (limit > 0 ? 2 : 0));
   // step 0 = setAlert btn, 1 = input, 2 = progress circle
@@ -22,47 +24,65 @@ const Page = () => {
   const progress = limit > 0 ? totalExpenses / limit : 0;
 
   useFocusEffect(
-  useCallback(() => {
-    let isActive = true;
+    useCallback(() => {
+      let isActive = true;
 
-    async function fetchSpent() {
-      if (!user?.id || !isActive) return;
-      try {
-        // 1. Load accounts
-        const accountsSnap = await getDocs(
-          collection(db, "users", user.id, "accounts")
-        );
+      async function fetchSpent() {
+        if (!user?.id || !isActive) return;
 
-        let totalExpenses = 0;
-        for (const acct of accountsSnap.docs) {
-          const txSnap = await getDocs(
-            collection(db, "users", user.id, "accounts", acct.id, "transactions")
+        try {
+          const accountsSnap = await getDocs(
+            collection(db, "users", user.id, "accounts")
           );
-          txSnap.forEach(doc => {
-            const amt = parseFloat(doc.data().amount) || 0;
-            if (amt < 0) totalExpenses += Math.abs(amt);
-          });
+
+          let globalExpenses = 0;
+          const perAccount = {}; // ← aquí vamos a ir guardando cada cuenta
+
+          for (const acctDoc of accountsSnap.docs) {
+            const acctId = acctDoc.id;
+            const accountRef = doc(db, 'users', user.id, 'accounts', acctId);
+            const accountSnap = await getDoc(accountRef);
+            if (!accountSnap.exists()) {
+              setError('Selected account not found.');
+              return;
+            }
+          const iban = accountSnap.data().IBAN;
+            let acctExpenses = 0;
+
+            const txSnap = await getDocs(
+              collection(db, "users", user.id, "accounts", acctId, "transactions")
+            );
+
+            txSnap.forEach(txDoc => {
+              const amt = parseFloat(txDoc.data().amount) || 0;
+              if (amt < 0) {
+                const absAmt = Math.abs(amt);
+                acctExpenses += absAmt;
+                globalExpenses += absAmt;
+              }
+            });
+
+            perAccount[iban] = acctExpenses;
+          }
+
+          if (isActive) {
+            setExpensesByAccount(perAccount);
+            setTotalExpenses(globalExpenses);
+            setAccountsLoaded(true);
+          }
+        } catch (err) {
+          console.error("Error fetching expenses:", err);
         }
+      }
 
-        // 3. Set state exactly once
-        if (isActive) {
-          setAccountsLoaded(true);
-          setTotalExpenses(totalExpenses);
-        }
-      } catch (err) {
-        console.error("Error fetching wallet + transactions:", err);
-      } 
-    }
+      fetchSpent();
 
-    fetchSpent();
 
-    return () => {
-      isActive = false;
-    };
-  }, [user?.id])
-);
-;
-
+      return () => {
+        isActive = false;
+      };
+    }, [user?.id])
+  );
 
 
   return (
@@ -169,7 +189,7 @@ const Page = () => {
         )}
 
         <View style={{ flex: 1}}>
-          <WidgetList spent={totalExpenses}/>
+          <WidgetList spent={totalExpenses} expensesByAccount={expensesByAccount}/>
         </View>
       </ScrollView>
     </GestureHandlerRootView>
