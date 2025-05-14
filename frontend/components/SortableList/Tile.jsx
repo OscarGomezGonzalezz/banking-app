@@ -6,7 +6,7 @@ import { SIZE } from './Config';
 import Colors from '../../constants/Colors';
 
 
-const Tile = ({ id, spent, expensesByAccount }) => {
+const Tile = ({ id, spent, expensesByAccount, expensesByCategory }) => {
 
   if (id === 'spent') {
     return (
@@ -59,7 +59,7 @@ const Tile = ({ id, spent, expensesByAccount }) => {
     return (
       <View style={styles.container} pointerEvents="none">
         <View>
-        <Text style={styles.header}>Accounts</Text>
+        <Text style={styles.header}>Top Accounts</Text>
         </View>
   
         {topAccounts.map((account, index) => {
@@ -82,12 +82,27 @@ const Tile = ({ id, spent, expensesByAccount }) => {
   }
   
   if (id === 'categories') {
-    const topCategories = [
-      { name: 'Aliments', total: 240.00, color: '#FF6384', icon: 'restaurant',},
-      { name: 'Transport', total: 180.50, color: '#36A2EB', icon: 'car', },
-      { name: 'Leisure', total: 150.75, color: '#FFCE56', icon: 'game-controller'},
-    ];
-    const maxValue = Math.max(...topCategories.map(cat => cat.total));
+    const iconMap = {
+  "Food and Drink": 'restaurant',
+  "Transference": "swap-horizontal",
+  "Transport": "car",
+  "default":"unkown"
+};
+const colorMap = {
+  "Food and Drink": '#FF6B6B',    
+  "Transference":  '#4ECDC4',   
+  "Transport":      '#FFA801',    
+  "default":        '#576574' 
+};
+const topCategories = Object.entries(expensesByCategory).map(
+  ([category, amount]) => ({
+    category,
+    amount,
+    icon: iconMap[category] || iconMap.default,
+    color: colorMap[category] || colorMap.default
+  })
+);
+    const maxValue = Math.max(...topCategories.map(cat => cat.amount));
     const chartHeight = 75; // height in pixels for the tallest bar
     const numTicks = 4; // number of intervals on the y-axis
     const tickValues = [];
@@ -110,12 +125,12 @@ const Tile = ({ id, spent, expensesByAccount }) => {
               ))}
           </View>
           {topCategories.map(cat => (
-              <View key={cat.name} style={styles.barWrapper}>
+              <View key={cat.category} style={styles.barWrapper}>
                 <View
                   style={[
                     styles.bar,
                     {
-                      height: (cat.total / maxValue) * chartHeight,
+                      height: (cat.amount / maxValue) * chartHeight,
                       backgroundColor: cat.color,
                     },
                   ]}

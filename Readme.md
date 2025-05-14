@@ -5,10 +5,10 @@
 
 ## TODOs ##
 
-- link total balance(considering expenses and incomes) in both home and wallet, (restandola cantidad enviada de la cuenta seleccionada)
-- link expenses with expenses widgets
-- fix problem(when creating transaction, selected account gets the quantity sent)
-
+- fix problem virtualized list
+- no crear cuenta si iban existente
+- cuentas tienen que tener mas dinero del enviado antes de crear transaccion
+- ranking categprias
 
 ## Testing data in clerk/configure/application/settings
 

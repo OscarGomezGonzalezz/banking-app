@@ -47,6 +47,12 @@ function ListAccounts({wallet}) {
   }; 
   
   const renderItem = ({item}) => {
+    function maskIBAN(iban) {
+          if (!iban || iban.length <= 3) return iban;
+          return '*'.repeat(iban.length - iban.length/1.5) + iban.slice(-3);
+          }
+          item.IBAN = maskIBAN(item.IBAN);
+
     console.log(item.IBAN);
     return (
         <TouchableOpacity

@@ -17,6 +17,7 @@ const Page = () => {
   const [totalExpenses, setTotalExpenses] = useState(0);
 
   const [expensesByAccount, setExpensesByAccount] = useState({}); 
+  const [expensesByCategory, setExpensesByCategory] = useState({}); 
   const [accountsLoaded, setAccountsLoaded] = useState(false); // Estado para controlar la carga de cuentas
   const [step, setStep] = useState(() => (limit > 0 ? 2 : 0));
   // step 0 = setAlert btn, 1 = input, 2 = progress circle
@@ -36,7 +37,8 @@ const Page = () => {
           );
 
           let globalExpenses = 0;
-          const perAccount = {}; // ← aquí vamos a ir guardando cada cuenta
+          const perAccount = {};
+          const perCategory = {};
 
           for (const acctDoc of accountsSnap.docs) {
             const acctId = acctDoc.id;
@@ -54,11 +56,18 @@ const Page = () => {
             );
 
             txSnap.forEach(txDoc => {
-              const amt = parseFloat(txDoc.data().amount) || 0;
-              if (amt < 0) {
-                const absAmt = Math.abs(amt);
+              const amount = parseFloat(txDoc.data().amount) || 0;
+              if (amount < 0) {
+                const absAmt = Math.abs(amount);
                 acctExpenses += absAmt;
                 globalExpenses += absAmt;
+                
+                const category = txDoc.data().category || 'Uncategorized';
+                if (!perCategory[category]) {
+                  perCategory[category] = 0;
+                }
+                perCategory[category] += absAmt;
+              
               }
             });
 
@@ -68,6 +77,7 @@ const Page = () => {
           if (isActive) {
             setExpensesByAccount(perAccount);
             setTotalExpenses(globalExpenses);
+            setExpensesByCategory(perCategory); 
             setAccountsLoaded(true);
           }
         } catch (err) {
@@ -189,7 +199,7 @@ const Page = () => {
         )}
 
         <View style={{ flex: 1}}>
-          <WidgetList spent={totalExpenses} expensesByAccount={expensesByAccount}/>
+          <WidgetList spent={totalExpenses} expensesByAccount={expensesByAccount} expensesByCategory={expensesByCategory}/>
         </View>
       </ScrollView>
     </GestureHandlerRootView>

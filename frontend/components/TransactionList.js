@@ -27,7 +27,7 @@ const IncomeExpenseList = ({ data }) => {
 
         return (
           item.description.toLowerCase().includes(term) ||
-          item.methodOfPayment.toLowerCase().includes(term) ||
+          item.category.toLowerCase().includes(term) ||
           String(item.amount).includes(term) ||
           dateStr.includes(term)
         );
@@ -64,7 +64,7 @@ const IncomeExpenseList = ({ data }) => {
       </View>
       <View style={styles.itemDetails}>
         <Text style={styles.description}>{item.description}</Text>
-        <Text style={styles.methodOfPayment}>{item.methodOfPayment}</Text>
+        <Text style={styles.methodOfPayment}>{item.category}</Text>
         <Text style={item.amount > 0 ? styles.incomeAmount : styles.expenseAmount}>
           {formatAmount(item.amount)}
         </Text>

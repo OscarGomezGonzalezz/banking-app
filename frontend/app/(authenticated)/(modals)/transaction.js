@@ -22,10 +22,10 @@ const CreateTransaction = () => {
 
   const [amount, setAmount] = useState('');
   const [description, setDescription] = useState('');
-   const [destinatary, setDestinatary] = useState('');
-   const [destinataryIBAN, setDestinataryIBAN] = useState('');
-  //when creating transactions, methodOfPaymenty will be always Transference
-  const [methodOfPayment, setMethodOfPayment] = useState('Transference');
+   const [recipient, setRecipient] = useState('');
+   const [recipientIBAN, setRecipientIBAN] = useState('');
+  //when creating transactions, category will be always Transference
+  const [category, setCategory] = useState('Transference');
   const [selectedAccountId, setSelectedAccountId] = useState('');
   const [accounts, setAccounts] = useState([]);
   const [error, setError] = useState('');
@@ -49,7 +49,7 @@ const CreateTransaction = () => {
   }, [userId]);
 
   const handleSubmit = async () => {
-    if (!amount || !description || !methodOfPayment || !selectedAccountId) {
+    if (!amount || !description || !category || !selectedAccountId) {
       setError('Please fill in all fields.');
       return;
     }
@@ -81,9 +81,9 @@ if (isNaN(parsedAmount) || parsedAmount <= 0) {
     await addDoc(collection(db, 'users', userId, 'accounts', selectedAccountId, 'transactions'), {
       amount: -Math.abs(parsedAmount),
       description,
-      methodOfPayment,
-      destinatary,
-      destinataryIBAN,
+      category,
+      recipient,
+      recipientIBAN,
       date: Timestamp.now(),
     });
 
@@ -116,17 +116,17 @@ if (isNaN(parsedAmount) || parsedAmount <= 0) {
         />
         <TextInput
           style={styles.input}
-          placeholder="Destinatary"
+          placeholder="Transfer recipient"
           keyboardType="default"
-          value={destinatary}
-          onChangeText={setDestinatary}
+          value={recipient}
+          onChangeText={setRecipient}
         />
         <TextInput
           style={styles.input}
           placeholder="destination IBAN "
           keyboardType="default"
-          value={destinataryIBAN}
-          onChangeText={setDestinataryIBAN}
+          value={recipientIBAN}
+          onChangeText={setRecipientIBAN}
         />
 
         <View style={styles.pickerContainer}>
