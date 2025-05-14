@@ -21,40 +21,58 @@ const Page = ()=>{
     //This is necessary for using router.back(), which is more stetic than router.replace().
     //I think this could be solved by using .onSnapShot =>{}, but as this already works smoothly, we wont change it
     useFocusEffect(
-        useCallback(() => {
-          let isActive = true;
-    
-          async function fetchData() {
-            if (!user?.id || !isActive) return;
-            try {
-              const snap = await getDocs(collection(db, "users", user.id, "accounts"));
-              const accounts = [];
-              let totalBalance = 0;
-    
-              snap.forEach(doc => {
-                const data = doc.data();
-                accounts.push(data);
-                totalBalance += data.quantity;
-              });
-    
-              if (isActive) {
-                setWallet(accounts);
-                setTotal(totalBalance);
-              }
-            } catch (e) {
-              console.error("Error fetching accounts:", e);
-            }
-          }
-    
-          fetchData();
-    
-          return () => {
-            // evita actualizar el estado si la pantalla pierde el foco
-            isActive = false;
-          };
-        }, [user?.id])
-      );
-   
+  useCallback(() => {
+    let isActive = true;
+
+    async function fetchData() {
+      if (!user?.id || !isActive) return;
+
+      try {
+        // 1️⃣ Fetch accounts and compute base balance
+        const snap = await getDocs(collection(db, "users", user.id, "accounts"));
+        const accounts = [];
+        let baseBalance = 0;
+
+        snap.forEach(docSnap => {
+          const data = docSnap.data();
+          accounts.push({ id: docSnap.id, ...data });
+          baseBalance += data.quantity || 0;
+        });
+
+        // 2️⃣ Fetch transactions for each account
+        let totalIncome = 0;
+        let totalExpenses = 0;
+
+        for (const acct of accounts) {
+          const txSnap = await getDocs(
+            collection(db, "users", user.id, "accounts", acct.id, "transactions")
+          );
+
+          txSnap.forEach(txDoc => {
+            const amt = parseFloat(txDoc.data().amount) || 0;
+            if (amt > 0) totalIncome += amt;
+            else totalExpenses += Math.abs(amt);
+          });
+        }
+
+        // 3️⃣ Update state once, with adjusted total
+        if (isActive) {
+          setWallet(accounts);
+          setTotal(baseBalance);
+        }
+      } catch (e) {
+        console.error("Error fetching accounts or transactions:", e);
+      }
+    }
+
+    fetchData();
+
+    return () => {
+      isActive = false;
+    };
+  }, [user?.id])
+);
+
     const handleAddAccount = () => {
         if (!idDocument || idDocument === '' ) {
             router.navigate('/verifyIdentity');

@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, FlatList } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 
@@ -46,32 +46,40 @@ function ListAccounts({wallet}) {
     }
   }; 
   
+  const renderItem = ({item}) => {
+    console.log(item.IBAN);
+    return (
+        <TouchableOpacity
+          key={item.IBAN}
+          onPress={()=>openWallet(item)}
+          style={styles.account}
+        >
+          <View style={{ flex: 1 }}>
+              <Text style={{ fontSize: 16, fontWeight: 'bold' }}>
+                  {getAssociatedBank(item.BIC)}
+              </Text>
+              <Text style={{ fontSize: 14, color: 'gray', marginTop: 2 }}>
+                  {item.IBAN}
+              </Text>
+          </View>
+          <View style={styles.balanceQuantity}>
+              <Text style={styles.balance}>{item.quantity?.toFixed(2)}</Text>
+              <Text style={styles.currency}>€</Text>
+          </View>
+
+          <Ionicons style={{marginLeft: 20}} name="chevron-forward" size={20} color="#999" />
+        </TouchableOpacity>)
+  }
 
   return (
     <View style={{ gap: 12 , marginTop: 20}}>
-      {wallet
-        .map(item => (
-          <TouchableOpacity
-            key={item.IBAN}
-            onPress={()=>openWallet(item)}
-            style={styles.account}
-          >
-            <View style={{ flex: 1 }}>
-                <Text style={{ fontSize: 16, fontWeight: 'bold' }}>
-                    {getAssociatedBank(item.BIC)}
-                </Text>
-                <Text style={{ fontSize: 14, color: 'gray', marginTop: 2 }}>
-                    {item.IBAN}
-                </Text>
-            </View>
-            <View style={styles.balanceQuantity}>
-                <Text style={styles.balance}>{item.quantity?.toFixed(2)}</Text>
-                <Text style={styles.currency}>€</Text>
-            </View>
-
-            <Ionicons style={{marginLeft: 20}} name="chevron-forward" size={20} color="#999" />
-          </TouchableOpacity>
-        ))}
+       <FlatList
+      data={wallet}
+      extraData={wallet}                // ← tell FlatList to watch the whole array
+      keyExtractor={item => item.IBAN}
+      renderItem={renderItem}
+      contentContainerStyle={{ paddingBottom: 40 }}
+    />
     </View>
   );
 }

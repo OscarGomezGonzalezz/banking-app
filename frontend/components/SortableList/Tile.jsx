@@ -6,7 +6,7 @@ import { SIZE } from './Config';
 import Colors from '../../constants/Colors';
 
 
-const Tile = ({ id }) => {
+const Tile = ({ id, spent }) => {
 
   if (id === 'spent') {
     return (
@@ -15,7 +15,7 @@ const Tile = ({ id }) => {
           Spent this month
         </Text>
         <Text style={{ color: Colors.dark, fontWeight: 'bold', fontSize: 26, paddingTop: 10 }}>
-          1024€
+          {spent}€
         </Text>
       </View>
     );

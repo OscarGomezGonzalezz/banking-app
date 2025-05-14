@@ -36,8 +36,9 @@ const Page = () => {
           collection(db, "users", user.id, "accounts")
         );
         let baseBalance = 0;
-        for (const acct of accountsSnap.docs) {
-          baseBalance += acct.data().quantity || 0;
+        for (const account of accountsSnap.docs) {
+          console.log(account.data());
+          baseBalance += account.data().quantity || 0;
         }
 
         // 2. Load transactions for all accounts
@@ -60,7 +61,7 @@ const Page = () => {
         if (isActive) {
           setAccountsLoaded(true);
           setTransactions(allTx);
-          setTotal(baseBalance + totalIncome - totalExpenses);
+          setTotal(baseBalance);
           setTotalIncome(totalIncome);
           setTotalExpenses(totalExpenses);
         }

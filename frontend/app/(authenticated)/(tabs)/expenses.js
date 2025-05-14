@@ -1,5 +1,9 @@
-import React, { useState } from 'react';
-import { View, Text, ScrollView, StyleSheet, TouchableOpacity, TextInput } from 'react-native';
+import React, { useState, useCallback } from 'react';
+import { View, Text, ScrollView, StyleSheet, TouchableOpacity, TextInput} from 'react-native';
+
+import db from '../../../firebase/firebaseConfig'; 
+import { collection, getDocs } from "firebase/firestore"; 
+import { useFocusEffect } from '@react-navigation/native';
 import Colors from '../../../constants/Colors';
 import WidgetList from '../../../components/SortableList/WidgetList';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -8,14 +12,58 @@ import { Ionicons } from '@expo/vector-icons';
 import { useUser } from '@clerk/clerk-react';
 
 const Page = () => {
-  const spent = 1050;
   const { user } = useUser();
   const [limit, setLimit] = useState(user?.unsafeMetadata?.limit);
-
+  const [totalExpenses, setTotalExpenses] = useState(0);
+  const [accountsLoaded, setAccountsLoaded] = useState(false); // Estado para controlar la carga de cuentas
   const [step, setStep] = useState(() => (limit > 0 ? 2 : 0));
   // step 0 = setAlert btn, 1 = input, 2 = progress circle
 
-  const progress = limit > 0 ? spent / limit : 0;
+  const progress = limit > 0 ? totalExpenses / limit : 0;
+
+  useFocusEffect(
+  useCallback(() => {
+    let isActive = true;
+
+    async function fetchSpent() {
+      if (!user?.id || !isActive) return;
+      try {
+        // 1. Load accounts
+        const accountsSnap = await getDocs(
+          collection(db, "users", user.id, "accounts")
+        );
+
+        let totalExpenses = 0;
+        for (const acct of accountsSnap.docs) {
+          const txSnap = await getDocs(
+            collection(db, "users", user.id, "accounts", acct.id, "transactions")
+          );
+          txSnap.forEach(doc => {
+            const amt = parseFloat(doc.data().amount) || 0;
+            if (amt < 0) totalExpenses += Math.abs(amt);
+          });
+        }
+
+        // 3. Set state exactly once
+        if (isActive) {
+          setAccountsLoaded(true);
+          setTotalExpenses(totalExpenses);
+        }
+      } catch (err) {
+        console.error("Error fetching wallet + transactions:", err);
+      } 
+    }
+
+    fetchSpent();
+
+    return () => {
+      isActive = false;
+    };
+  }, [user?.id])
+);
+;
+
+
 
   return (
     <GestureHandlerRootView style={{ flex: 1, paddingHorizontal:10 }}>
@@ -102,7 +150,7 @@ const Page = () => {
               )}
             </AnimatedCircularProgress>
             <Text style={styles.statusText}>
-              You've spent €{spent} of €{limit}
+              You've spent {totalExpenses}€ of {limit}€
             </Text>
             <TouchableOpacity
               onPress={() => {
@@ -121,7 +169,7 @@ const Page = () => {
         )}
 
         <View style={{ flex: 1}}>
-          <WidgetList />
+          <WidgetList spent={totalExpenses}/>
         </View>
       </ScrollView>
     </GestureHandlerRootView>

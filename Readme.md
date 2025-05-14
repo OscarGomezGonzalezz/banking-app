@@ -7,6 +7,7 @@
 
 - link total balance(considering expenses and incomes) in both home and wallet, (restandola cantidad enviada de la cuenta seleccionada)
 - link expenses with expenses widgets
+- fix problem(when creating transaction, selected account gets the quantity sent)
 
 
 ## Testing data in clerk/configure/application/settings

@@ -22,7 +22,10 @@ const CreateTransaction = () => {
 
   const [amount, setAmount] = useState('');
   const [description, setDescription] = useState('');
-  const [methodOfPayment, setMethodOfPayment] = useState('');
+   const [destinatary, setDestinatary] = useState('');
+   const [destinataryIBAN, setDestinataryIBAN] = useState('');
+  //when creating transactions, methodOfPaymenty will be always Transference
+  const [methodOfPayment, setMethodOfPayment] = useState('Transference');
   const [selectedAccountId, setSelectedAccountId] = useState('');
   const [accounts, setAccounts] = useState([]);
   const [error, setError] = useState('');
@@ -50,6 +53,7 @@ const CreateTransaction = () => {
       setError('Please fill in all fields.');
       return;
     }
+    console.log(selectedAccountId);
    const parsedAmount = parseFloat(amount);
 
 if (isNaN(parsedAmount) || parsedAmount <= 0) {
@@ -58,6 +62,7 @@ if (isNaN(parsedAmount) || parsedAmount <= 0) {
 }
 
     try {
+      console.log(selectedAccountId);
       const accountRef = doc(db, 'users', userId, 'accounts', selectedAccountId);
 
     // 1. Obtener el saldo actual
@@ -66,23 +71,23 @@ if (isNaN(parsedAmount) || parsedAmount <= 0) {
       setError('Selected account not found.');
       return;
     }
-    const currentTotal = accountSnap.data().total || 0;
+    const currentTotal = accountSnap.data().quantity || 0;
     const newTotal = currentTotal - parsedAmount;
-
-      await addDoc(collection(db, 'users', userId, 'accounts', selectedAccountId, 'transactions'), {
-        amount: -Math.abs(parsedAmount),
-        description,
-        methodOfPayment,
-        date: Timestamp.now(),
-      });
-      // 3. Actualizar el saldo
+    
     await updateDoc(accountRef, {
       quantity: newTotal,
     });
 
+    await addDoc(collection(db, 'users', userId, 'accounts', selectedAccountId, 'transactions'), {
+      amount: -Math.abs(parsedAmount),
+      description,
+      methodOfPayment,
+      destinatary,
+      destinataryIBAN,
+      date: Timestamp.now(),
+    });
 
-
-      router.replace('/home');
+    router.replace('/home');
     } catch (error) {
       console.error('Error saving transaction:', error);
     }
@@ -91,7 +96,7 @@ if (isNaN(parsedAmount) || parsedAmount <= 0) {
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>New Transaction</Text>
+        <Text style={styles.title}>Create transaction</Text>
       </View>
 
       <View style={styles.form}>
@@ -109,12 +114,19 @@ if (isNaN(parsedAmount) || parsedAmount <= 0) {
           value={description}
           onChangeText={setDescription}
         />
-
         <TextInput
           style={styles.input}
-          placeholder="Method of payment (e.g. Credit Card)"
-          value={methodOfPayment}
-          onChangeText={setMethodOfPayment}
+          placeholder="Destinatary"
+          keyboardType="default"
+          value={destinatary}
+          onChangeText={setDestinatary}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="destination IBAN "
+          keyboardType="default"
+          value={destinataryIBAN}
+          onChangeText={setDestinataryIBAN}
         />
 
         <View style={styles.pickerContainer}>
@@ -145,7 +157,7 @@ if (isNaN(parsedAmount) || parsedAmount <= 0) {
       </View>
 
       <View style={styles.footer}>
-        <CustomButton title="Save Transaction" onPress={handleSubmit} isRegister />
+        <CustomButton title="Save" onPress={handleSubmit} isRegister />
       </View>
     </ScrollView>
   );
@@ -187,6 +199,7 @@ const styles = StyleSheet.create({
 
     flexDirection: 'row',
     justifyContent: 'center',
+    alignSelf: "center",
     width: '100%',
     gap: 20,
 
