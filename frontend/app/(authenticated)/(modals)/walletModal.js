@@ -49,10 +49,13 @@ const WalletModal = ()=>{
               }
 
               //ES11111111111
-              if (!account.IBAN || !/^([A-Z]{2})(\d{2})([A-Z0-9]{1,30})$/.test(account.IBAN)) {
-                setError("Please enter a valid IBAN.");
-                return;
+              if(!oldAccount.IBAN){
+                if (!account.IBAN || !/^([A-Z]{2})(\d{2})([A-Z0-9]{1,30})$/.test(account.IBAN)) {
+                  setError("Please enter a valid IBAN.");
+                  return;
               }
+              }
+              
 
               if (!account.BIC || account.BIC.trim().length < 2) {
                 setError("BIC number must contain at least 2 characters.");
@@ -73,16 +76,19 @@ const WalletModal = ()=>{
             
             //WE DONT TAKE INTO ACCOUNTS CURRENCIES, AS WE SUPPOSE THEY WILL BE AUTOMATICALLY TRANSLATED TO EUROS(WE WORK INITIALLY IN EUROPE)
             // Add the random quantity to the account object
-            const accountFull = { ...account, quantity: randomQuantity };
+            
+            account.quantity = randomQuantity;
 
             if (oldAccount?.accountID) {
                 //UPDATE EXISTING ACCOUNT
                 const accountRef = doc(db, "users", userId, "accounts", oldAccount.accountID);
+                
                 //If IBAN is changed, then the quantity of the account will be different
                 if(oldAccount.IBAN !== account.IBAN) {
-                    await updateDoc(accountRef, accountWithQuantity);
+                    setError('You can not change the IBAN of your account')
+                    return;
                 } else{
-                    await updateDoc(accountRef, account)
+                    await updateDoc(accountRef, {IBAN: account.IBAN});
                 }
     
                 console.log("Bank account updated with ID:", oldAccount.accountID);
@@ -94,7 +100,7 @@ const WalletModal = ()=>{
             
             //acountID is created by firebase, but we will have to storage it manually in the db
             await updateDoc(docRef, {
-              ...accountFull,
+              ...account,
               accountID: docRef.id, // <-- Save the document ID inside the document
             });
     

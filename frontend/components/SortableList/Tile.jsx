@@ -94,6 +94,8 @@ const colorMap = {
   "Transport":      '#FFA801',    
   "default":        '#576574' 
 };
+
+console.log(expensesByCategory)
 const topCategories = Object.entries(expensesByCategory).map(
   ([category, amount]) => ({
     category,
@@ -112,6 +114,9 @@ const topCategories = Object.entries(expensesByCategory).map(
     return (
       <View style={styles.container} pointerEvents="none">
         <Text style={{ color: Colors.gray, fontWeight: '500', fontSize: 16 }}>Categories</Text>
+        {expensesByCategory && Object.keys(expensesByCategory).length > 0 &&
+        (
+        <>
         <View style={styles.chartWrapper}>
           {/* Y-Axis labels */}
           <View style={styles.axisContainer}>
@@ -144,6 +149,8 @@ const topCategories = Object.entries(expensesByCategory).map(
               </View>
             ))}
         </View>
+        </>)
+        }
       </View>
     );
   }

@@ -5,10 +5,9 @@
 
 ## TODOs ##
 
-- fix problem virtualized list
+- fix problem virtualized list del home y del wallet screen
 - no crear cuenta si iban existente
 - cuentas tienen que tener mas dinero del enviado antes de crear transaccion
-- ranking categprias
 
 ## Testing data in clerk/configure/application/settings
 
