@@ -48,50 +48,75 @@ const CreateTransaction = () => {
     fetchAccounts();
   }, [userId]);
 
-  const handleSubmit = async () => {
-    if (!amount || !description || !category || !selectedAccountId) {
-      setError('Please fill in all fields.');
-      return;
-    }
-    console.log(selectedAccountId);
-   const parsedAmount = parseFloat(amount);
+const handleSubmit = async () => {
+  if (!amount || !description || !category || !selectedAccountId) {
+    setError('Please fill in all fields.');
+    return;
+  }
 
-if (isNaN(parsedAmount) || parsedAmount <= 0) {
-  setError('Please enter a valid amount.');
-  return;
-}
+  const parsedAmount = parseFloat(amount);
+  if (isNaN(parsedAmount) || parsedAmount <= 0) {
+    setError('Please enter a valid amount.');
+    return;
+  }
 
-    try {
-      console.log(selectedAccountId);
-      const accountRef = doc(db, 'users', userId, 'accounts', selectedAccountId);
-
-    // 1. Obtener el saldo actual
+  try {
+    const accountRef = doc(db, 'users', userId, 'accounts', selectedAccountId);
     const accountSnap = await getDoc(accountRef);
+
     if (!accountSnap.exists()) {
       setError('Selected account not found.');
       return;
     }
-    const currentTotal = accountSnap.data().quantity || 0;
-    const newTotal = currentTotal - parsedAmount;
-    
-    await updateDoc(accountRef, {
-      quantity: newTotal,
+
+    const initialQuantity = accountSnap.data().quantity || 0;
+
+    // Obtener todas las transacciones
+    const txSnap = await getDocs(
+      collection(db, 'users', userId, 'accounts', selectedAccountId, 'transactions')
+    );
+
+    let sumTransactions = 0;
+    txSnap.forEach((doc) => {
+      sumTransactions += doc.data().amount || 0;
     });
 
-    await addDoc(collection(db, 'users', userId, 'accounts', selectedAccountId, 'transactions'), {
-      amount: -Math.abs(parsedAmount),
-      description,
-      category,
-      recipient,
-      recipientIBAN,
-      date: Timestamp.now(),
+    const currentBalance = initialQuantity + sumTransactions;
+
+    // Verificación de fondos
+    if (currentBalance < parsedAmount) {
+      setError('Insufficient funds to complete this transaction.');
+      return;
+    }
+
+    // Nuevo balance después del gasto
+    const newBalance = currentBalance - parsedAmount;
+
+    // Añadir la transacción como gasto
+    await addDoc(
+      collection(db, 'users', userId, 'accounts', selectedAccountId, 'transactions'),
+      {
+        amount: -Math.abs(parsedAmount),
+        description,
+        category,
+        recipient,
+        recipientIBAN,
+        date: Timestamp.now(),
+      }
+    );
+
+    // Actualizar el campo quantity con el nuevo balance
+    await updateDoc(accountRef, {
+      quantity: newBalance,
     });
 
     router.replace('/home');
-    } catch (error) {
-      console.error('Error saving transaction:', error);
-    }
-  };
+  } catch (error) {
+    console.error('Error saving transaction:', error);
+    setError('An unexpected error occurred. Please try again.');
+  }
+};
+
 
   return (
     <ScrollView contentContainerStyle={styles.container}>

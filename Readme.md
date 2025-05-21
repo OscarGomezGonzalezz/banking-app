@@ -7,7 +7,10 @@
 
 - fix problem virtualized list del home y del wallet screen
 - no crear cuenta si iban existente
+
 - cuentas tienen que tener mas dinero del enviado antes de crear transaccion
+    - Hecho (21/05)
+
 
 ## Testing data in clerk/configure/application/settings
 
