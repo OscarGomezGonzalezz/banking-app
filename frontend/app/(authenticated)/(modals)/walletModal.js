@@ -48,14 +48,23 @@ const WalletModal = ()=>{
                 return;
               }
 
-              //ES11111111111
-              if(!oldAccount.IBAN){
-                if (!account.IBAN || !/^([A-Z]{2})(\d{2})([A-Z0-9]{1,30})$/.test(account.IBAN)) {
-                  setError("Please enter a valid IBAN.");
-                  return;
+        if (!oldAccount.IBAN) {
+              // Validar formato IBAN
+              if (!account.IBAN || !/^([A-Z]{2})(\d{2})([A-Z0-9]{1,30})$/.test(account.IBAN)) {
+                setError("Please enter a valid IBAN.");
+                return;
               }
+
+              // Verificar si el IBAN ya existe para este usuario
+              const userAccountsRef = collection(doc(db, "users", userId), "accounts");
+              const snapshot = await getDocs(userAccountsRef);
+              const ibanExists = snapshot.docs.some(doc => doc.data().IBAN === account.IBAN);
+
+              if (ibanExists) {
+                setError("Account already exists with this IBAN.");
+                return;
               }
-              
+            }
 
               if (!account.BIC || account.BIC.trim().length < 2) {
                 setError("BIC number must contain at least 2 characters.");
