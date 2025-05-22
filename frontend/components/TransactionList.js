@@ -100,6 +100,8 @@ const IncomeExpenseList = ({ data }) => {
         renderItem={renderItem}
         keyExtractor={item => item.id?.toString() || Math.random().toString()}
         contentContainerStyle={{ paddingBottom: 40 }}
+
+      scrollEnabled={false}//This is needed for removing tht warning: virtualized lists inside scrollview
       />
     </ScrollView>
   );

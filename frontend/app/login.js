@@ -150,7 +150,7 @@ export default function Login() {
       <TextInput
         style={[styles.input, {margin: 7}]}
         placeholderTextColor={Colors.gray}
-        keyboardType='numeric'
+        keyboardType='default'
         value={username}
         placeholder="username"
         onChangeText={(username) => setUsername(username)}

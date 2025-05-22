@@ -83,7 +83,9 @@ const Page = ()=>{
     };
 
     return (
-        <ScrollView style={{ backgroundColor: Colors.background, flex: 1 }} contentContainerStyle={{ paddingTop: 60, flexGrow: 1 }}>
+        <ScrollView style={{ backgroundColor: Colors.background, flex: 1 }}
+        contentContainerStyle={{ paddingTop: 60, flexGrow: 1 }}
+         >
             <View style={styles.container}>
                 <View style={styles.balanceContainer}>
                     <View style={styles.balanceQuantity}>

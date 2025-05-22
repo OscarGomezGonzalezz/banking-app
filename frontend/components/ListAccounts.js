@@ -51,7 +51,7 @@ function ListAccounts({wallet}) {
           if (!iban || iban.length <= 3) return iban;
           return '*'.repeat(iban.length - iban.length/1.5) + iban.slice(-3);
           }
-          item.IBAN = maskIBAN(item.IBAN);
+          const ibanMask = maskIBAN(item.IBAN);
 
     console.log(item.IBAN);
     return (
@@ -65,7 +65,7 @@ function ListAccounts({wallet}) {
                   {getAssociatedBank(item.BIC)}
               </Text>
               <Text style={{ fontSize: 14, color: 'gray', marginTop: 2 }}>
-                  {item.IBAN}
+                  {ibanMask}
               </Text>
           </View>
           <View style={styles.balanceQuantity}>
@@ -84,6 +84,7 @@ function ListAccounts({wallet}) {
       extraData={wallet}                // ← tell FlatList to watch the whole array
       keyExtractor={item => item.IBAN}
       renderItem={renderItem}
+      scrollEnabled={false}//This is needed for removing tht warning: virtualized lists inside scrollview
       contentContainerStyle={{ paddingBottom: 40 }}
     />
     </View>
