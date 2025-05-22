@@ -92,12 +92,11 @@ const WalletModal = ()=>{
                 //UPDATE EXISTING ACCOUNT
                 const accountRef = doc(db, "users", userId, "accounts", oldAccount.accountID);
                 
-                //If IBAN is changed, then the quantity of the account will be different
                 if(oldAccount.IBAN !== account.IBAN) {
                     setError('You can not change the IBAN of your account')
                     return;
                 } else{
-                    await updateDoc(accountRef, {IBAN: account.IBAN});
+                    await updateDoc(accountRef, {beneficiary: account.beneficiary,BIC: account.BIC});
                 }
     
                 console.log("Bank account updated with ID:", oldAccount.accountID);

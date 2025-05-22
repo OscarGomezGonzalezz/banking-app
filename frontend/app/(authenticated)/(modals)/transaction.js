@@ -54,7 +54,7 @@ const handleSubmit = async () => {
     return;
   }
 
-  const parsedAmount = parseFloat(amount);
+  const parsedAmount = parseFloat(amount.replace(',', '.'));
   if (isNaN(parsedAmount) || parsedAmount <= 0) {
     setError('Please enter a valid amount.');
     return;
@@ -96,7 +96,7 @@ const handleSubmit = async () => {
     await addDoc(
       collection(db, 'users', userId, 'accounts', selectedAccountId, 'transactions'),
       {
-        amount: -Math.abs(parsedAmount),
+        amount: -parsedAmount,
         description,
         category,
         recipient,

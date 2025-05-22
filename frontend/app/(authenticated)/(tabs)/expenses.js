@@ -51,13 +51,19 @@ const Page = () => {
           const iban = accountSnap.data().IBAN;
             let acctExpenses = 0;
 
+            const now = new Date();
+            const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+            const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999);
+
+
             const txSnap = await getDocs(
               collection(db, "users", user.id, "accounts", acctId, "transactions")
             );
 
             txSnap.forEach(txDoc => {
               const amount = parseFloat(txDoc.data().amount) || 0;
-              if (amount < 0) {
+              const txDate = txDoc.data().date?.toDate?.(); // Firestore Timestamp → JS Date
+              if (amount < 0 && txDate && txDate >= startOfMonth && txDate <= endOfMonth) {
                 const absAmt = Math.abs(amount);
                 acctExpenses += absAmt;
                 globalExpenses += absAmt;
