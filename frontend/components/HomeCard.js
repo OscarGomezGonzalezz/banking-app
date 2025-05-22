@@ -17,7 +17,7 @@ const HomeCard = ({total, expenses, incomes}) => {
                     <Text style={styles.balance}>Total Balance</Text>
                 </View>
                 
-                <Text style={styles.balanceNumber}>{total}$</Text>
+                <Text style={styles.balanceNumber}>{total}€</Text>
 
                 {/* Income & Expenses — moved up */}
                 <View style={styles.stats}>
@@ -29,7 +29,7 @@ const HomeCard = ({total, expenses, incomes}) => {
                             </View>
                             <Text style={styles.statLabel}>Income</Text>
                         </View>
-                        <Text style={[styles.statAmount, { color: "green" }]}>{incomes}$</Text>
+                        <Text style={[styles.statAmount, { color: "green" }]}>{incomes}€</Text>
                     </View>
 
                     {/* Expenses */}
@@ -40,7 +40,7 @@ const HomeCard = ({total, expenses, incomes}) => {
                             </View>
                             <Text style={styles.statLabel}>Expenses</Text>
                         </View>
-                        <Text style={[styles.statAmount, { color: "red" }]}>{expenses}$</Text>
+                        <Text style={[styles.statAmount, { color: "red" }]}>{expenses}€</Text>
                     </View>
                 </View>
             </View>
