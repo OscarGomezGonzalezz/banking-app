@@ -32,7 +32,7 @@ export default function Home() {
   return (
     <View style={styles.container}>
       <Video
-        source={require('../assets/indexVideo.mp4')}
+        source={require('../assets/output.mp4')}
         resizeMode={ResizeMode.COVER}
         isMuted
         isLooping

@@ -3,13 +3,12 @@
 - visualize when limit expense is being reached
 - visualizes total expenses and individual, these expenses must be cathegorized by apis, which will send json to 
 
-## TODOs ##
+## Deploying
 
-- fix problem virtualized list del home y del wallet screen
-
-- cuentas tienen que tener mas dinero del enviado antes de crear transaccion
-    - Hecho (21/05)
-
+```
+cd frontend
+npx expo start
+```
 
 ## Testing data in clerk/configure/application/settings
 
