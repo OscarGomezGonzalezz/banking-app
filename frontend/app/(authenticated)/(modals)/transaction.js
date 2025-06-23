@@ -91,8 +91,7 @@ const handleSubmit = async () => {
       return;
     }
 
-    const usersSnapsh3ot = await getDocs(collection(db, 'users'));
-    console.log('🔥 Total users found:', usersSnapsh3ot.size);
+  
     // Nuevo balance después del gasto
     const newBalance = currentBalance - parsedAmount;
 

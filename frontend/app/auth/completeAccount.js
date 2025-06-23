@@ -4,6 +4,8 @@ import { useUser } from "@clerk/clerk-expo";
 import { useEffect, useState } from "react";
 import Colors from "../../constants/Colors";
 import { CustomButton } from '../index';
+import db from '../../firebase/firebaseConfig';
+import { setDoc, collection, doc } from "firebase/firestore";
   
 const CompleteYourAccountScreen = () => {
   const { user, isLoaded } = useUser();
@@ -47,7 +49,18 @@ const CompleteYourAccountScreen = () => {
       //to execute both operations(update user and update password) at rhe smae time
       await user.update({ username });
 
-      router.replace('screens/(authenticated)/(tabs)/home');
+      
+      try {
+          await setDoc(doc(db, "users", user.id), {
+            userid: user.id,
+          });
+        } catch (firestoreError) {
+          console.log("Firestore error:", firestoreError);
+          setError("Error saving user to Firestore.");
+          return;
+        }
+            
+    router.replace('screens/(authenticated)/(tabs)/home');
   
     } catch (e) {
       console.log("Error:", JSON.stringify(e, null, 2));
@@ -60,6 +73,10 @@ const CompleteYourAccountScreen = () => {
         setError("Unexpected error while updating credentials.");
       }
     }
+
+   
+  
+
   };
   
   
