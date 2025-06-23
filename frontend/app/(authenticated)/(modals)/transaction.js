@@ -49,12 +49,14 @@ const CreateTransaction = () => {
   }, [userId]);
 
 const handleSubmit = async () => {
+
   if (!amount || !description || !category || !selectedAccountId) {
     setError('Please fill in all fields.');
     return;
   }
 
   const parsedAmount = parseFloat(amount.replace(',', '.'));
+
   if (isNaN(parsedAmount) || parsedAmount <= 0) {
     setError('Please enter a valid amount.');
     return;
@@ -89,6 +91,8 @@ const handleSubmit = async () => {
       return;
     }
 
+    const usersSnapsh3ot = await getDocs(collection(db, 'users'));
+    console.log('🔥 Total users found:', usersSnapsh3ot.size);
     // Nuevo balance después del gasto
     const newBalance = currentBalance - parsedAmount;
 
@@ -105,10 +109,56 @@ const handleSubmit = async () => {
       }
     );
 
+    console.log('Transaction saved successfully:')
+    
+    // 🔍 Verificar si el IBAN existe en otras cuentas
+    const usersSnapshot = await getDocs(collection(db, 'users'));
+    console.log('🔥 Total users found:', usersSnapshot.size);
+    console.log('Checking other users for recipient IBAN:', recipientIBAN);
+
+    for (const userDoc of usersSnapshot.docs) {
+      console.log('Checking user:', userDoc.id);
+      const otherUserId = userDoc.id;
+      const accountsSnapshot = await getDocs(collection(db, 'users', otherUserId, 'accounts'));
+      console.log('Checking accounts for user:', otherUserId);
+      for (const accDoc of accountsSnapshot.docs) {
+        const accData = accDoc.data();
+        console.log('Checking account:', accData.IBAN);
+        if (accData.IBAN === recipientIBAN) {
+          // Si encontramos el IBAN destinatario
+          console.log('Recipient IBAN found:', accData.IBAN);
+
+          // ✅ Crear transacción entrante para el receptor
+          await addDoc(
+            collection(db, 'users', otherUserId, 'accounts', accDoc.id, 'transactions'),
+            {
+              amount: parsedAmount,
+              description: `Transfer from ${user.fullName || 'User'}`,
+              category: 'Transference',
+              recipent: userId,
+              recipientIBAN,
+              date: Timestamp.now(),
+            }
+          );
+
+      // // 💰 Actualizar saldo del receptor
+      // const accRef = doc(db, 'users', otherUserId, 'accounts', accDoc.id);
+      // const initialQuantity = accData.quantity || 0;
+
+      break; // Salimos del loop una vez encontrado
+    }
+  }
+
+
+}
+
     // Actualizar el campo quantity con el nuevo balance
     await updateDoc(accountRef, {
       quantity: newBalance,
-    });
+  });
+
+
+
 
     router.replace('/home');
   } catch (error) {
