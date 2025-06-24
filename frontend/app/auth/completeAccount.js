@@ -60,7 +60,7 @@ const CompleteYourAccountScreen = () => {
           return;
         }
             
-    router.replace('screens/(authenticated)/(tabs)/home');
+    router.replace('/home');
   
     } catch (e) {
       console.log("Error:", JSON.stringify(e, null, 2));
