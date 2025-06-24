@@ -73,17 +73,17 @@ const handleSubmit = async () => {
 
     const initialQuantity = accountSnap.data().quantity || 0;
 
-    // Obtener todas las transacciones
-    const txSnap = await getDocs(
-      collection(db, 'users', userId, 'accounts', selectedAccountId, 'transactions')
-    );
+    // // Obtener todas las transacciones
+    // const txSnap = await getDocs(
+    //   collection(db, 'users', userId, 'accounts', selectedAccountId, 'transactions')
+    // );
 
-    let sumTransactions = 0;
-    txSnap.forEach((doc) => {
-      sumTransactions += doc.data().amount || 0;
-    });
+    // let sumTransactions = 0;
+    // txSnap.forEach((doc) => {
+    //   sumTransactions += doc.data().amount || 0;
+    // });
 
-    const currentBalance = initialQuantity + sumTransactions;
+    const currentBalance = initialQuantity;
 
     // Verificación de fondos
     if (currentBalance < parsedAmount) {
@@ -141,8 +141,13 @@ const handleSubmit = async () => {
           );
 
       // // 💰 Actualizar saldo del receptor
-      // const accRef = doc(db, 'users', otherUserId, 'accounts', accDoc.id);
-      // const initialQuantity = accData.quantity || 0;
+      const accRef = doc(db, 'users', otherUserId, 'accounts', accDoc.id);
+      const initQuantityOther = accData.quantity || 0;
+      const newBalanceOther = initQuantityOther + parsedAmount;
+            // Actualizar el campo quantity con el nuevo balance
+        await updateDoc(accRef, {
+          quantity: newBalanceOther,
+      });
 
       break; // Salimos del loop una vez encontrado
     }
