@@ -6,7 +6,7 @@ import { CustomButton } from '../../index';
 import { useLocalSearchParams } from 'expo-router';
 import { useUser } from '@clerk/clerk-react';
 import db from '../../../firebase/firebaseConfig'
-import { updateDoc,collection, addDoc, doc, deleteDoc, getDocs } from "firebase/firestore"; 
+import { updateDoc,collection, addDoc, doc, deleteDoc, getDocs, Timestamp } from "firebase/firestore"; 
 import { useRouter } from 'expo-router';
 
 const WalletModal = ()=>{
@@ -75,13 +75,14 @@ const WalletModal = ()=>{
             const snapshot = await getDocs(userAccountsRef);
             console.log(snapshot);
             if (snapshot.size >= 5) {
-              setError("You have reached the most number of account enabled");
+              setError("You have reached the most number of accounts enabled");
               return;
             }
           
           
             // Generate a random quantity between 700 and 4000
             const randomQuantity = Math.floor(Math.random() * (4000 - 700 + 1)) + 700;
+
             
             //WE DONT TAKE INTO ACCOUNTS CURRENCIES, AS WE SUPPOSE THEY WILL BE AUTOMATICALLY TRANSLATED TO EUROS(WE WORK INITIALLY IN EUROPE)
             // Add the random quantity to the account object
@@ -113,10 +114,76 @@ const WalletModal = ()=>{
             });
     
             console.log("Bank account saved with ID: ", docRef.id);
-            console.log('Bank account saved successfully!');
-
-            }
             
+            const txCollection = collection(
+  db,
+  "users",
+  userId,
+  "accounts",
+  docRef.id,
+  "transactions"
+);
+
+// Número de transacciones aleatorio entre 2 y 4
+const numTx = Math.floor(Math.random() * 3) + 2;
+
+const categories = {
+  "Food and Drink": ["Grocery", "Spanish Restaurant"],
+  "Transference": ["Refund", "Amazon.com"],
+  "Transport": ["Flight ticket", "Taxi"]
+};
+
+const categoryKeys = Object.keys(categories);
+
+// Primero, generamos e insertamos una transacción Refund obligatoria
+const refundDate = new Date(Date.now() - Math.floor(Math.random() * 30 * 24 * 60 * 60 * 1000));
+  const refundTimestamp = Timestamp.fromDate(refundDate);
+
+const refundAmount = Math.floor(Math.random() * 1500) + 1;
+
+await addDoc(txCollection, {
+  amount: refundAmount,
+  category: "Transference",
+  date: refundTimestamp,
+  description: "Refund",
+  recipient: "Empresa XYZ",
+  recipientIBAN: "ES00" + Math.floor(Math.random() * 1e8)
+});
+
+// Ahora generamos el resto de transacciones (numTx - 1)
+for (let i = 0; i < numTx - 1; i++) {
+  const refundDate = new Date(Date.now() - Math.floor(Math.random() * 30 * 24 * 60 * 60 * 1000));
+  const refundTimestamp = Timestamp.fromDate(refundDate);
+
+  const category = categoryKeys[Math.floor(Math.random() * categoryKeys.length)];
+  const descriptionList = categories[category];
+  let description = descriptionList[Math.floor(Math.random() * descriptionList.length)];
+
+  // Evitamos que vuelva a salir "Refund"
+  if (description === "Refund") {
+    // filtramos y escogemos una descripción distinta
+    const filteredDescriptions = descriptionList.filter(d => d !== "Refund");
+    description = filteredDescriptions[Math.floor(Math.random() * filteredDescriptions.length)];
+  }
+
+  const isTransfer = category === "Transference";
+  const recipient = isTransfer ? "Empresa XYZ" : "";
+  const recipientIBAN = isTransfer ? "ES00" + Math.floor(Math.random() * 1e8) : "";
+
+  let base = Math.floor(Math.random() * 300) + 1;
+  let amount = -base;
+
+  await addDoc(txCollection, {
+    amount,
+    category,
+    date: refundTimestamp,
+    description,
+    recipient,
+    recipientIBAN
+  });
+}}
+      
+                        
             router.replace('/wallet');
         } catch (error) {
             console.error("Error saving bank account: ", error);

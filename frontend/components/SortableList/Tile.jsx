@@ -68,11 +68,11 @@ const Tile = ({ id, spent, expensesByAccount, expensesByCategory }) => {
           if (!iban || iban.length <= 3) return iban;
           return '*'.repeat(iban.length - iban.length/1.5) + iban.slice(-3);
           }
-          account.iban = maskIBAN(account.iban);
+          const maskedIBAN = maskIBAN(account.iban);
 
           return (
             <View key={account.iban} style={styles.row}>
-              <Text style={[styles.catName, { color: Colors.secondary }]}>{account.iban}</Text>
+              <Text style={[styles.catName, { color: Colors.secondary }]}>{maskedIBAN}</Text>
               <Text style={styles.amount}>{account.expense}€</Text>
             </View>
           );
