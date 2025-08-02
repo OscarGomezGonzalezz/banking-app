@@ -19,5 +19,5 @@ FOR EXPO GO APP IN PHONE, COMPUTER MUST CONNECT PERSONAL HOSTPOINT OF PHONE
 No verification emails or SMS will be sent from test emails or test phone numbers. They can be verified with this code.
 
 * Test phone number:
-+15555550100
++155555501xx
 The last three digits of this test phone number can end with a number between 100-199.

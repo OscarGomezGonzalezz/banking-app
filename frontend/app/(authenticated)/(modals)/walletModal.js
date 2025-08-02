@@ -152,7 +152,7 @@ await addDoc(txCollection, {
 
 // Ahora generamos el resto de transacciones (numTx - 1)
 for (let i = 0; i < numTx - 1; i++) {
-  const refundDate = new Date(Date.now() - Math.floor(Math.random() * 30 * 24 * 60 * 60 * 1000));
+  const refundDate = new Date(Date.now() - Math.floor(Math.random() * 3 * 24 * 60 * 60 * 1000));
   const refundTimestamp = Timestamp.fromDate(refundDate);
 
   const category = categoryKeys[Math.floor(Math.random() * categoryKeys.length)];
